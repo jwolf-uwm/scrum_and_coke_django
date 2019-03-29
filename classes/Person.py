@@ -35,7 +35,7 @@ class Person:
 
     def login(self, email, password):
 
-        if self.email != email | self.password != password:
+        if self.email != email or self.password != password:
             return "Invalid login info."
         if self.isLoggedIn is True:
             return "User already logged in"
