@@ -1,6 +1,6 @@
 # created by Dillan
 
-from unittest import TestCase
+from django.test import TestCase
 from classes.TA import TA
 
 

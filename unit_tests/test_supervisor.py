@@ -1,6 +1,6 @@
 # created by Evan
 
-from unittest import TestCase
+from django.test import TestCase
 from classes.Supervisor import Supervisor
 
 
