@@ -1,4 +1,5 @@
 # created by Grant
+from ta_assign import models
 
 
 class Person:
@@ -8,6 +9,14 @@ class Person:
         self.phone_number = -1
         self.name = "DEFAULT"
         self.isLoggedIn = False
+
+        some_guy = models.Person()
+        some_guy.email = self.email
+        some_guy.password = self.password
+        some_guy.name = self.name
+        some_guy.phone = self.phone_number
+        some_guy.isLoggedOn = self.isLoggedIn
+        some_guy.save()
 
     def change_password(self, old, new):
         return

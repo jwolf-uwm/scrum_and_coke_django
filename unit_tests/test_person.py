@@ -1,6 +1,6 @@
 # created by Grant
 
-from unittest import TestCase
+from django.test import TestCase
 from classes.Person import Person
 
 
@@ -9,6 +9,9 @@ class TestPerson(TestCase):
     def setup(self):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
         self.person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD")
+
+        test_query = Person.objects.all()
+        self.assertEquals(test_query[1].email, "person1@uwm.edu")
 
     def test_init_(self):
         self.assertEquals(self.person1.email, "person1@uwm.edu")

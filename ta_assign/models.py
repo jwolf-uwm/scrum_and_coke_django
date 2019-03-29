@@ -3,11 +3,11 @@ from django.db import models
 
 # Create your models here.
 class Person(models.Model):
-    email = models.CharField()
-    password = models.CharField()
-    phone = models.IntField(default=-1)
-    name = models.CharField(default="DEFAULT")
-    isLoggedOn = models.BoolField(default=False)
+    email = models.CharField(max_length=50)
+    password = models.CharField(max_length=20)
+    phone = models.IntegerField(default=-1)
+    name = models.CharField(max_length=50, default="DEFAULT")
+    isLoggedOn = models.BooleanField(default=False)
 
 
 class Administrator(Person):
