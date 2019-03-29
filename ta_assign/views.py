@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from ta_assign.models import Person
+from ta_assign.models import Administrator
 # Create your views here.
 
 

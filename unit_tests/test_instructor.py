@@ -1,7 +1,7 @@
 # created by Jeff
 
 from classes.Instructor import Instructor
-from unittest import TestCase
+from django.test import TestCase
 
 
 class TestInstructor(TestCase):

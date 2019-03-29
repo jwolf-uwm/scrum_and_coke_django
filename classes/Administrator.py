@@ -1,10 +1,11 @@
 # created by Matt
 
 from classes.Person import Person
-from classes.Instructor import Instructor
-from classes.TA import TA
-from classes.Course import Course
-from classes.Database import Database
+#from classes.Instructor import Instructor
+#from classes.TA import TA
+#from classes.Course import Course
+#from classes.Database import Database
+from ta_assign import models
 
 
 class Administrator(Person):
@@ -24,11 +25,12 @@ class Administrator(Person):
         super().__init__(email, password)
 
     def create_course(self, course_id, num_labs):
-        new_course = Course(course_id, num_labs)
-        if Database.courses.contains(course_id):
-            return "Course already exists"
-        Database.courses.append(course_id)
-        return new_course
+        #new_course = Course(course_id, num_labs)
+        #if Database.courses.contains(course_id):
+        #    return "Course already exists"
+        #Database.courses.append(course_id)
+        #return new_course
+        return
 
     def create_account(self, email, password, account_type):
 
@@ -38,13 +40,13 @@ class Administrator(Person):
         if parse_period[0] != "uwm":
             return "Email address must be a UWM address."
 
-        if account_type == "instructor":
-            new_instructor = Instructor(email, password)
-            return new_instructor
+        #if account_type == "instructor":
+            #new_instructor = Instructor(email, password)
+            #return new_instructor
 
-        elif account_type == "ta":
-            new_ta = TA(email, password)
-            return new_ta
+        #elif account_type == "ta":
+            #new_ta = TA(email, password)
+            #return new_ta
 
         return "Not a valid account type for creation."
 
