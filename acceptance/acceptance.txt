@@ -1,0 +1,2 @@
+Acceptance tests go in this folder. Maybe a listing of acceptance tests will show
+up in this text file someday.
