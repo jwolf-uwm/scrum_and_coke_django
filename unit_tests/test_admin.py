@@ -1,18 +1,22 @@
 # created by Matt
 from django.test import TestCase
 from classes.Administrator import Administrator
-#from classes.Course import Course
-#from classes.Database import Database
+from ta_assign import models
+# from classes.Course import Course
+# from classes.Database import Database
 
 
 class TestAdministrator(TestCase):
+    ad1 = Administrator("ad1@uwm.edu", "ad1pass")
+
     def setUp(self):
-        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
-        #self.data = Database()
+        # self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
+        # self.data = Database()
+        pass
 
     def test_create_course(self):
-        #self.assertEqual(self.ad1.create_course("CS361", 3), Course("CS361", 3))
-        #self.data.courses.append(self, Course("CS337", 1))
+        # self.assertEqual(self.ad1.create_course("CS361", 3), Course("CS361", 3))
+        # self.data.courses.append(self, Course("CS337", 1))
         # course already exists
         self.assertEqual(self.ad1.create_course("CS337", 2), "Course already exists")
 
@@ -65,3 +69,5 @@ class TestAdministrator(TestCase):
                             ["ad1@uwm.edu", "ad2@uwm.edu", "email@uwm.edu"],
                             ["ad1pass", "ad2pass", "pass"])
         self.assertEqual(self.ad1.access_info(), self.system_stuff)
+
+    models.ModelPerson.objects.all().delete()
