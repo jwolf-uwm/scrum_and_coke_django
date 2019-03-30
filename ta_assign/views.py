@@ -10,11 +10,11 @@ class Home(View):
         return render(request, 'main/index.html')
 
     def post(self, request):
-        #your_instance = SomeCommandClass()
+        # your_instance = SomeCommandClass()
         command_input = request.POST["command"]
-        #if command_input:
+        # if command_input:
         #    response = your_instance.command(command_input)
-        #else:
+        # else:
         #    response = ""
         response = command_input
         return render(request, 'main/index.html', {"message": response})
