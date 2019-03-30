@@ -18,16 +18,6 @@ class Person:
         some_guy.isLoggedOn = self.isLoggedIn
         some_guy.save()
 
-        print("BIG BUTTS")
-
-        test_query = models.ModelPerson.objects.all()
-        test_list = []
-
-        for i in test_query:
-            test_list.append(i)
-
-        print(test_list[0].email)
-
     def change_password(self, old, new):
         return
 

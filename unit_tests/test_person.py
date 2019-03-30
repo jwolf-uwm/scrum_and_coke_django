@@ -2,7 +2,8 @@
 
 from django.test import TestCase
 from classes.Person import Person
-from ta_assign.models import ModelPerson
+from ta_assign import models
+
 
 class TestPerson(TestCase):
     person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
@@ -10,7 +11,7 @@ class TestPerson(TestCase):
 
     def test_init_(self):
         self.assertEquals(self.person1.email, "person1@uwm.edu")
-        self.assertEquals(self.person1.password, "BUTTS")
+        self.assertEquals(self.person1.password, "DEFAULT_PASSWORD")
         # self.assertEquals(self.person1.name, "DEFAULT")
         # self.assertEquals(self.person1.phone_number, 0000000000)
 
@@ -51,3 +52,7 @@ class TestPerson(TestCase):
 
     def test_logout(self):
         self.assertTrue(self.person1.logout())
+
+    # careful, this will delete all people in the database to cleanup
+    # disable if there's something you need to persist
+    models.ModelPerson.objects.all().delete()
