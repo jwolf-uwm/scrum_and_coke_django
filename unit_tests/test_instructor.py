@@ -2,13 +2,17 @@
 
 from classes.Instructor import Instructor
 from django.test import TestCase
+from ta_assign import models
 
 
 class TestInstructor(TestCase):
 
+    instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD")
+    instructor2 = Instructor("instructor2@uwm.edu", "DEFAULT_PASSWORD")
+
     def setup(self):
-        self.instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD")
-        self.instructor2 = Instructor("instructor2@uwm.edu", "DEFAULT_PASSWORD")
+        # self.instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD")
+        # self.instructor2 = Instructor("instructor2@uwm.edu", "DEFAULT_PASSWORD")
         # fake TA
         self.ta1 = ("ta1@uwm.edu", "DEFAULT_PASSWORD")
         self.ta2 = ("ta2@uwm.edu", "DEFAULT_PASSWORD")
@@ -56,3 +60,5 @@ class TestInstructor(TestCase):
     def test_view_ta_assign(self):
         self.assertEquals(self.instructor1.view_ta_assign()[0], self.ta1)
         self.assertNotEquals(self.instructor1.view_ta_assign(), self.ta2)
+
+    models.ModelPerson.objects.all().delete()
