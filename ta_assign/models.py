@@ -30,4 +30,5 @@ class ModelCourse(models.Model):
     course_id = models.CharField(max_length = 10)
     num_labs = models.IntegerField(default = 0)
     instructor = models.CharField(max_length=50)
-    tee_ays = models.ForeignKey(ModelTA, on_delete=models.CASCADE)
+    # temp disabled
+    # tee_ays = models.ForeignKey(ModelTA, on_delete=models.CASCADE)
