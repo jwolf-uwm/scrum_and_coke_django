@@ -10,13 +10,23 @@ class Person:
         self.name = "DEFAULT"
         self.isLoggedIn = False
 
-        some_guy = models.Person()
+        some_guy = models.ModelPerson()
         some_guy.email = self.email
         some_guy.password = self.password
         some_guy.name = self.name
         some_guy.phone = self.phone_number
         some_guy.isLoggedOn = self.isLoggedIn
         some_guy.save()
+
+        print("BIG BUTTS")
+
+        test_query = models.ModelPerson.objects.all()
+        test_list = []
+
+        for i in test_query:
+            test_list.append(i)
+
+        print(test_list[0].email)
 
     def change_password(self, old, new):
         return

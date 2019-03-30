@@ -2,20 +2,15 @@
 
 from django.test import TestCase
 from classes.Person import Person
-
+from ta_assign.models import ModelPerson
 
 class TestPerson(TestCase):
     person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
     person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD")
 
-    def setup(self):
-
-        test_query = Person.objects.all()
-        self.assertEquals(test_query[1].email, "person1@uwm.edu")
-
     def test_init_(self):
         self.assertEquals(self.person1.email, "person1@uwm.edu")
-        self.assertEquals(self.person1.password, "DEFAULT_PASSWORD")
+        self.assertEquals(self.person1.password, "BUTTS")
         # self.assertEquals(self.person1.name, "DEFAULT")
         # self.assertEquals(self.person1.phone_number, 0000000000)
 
