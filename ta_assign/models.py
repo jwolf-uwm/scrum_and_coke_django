@@ -32,3 +32,8 @@ class ModelCourse(models.Model):
     instructor = models.CharField(max_length=50)
     # temp disabled
     # tee_ays = models.ForeignKey(ModelTA, on_delete=models.CASCADE)
+
+
+class ModelTACourse(models.Model):
+    course = models.ForeignKey(ModelCourse, on_delete=models.CASCADE)
+    TA = models.ForeignKey(ModelTA, on_delete=models.CASCADE)

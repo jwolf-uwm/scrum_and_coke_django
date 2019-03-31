@@ -10,6 +10,8 @@ class TestPerson(TestCase):
     person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD")
 
     def test_init_(self):
+        # self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
+        # self.person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD")
         self.assertEquals(self.person1.email, "person1@uwm.edu")
         self.assertEquals(self.person1.password, "DEFAULT_PASSWORD")
         # self.assertEquals(self.person1.name, "DEFAULT")
