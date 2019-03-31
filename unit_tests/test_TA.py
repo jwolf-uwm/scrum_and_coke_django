@@ -2,12 +2,15 @@
 
 from django.test import TestCase
 from classes.TA import TA
+from ta_assign import models
 
 
 class TestTA(TestCase):
 
+    ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
+
     def setup(self):
-        self.ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
+        # self.ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
         self.instructor1 = ("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
         self.instructor2 = ("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
         self.instructor3 = ("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
@@ -23,3 +26,5 @@ class TestTA(TestCase):
 
     def test_read_public_contact(self):
         self.assertEqual(self.ta1.read_public_contact(self.class_list))
+
+    models.ModelPerson.objects.all().delete()
