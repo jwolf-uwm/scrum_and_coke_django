@@ -63,7 +63,10 @@ class Administrator(Person):
 
         parse_at = email.split("@")
 
-        if parse_at[1] != "uwm.edu":
+        try:
+            if parse_at[1] != "uwm.edu" or len(parse_at) != 2:
+                return False
+        except IndexError:
             return False
 
         if account_type == "instructor":

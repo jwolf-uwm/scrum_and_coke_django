@@ -78,6 +78,36 @@ class TestAdministrator(TestCase):
             models.ModelPerson.objects.get(email="farfelkugel@uwm.edu")
 
         # Invalid parameter tests
+        # no email
+        with self.assertRaises(TypeError):
+            self.ad1.create_account("password", "instructor")
+        # no password
+        with self.assertRaises(TypeError):
+            self.ad1.create_account("no_password@uwm.edu", "instructor")
+        # no account type
+        with self.assertRaises(TypeError):
+            self.ad1.create_account("some_doof@uwm.edu", "password3")
+        # non uwm email
+        self.assertFalse(self.ad1.create_account("bobross@bobross.com", "happy_trees", "instructor"))
+        # not in db
+        with self.assertRaises(models.ModelPerson.DoesNotExist):
+            models.ModelPerson.objects.get(email="bobross@bobross.com")
+        # weird email, props to Grant for this test
+        self.assertFalse(self.ad1.create_account("bobross@uwm.edu@uwm.edu", "lotta_bob", "instructor"))
+        # not in db
+        with self.assertRaises(models.ModelPerson.DoesNotExist):
+            models.ModelPerson.objects.get(email="bobross@uwm.edu@uwm.edu")
+        # not really an email addy
+        self.assertFalse(self.ad1.create_account("TRUST_ME_IM_EMAIL", "seriously_real_address", "ta"))
+        # not in db
+        with self.assertRaises(models.ModelPerson.DoesNotExist):
+            models.ModelPerson.objects.get(email="TRUST_ME_IM_EMAIL")
+        # int args
+        self.assertFalse(self.ad1.create_account(7, 8, 9))
+        with self.assertRaises(models.ModelPerson.DoesNotExist):
+            models.ModelPerson.objects.get(email=7)
+        # email taken
+        self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
         # old tests, making my own - Jeff
         # self.instructor2 = Instructor("ad2@uwm.edu", "ad2pass")
