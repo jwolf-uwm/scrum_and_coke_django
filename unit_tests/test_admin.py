@@ -192,12 +192,22 @@ class TestAdministrator(TestCase):
 
         # Instructor with a course
         self.course1 = Course("CS101", 0)
+        self.course1.instructor = "inst1@uwm.edu"
         mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
         mod_course1.instructor = "inst1@uwm.edu"
         mod_course1.save()
         # access as admin
         access_info = self.ad1.access_info()
         self.assertEqual(access_info[5], "Course: CS101")
+
+        # TA with a course
+        mod_ta_course1 = models.ModelTACourse()
+        mod_ta_course1.course = mod_course1
+        mod_ta1 = models.ModelTA.objects.get(email="ta1@uwm.edu")
+        mod_ta_course1.TA = mod_ta1
+        mod_ta_course1.save()
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[8], "Course: CS101")
 
         # commenting out old tests, writing my own - Jeff
         # creating stuff in the system

@@ -105,7 +105,8 @@ class Administrator(Person):
 
         string_list = []
 
-        # not ideal workaround here, supervisor inherits from admin, so it shows up as an admin in the database
+        # not idea
+        # l workaround here, supervisor inherits from admin, so it shows up as an admin in the database
         # as well as a supervisor, so we just grab the first admin, which better be the right one
         admin = models.ModelAdministrator.objects.all()
         string_list.append("Administrator: " + admin[0].name + " | " + admin[0].email + " | " + str(admin[0].phone))
@@ -126,6 +127,11 @@ class Administrator(Person):
 
         for tee_ayy in models.ModelTA.objects.all():
             string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
+
+            for ta_courses in models.ModelTACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list.append("Course: " + ta_courses.course.course_id)
+
             string_list.append("")
 
         return string_list
