@@ -18,10 +18,29 @@ class TestAdministrator(TestCase):
         # pass
 
     def test_create_course(self):
-        # self.assertEqual(self.ad1.create_course("CS361", 3), Course("CS361", 3))
-        # self.data.courses.append(self, Course("CS337", 1))
-        # course already exists
-        self.assertEqual(self.ad1.create_course("CS337", 2), "Course already exists")
+        # setup admin
+        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
+
+        # create a new course
+        self.assertTrue(self.ad1.create_course("CS361-401", 3))
+        # get the added course from the db
+        da_course = models.ModelCourse.objects.get(course_id="CS361-401")
+        # make sure found course is the same
+        self.assertEqual(da_course.course_id, "CS361-401")
+        self.assertEqual(da_course.num_labs, 3)
+        self.assertEqual(da_course.instructor, "not_set@uwm.edu")
+
+        # create the same course again with no changes
+        self.assertFalse(self.ad1.create_course("CS361-401", 3))
+        # create the same course with a different number of labs
+        self.assertFalse(self.ad1.create_course("CS361-401", 2))
+        # create teh same course with a different section number (technically a new course)
+        self.assertTrue(self.ad1.create_course("CS361-402", 3))
+        da_course = models.ModelCourse.objects.get(course_id="CS361-402")
+        # make sure found course is the same
+        self.assertEqual(da_course.course_id, "CS361-402")
+        self.assertEqual(da_course.num_labs, 3)
+        self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
     def test_create_account(self):
         # Jeff's tests
