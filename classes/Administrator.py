@@ -41,6 +41,7 @@ class Administrator(Person):
         return
 
     def create_account(self, email, password, account_type):
+        # Jeff's method
 
         if account_type == "instructor":
             try:
