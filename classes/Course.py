@@ -6,7 +6,7 @@ class Course:
         self.course_id = course_id
         self.num_labs = num_labs
         # instructor should be a class at some point
-        self.instructor = "Dr. Default"
+        self.instructor = "not_set@uwm.edu"
         self.tee_ays = []
 
         some_course = models.ModelCourse()

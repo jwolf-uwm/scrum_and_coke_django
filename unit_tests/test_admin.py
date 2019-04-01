@@ -1,10 +1,11 @@
 # created by Matt
 from django.test import TestCase
 from classes.Administrator import Administrator
+from classes.Supervisor import Supervisor
 from classes.Instructor import Instructor
 from classes.TA import TA
 from ta_assign import models
-# from classes.Course import Course
+from classes.Course import Course
 # from classes.Database import Database
 
 
@@ -152,11 +153,68 @@ class TestAdministrator(TestCase):
         self.assertTrue(self.ad1.send_notification("I Like To Eat French Fries In The Rain"))
 
     def test_access_info(self):
+        # Jeff's tests
+
+        # Admin/Sup only tests
+        self.ad1 = Administrator("admin@uwm.edu", "password")
+        self.sp1 = Supervisor("super@uwm.edu", "password")
+        # access as admin
+        access_info = self.ad1.access_info()
+        # admin info
+        self.assertEqual(access_info[0], "Administrator: DEFAULT | admin@uwm.edu | -1")
+        self.assertEqual(access_info[1], "")
+        # sup info
+        self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
+        self.assertEqual(access_info[3], "")
+        # access as sup
+        # is it ok to do this here? this is the only place where we test access info
+        access_info = self.sp1.access_info()
+        # admin info
+        self.assertEqual(access_info[0], "Administrator: DEFAULT | admin@uwm.edu | -1")
+        self.assertEqual(access_info[1], "")
+        # sup info
+        self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
+        self.assertEqual(access_info[3], "")
+
+        # Add instructor, no course assignments
+        self.inst1 = Instructor("inst1@uwm.edu", "password")
+        # access as admin
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[4], "Instructor: DEFAULT | inst1@uwm.edu | -1")
+        self.assertEqual(access_info[5], "")
+
+        # Add TA, no course assignments
+        self.ta1 = TA("ta1@uwm.edu", "password")
+        # access as admin
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[6], "TA: DEFAULT | ta1@uwm.edu | -1")
+        self.assertEqual(access_info[7], "")
+
+        # Instructor with a course
+        self.course1 = Course("CS101", 0)
+        self.course1.instructor = "inst1@uwm.edu"
+        mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
+        mod_course1.instructor = "inst1@uwm.edu"
+        mod_course1.save()
+        # access as admin
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[5], "Course: CS101")
+
+        # TA with a course
+        mod_ta_course1 = models.ModelTACourse()
+        mod_ta_course1.course = mod_course1
+        mod_ta1 = models.ModelTA.objects.get(email="ta1@uwm.edu")
+        mod_ta_course1.TA = mod_ta1
+        mod_ta_course1.save()
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[8], "Course: CS101")
+
+        # commenting out old tests, writing my own - Jeff
         # creating stuff in the system
-        self.user = ("email@uwm.edu", "pass")
-        self.system_stuff = ([self.ad1, self.ad2, self.user],
-                            ["ad1@uwm.edu", "ad2@uwm.edu", "email@uwm.edu"],
-                            ["ad1pass", "ad2pass", "pass"])
-        self.assertEqual(self.ad1.access_info(), self.system_stuff)
+        # self.user = ("email@uwm.edu", "pass")
+        # self.system_stuff = ([self.ad1, self.ad2, self.user],
+                            # ["ad1@uwm.edu", "ad2@uwm.edu", "email@uwm.edu"],
+                            # ["ad1pass", "ad2pass", "pass"])
+        # self.assertEqual(self.ad1.access_info(), self.system_stuff)
 
     # models.ModelPerson.objects.all().delete()

@@ -42,6 +42,10 @@ class Administrator(Person):
 
     def create_account(self, email, password, account_type):
         # Jeff's method
+        # Usage: (string: email, string: password, string: account_type)
+        # returns True if account successfully created in DB
+        # returns False if account was unable to be created
+        # throws exceptions if you do it wrong
 
         if account_type == "instructor":
             try:
@@ -87,4 +91,47 @@ class Administrator(Person):
         return
 
     def access_info(self):
-        return
+        # Jeff's method
+        # Usage: access_info()
+        # returns a list of strings of all users in the database
+        # each string is as follows:
+        #   "ACCOUNT_TYPE: name | email address | phone"
+        # if user is instructor following strings are:
+        #   "Classes assigned: class1, class2, class3"
+        #   "TAs assigned : ta1, ta2, ta3"
+        # if user is ta, following strings are:
+        #   "Classes assigned: class1, class2, class3"
+        #   NOT IMPLEMENTED: "Labs assigned: lab1, lab2, lab3"
+
+        string_list = []
+
+        # not idea
+        # l workaround here, supervisor inherits from admin, so it shows up as an admin in the database
+        # as well as a supervisor, so we just grab the first admin, which better be the right one
+        admin = models.ModelAdministrator.objects.all()
+        string_list.append("Administrator: " + admin[0].name + " | " + admin[0].email + " | " + str(admin[0].phone))
+        string_list.append("")
+
+        for supervi in models.ModelSupervisor.objects.all():
+            string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
+            string_list.append("")
+
+        for instruct in models.ModelInstructor.objects.all():
+            string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
+
+            for courses in models.ModelCourse.objects.all():
+                if courses.instructor == instruct.email:
+                    string_list.append("Course: " + courses.course_id)
+
+            string_list.append("")
+
+        for tee_ayy in models.ModelTA.objects.all():
+            string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
+
+            for ta_courses in models.ModelTACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list.append("Course: " + ta_courses.course.course_id)
+
+            string_list.append("")
+
+        return string_list
