@@ -1,6 +1,7 @@
 # created by Matt
 from django.test import TestCase
 from classes.Administrator import Administrator
+from classes.Supervisor import Supervisor
 from classes.Instructor import Instructor
 from classes.TA import TA
 from ta_assign import models
@@ -152,11 +153,22 @@ class TestAdministrator(TestCase):
         self.assertTrue(self.ad1.send_notification("I Like To Eat French Fries In The Rain"))
 
     def test_access_info(self):
+        # Jeff's tests
+
+        # Admin/Sup only tests
+        self.ad1 = Administrator("admin@uwm.edu", "password")
+        self.sp1 = Supervisor("super@uwm.edu", "password")
+
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[0], "Administrator: DEFAULT | admin@uwm.edu | -1")
+        self.assertEqual(access_info[1], "")
+
+        # commenting out old tests, writing my own - Jeff
         # creating stuff in the system
-        self.user = ("email@uwm.edu", "pass")
-        self.system_stuff = ([self.ad1, self.ad2, self.user],
-                            ["ad1@uwm.edu", "ad2@uwm.edu", "email@uwm.edu"],
-                            ["ad1pass", "ad2pass", "pass"])
-        self.assertEqual(self.ad1.access_info(), self.system_stuff)
+        # self.user = ("email@uwm.edu", "pass")
+        # self.system_stuff = ([self.ad1, self.ad2, self.user],
+                            # ["ad1@uwm.edu", "ad2@uwm.edu", "email@uwm.edu"],
+                            # ["ad1pass", "ad2pass", "pass"])
+        # self.assertEqual(self.ad1.access_info(), self.system_stuff)
 
     # models.ModelPerson.objects.all().delete()

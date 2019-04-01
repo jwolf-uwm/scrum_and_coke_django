@@ -106,18 +106,18 @@ class Administrator(Person):
         string_list = []
 
         for admin in models.ModelAdministrator.objects.all():
-            string_list.append("Administrator: " + admin.name + " | " + admin.email + " | " + admin.phone)
+            string_list.append("Administrator: " + admin.name + " | " + admin.email + " | " + str(admin.phone))
             string_list.append("")
 
         for supervi in models.ModelSupervisor.objects.all():
-            string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + supervi.phone)
+            string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
             string_list.append("")
 
         for instruct in models.ModelInstructor.objects.all():
-            string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + instruct.phone)
+            string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
             string_list.append("")
 
         for tee_ayy in models.ModelTA.objects.all():
-            string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + tee_ayy.phone)
+            string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
 
-        return
+        return string_list
