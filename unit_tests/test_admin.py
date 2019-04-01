@@ -158,10 +158,14 @@ class TestAdministrator(TestCase):
         # Admin/Sup only tests
         self.ad1 = Administrator("admin@uwm.edu", "password")
         self.sp1 = Supervisor("super@uwm.edu", "password")
-
+        # access as admin
         access_info = self.ad1.access_info()
+        # admin info
         self.assertEqual(access_info[0], "Administrator: DEFAULT | admin@uwm.edu | -1")
         self.assertEqual(access_info[1], "")
+        # sup info
+        self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
+        self.assertEqual(access_info[3], "")
 
         # commenting out old tests, writing my own - Jeff
         # creating stuff in the system
