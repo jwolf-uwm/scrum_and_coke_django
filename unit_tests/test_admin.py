@@ -166,11 +166,29 @@ class TestAdministrator(TestCase):
         # sup info
         self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
         self.assertEqual(access_info[3], "")
+        # access as sup
+        # is it ok to do this here? this is the only place where we test access info
+        access_info = self.sp1.access_info()
+        # admin info
+        self.assertEqual(access_info[0], "Administrator: DEFAULT | admin@uwm.edu | -1")
+        self.assertEqual(access_info[1], "")
+        # sup info
+        self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
+        self.assertEqual(access_info[3], "")
 
-
-        # Add instructor
+        # Add instructor, no course/TA assignments
         self.inst1 = Instructor("inst1@uwm.edu", "password")
+        # access as admin
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[4], "Instructor: DEFAULT | inst1@uwm.edu | -1")
+        self.assertEqual(access_info[5], "")
 
+        # Add TA, no course assignments
+        self.ta1 = TA("ta1@uwm.edu", "password")
+        # access as admin
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[6], "TA: DEFAULT | ta1@uwm.edu | -1")
+        self.assertEqual(access_info[7], "")
 
         # commenting out old tests, writing my own - Jeff
         # creating stuff in the system
