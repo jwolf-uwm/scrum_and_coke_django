@@ -40,10 +40,10 @@ class Administrator(Person):
         # return new_course
         try:
             find_course = models.ModelCourse.objects.get(course_id=course_id)
-        except models.ModelCourse.DoesNotExist
+        except models.ModelCourse.DoesNotExist:
             find_course = "none"
 
-        if find_course != "none"
+        if find_course != "none":
             return False
 
         new_course = Course(course_id, num_labs)
