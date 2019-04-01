@@ -3,7 +3,7 @@
 from classes.Person import Person
 from classes.Instructor import Instructor
 from classes.TA import TA
-# from classes.Course import Course
+from classes.Course import Course
 # from classes.Database import Database
 from ta_assign import models
 
@@ -38,7 +38,16 @@ class Administrator(Person):
         #    return "Course already exists"
         # Database.courses.append(course_id)
         # return new_course
-        return
+        try:
+            find_course = models.ModelCourse.objects.get(course_id=course_id)
+        except models.ModelCourse.DoesNotExist
+            find_course = "none"
+
+        if find_course != "none"
+            return False
+
+        new_course = Course(course_id, num_labs)
+        return True
 
     def create_account(self, email, password, account_type):
         # Jeff's method
