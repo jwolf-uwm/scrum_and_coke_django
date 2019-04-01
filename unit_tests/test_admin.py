@@ -5,7 +5,7 @@ from classes.Supervisor import Supervisor
 from classes.Instructor import Instructor
 from classes.TA import TA
 from ta_assign import models
-# from classes.Course import Course
+from classes.Course import Course
 # from classes.Database import Database
 
 
@@ -176,7 +176,7 @@ class TestAdministrator(TestCase):
         self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
         self.assertEqual(access_info[3], "")
 
-        # Add instructor, no course/TA assignments
+        # Add instructor, no course assignments
         self.inst1 = Instructor("inst1@uwm.edu", "password")
         # access as admin
         access_info = self.ad1.access_info()
@@ -189,6 +189,15 @@ class TestAdministrator(TestCase):
         access_info = self.ad1.access_info()
         self.assertEqual(access_info[6], "TA: DEFAULT | ta1@uwm.edu | -1")
         self.assertEqual(access_info[7], "")
+
+        # Instructor with a course
+        self.course1 = Course("CS101", 0)
+        mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
+        mod_course1.instructor = "inst1@uwm.edu"
+        mod_course1.save()
+        # access as admin
+        access_info = self.ad1.access_info()
+        self.assertEqual(access_info[5], "Course: CS101")
 
         # commenting out old tests, writing my own - Jeff
         # creating stuff in the system

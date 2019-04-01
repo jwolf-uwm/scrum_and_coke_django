@@ -117,6 +117,11 @@ class Administrator(Person):
 
         for instruct in models.ModelInstructor.objects.all():
             string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
+
+            for courses in models.ModelCourse.objects.all():
+                if courses.instructor == instruct.email:
+                    string_list.append("Course: " + courses.course_id)
+
             string_list.append("")
 
         for tee_ayy in models.ModelTA.objects.all():
