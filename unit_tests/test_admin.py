@@ -1,18 +1,19 @@
 # created by Matt
 from django.test import TestCase
 from classes.Administrator import Administrator
+from classes.Instructor import Instructor
+from classes.TA import TA
 from ta_assign import models
 # from classes.Course import Course
 # from classes.Database import Database
 
 
 class TestAdministrator(TestCase):
-    ad1 = Administrator("ad1@uwm.edu", "ad1pass")
 
-    def setUp(self):
+    # def setUp(self):
         # self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
         # self.data = Database()
-        pass
+        # pass
 
     def test_create_course(self):
         # self.assertEqual(self.ad1.create_course("CS361", 3), Course("CS361", 3))
@@ -21,12 +22,38 @@ class TestAdministrator(TestCase):
         self.assertEqual(self.ad1.create_course("CS337", 2), "Course already exists")
 
     def test_create_account(self):
-        self.assertTrue(self.ad1.create_account("DustyBottoms@uwm.edu", "better_password"))
-        self.ad2 = Administrator("ad2@uwm.edu", "ad2pass")
+        # Jeff's tests
+
+        # setup admin
+        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
+
+        # BEGIN CREATE INSTRUCTOR TESTS
+        # create unused instructor account
+        self.assertTrue(self.ad1.create_account("DustyBottoms@uwm.edu", "better_password", "instructor"))
+        # get account that was just setup
+        test_model_ins = models.ModelInstructor.objects.get(email="DustyBottoms@uwm.edu")
+        # make sure email is equal
+        self.assertEqual(test_model_ins.email, "DustyBottoms@uwm.edu")
+        # make sure password is equal
+        self.assertEqual(test_model_ins.password, "better_password")
+        # default name test
+        self.assertEqual(test_model_ins.name, "DEFAULT")
+        # default phone test
+        self.assertEqual(test_model_ins.phone, -1)
+        # login false test
+        self.assertFalse(test_model_ins.isLoggedOn)
+        # END CREATE INSTRUCTOR TESTS
+
+        # BEGIN CREATE TA TESTS
+
+        # END CREATE TA TESTS
+
+        self.instructor2 = Instructor("ad2@uwm.edu", "ad2pass")
         # taken email
-        self.assertFalse(self.ad1.create_account("ad2@uwm.edu", "new_pass"))
+        self.assertFalse(self.ad1.create_account("ad2@uwm.edu", "new_pass", "instructor"))
         # taken password
-        self.assertFalse(self.ad1.create_account("George_Likes_Beef@uwm.edu", "better_password"))
+        # I'm not sure that we should care if two or more people pick the same password - Jeff
+        # self.assertFalse(self.ad1.create_account("George_Likes_Beef@uwm.edu", "better_password"))
 
     def test_edit_account(self):
         self.random_user = ("rando@uwm.edu", "im_random", 1234567, "Jerry Seinfeld")
@@ -70,4 +97,4 @@ class TestAdministrator(TestCase):
                             ["ad1pass", "ad2pass", "pass"])
         self.assertEqual(self.ad1.access_info(), self.system_stuff)
 
-    models.ModelPerson.objects.all().delete()
+    # models.ModelPerson.objects.all().delete()

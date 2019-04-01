@@ -1,8 +1,8 @@
 # created by Matt
 
 from classes.Person import Person
-# from classes.Instructor import Instructor
-# from classes.TA import TA
+from classes.Instructor import Instructor
+from classes.TA import TA
 # from classes.Course import Course
 # from classes.Database import Database
 from ta_assign import models
@@ -42,21 +42,36 @@ class Administrator(Person):
 
     def create_account(self, email, password, account_type):
 
-        parse_at_symbol = email.split("@")
-        parse_period = parse_at_symbol[1].split(".")
+        if account_type == "instructor":
+            try:
+                find_email = models.ModelInstructor.objects.get(email=email)
+            except models.ModelInstructor.DoesNotExist:
+                find_email = "none"
 
-        if parse_period[0] != "uwm":
-            return "Email address must be a UWM address."
+        elif account_type == "ta":
+            try:
+                find_email = models.ModelTA.objects.get(email=email)
+            except models.ModelTA.DoesNotExist:
+                find_email = "none"
 
-        # if account_type == "instructor":
-            # new_instructor = Instructor(email, password)
-            # return new_instructor
+        else:
+            return False
 
-        # elif account_type == "ta":
-            # new_ta = TA(email, password)
-            # return new_ta
+        if find_email != "none":
+            return False
 
-        return "Not a valid account type for creation."
+        parse_at = email.split("@")
+
+        if parse_at[1] != "uwm.edu":
+            return False
+
+        if account_type == "instructor":
+            new_instructor = Instructor(email, password)
+            return True
+
+        elif account_type == "ta":
+            new_ta = TA(email, password)
+            return True
 
     def edit_account(self, email, field, content):
         return
