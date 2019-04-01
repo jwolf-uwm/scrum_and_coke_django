@@ -105,9 +105,11 @@ class Administrator(Person):
 
         string_list = []
 
-        for admin in models.ModelAdministrator.objects.all():
-            string_list.append("Administrator: " + admin.name + " | " + admin.email + " | " + str(admin.phone))
-            string_list.append("")
+        # not ideal workaround here, supervisor inherits from admin, so it shows up as an admin in the database
+        # as well as a supervisor, so we just grab the first admin
+        admin = models.ModelAdministrator.objects.all()
+        string_list.append("Administrator: " + admin[0].name + " | " + admin[0].email + " | " + str(admin[0].phone))
+        string_list.append("")
 
         for supervi in models.ModelSupervisor.objects.all():
             string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))

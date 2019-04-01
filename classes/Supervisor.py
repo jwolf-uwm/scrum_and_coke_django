@@ -1,11 +1,12 @@
 # created by Evan
 
+from classes.Administrator import Administrator
 from classes.Person import Person
 from classes.Course import Course
 from ta_assign import models
 
 
-class Supervisor(Person):
+class Supervisor(Administrator):
     def __init__(self, email, password):
         super().__init__(email, password)
 

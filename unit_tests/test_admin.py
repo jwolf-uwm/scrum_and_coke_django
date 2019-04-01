@@ -167,6 +167,11 @@ class TestAdministrator(TestCase):
         self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
         self.assertEqual(access_info[3], "")
 
+
+        # Add instructor
+        self.inst1 = Instructor("inst1@uwm.edu", "password")
+
+
         # commenting out old tests, writing my own - Jeff
         # creating stuff in the system
         # self.user = ("email@uwm.edu", "pass")
