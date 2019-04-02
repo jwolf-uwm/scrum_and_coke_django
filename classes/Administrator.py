@@ -21,16 +21,8 @@ class Administrator(Person):
     must be able to send notification
     must be able to access information
     """
-    def __init__(self, email, password):
-        super().__init__(email, password)
-
-        some_guy = models.ModelAdministrator()
-        some_guy.email = self.email
-        some_guy.password = self.password
-        some_guy.name = self.name
-        some_guy.phone = self.phone_number
-        some_guy.isLoggedOn = self.isLoggedIn
-        some_guy.save()
+    def __init__(self, email, password, account_type):
+        super().__init__(email, password, account_type)
 
     def create_course(self, course_id, num_labs):
         if len(course_id) != 9:
@@ -63,20 +55,13 @@ class Administrator(Person):
         # returns False if account was unable to be created
         # throws exceptions if you do it wrong
 
-        if account_type == "instructor":
-            try:
-                find_email = models.ModelInstructor.objects.get(email=email)
-            except models.ModelInstructor.DoesNotExist:
-                find_email = "none"
-
-        elif account_type == "ta":
-            try:
-                find_email = models.ModelTA.objects.get(email=email)
-            except models.ModelTA.DoesNotExist:
-                find_email = "none"
-
-        else:
+        if account_type != "instructor" or account_type != "ta":
             return False
+
+        try:
+            find_email = models.ModelPerson.objects.get(email=email)
+        except models.ModelPerson.DoesNotExist:
+            find_email = "none"
 
         if find_email != "none":
             return False
@@ -90,7 +75,7 @@ class Administrator(Person):
             return False
 
         if account_type == "instructor":
-            new_instructor = Instructor(email, password)
+            new_instructor = Instructor(email, password, "instructor")
             return True
 
         elif account_type == "ta":
