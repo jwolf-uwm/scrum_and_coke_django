@@ -19,9 +19,9 @@ class TestAdministrator(TestCase):
 
     def test_create_course(self):
         # setup admin
-        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
+        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
         # setup supervisor
-        self.sup1 = Supervisor("sup1@uwm.edu", "sup1pass")
+        self.sup1 = Supervisor("sup1@uwm.edu", "sup1pass", "supervisor")
 
         # create a new course as admin
         self.assertTrue(self.ad1.create_course("CS361-401", 3))

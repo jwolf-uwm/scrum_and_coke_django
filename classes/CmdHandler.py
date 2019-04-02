@@ -33,6 +33,11 @@ class CmdHandler:
 
             else:
                 # do setup stuff here
+                parse_cmd = some_cmd.split()
+                if parse_cmd[0] == "create_course":
+                    if len(parse_cmd) != 3:
+                        return "Create course not of the right format: create_course course_id:String num_labs:Int"
+
                 return "This will set stuff up someday."
 
         else:
