@@ -20,13 +20,24 @@ class TestAdministrator(TestCase):
     def test_create_course(self):
         # setup admin
         self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
+        # setup supervisor
+        self.sup1 = Supervisor("sup1@uwm.edu", "sup1pass")
 
-        # create a new course
+        # create a new course as admin
         self.assertTrue(self.ad1.create_course("CS361-401", 3))
         # get the added course from the db
         da_course = models.ModelCourse.objects.get(course_id="CS361-401")
         # make sure found course is the same
         self.assertEqual(da_course.course_id, "CS361-401")
+        self.assertEqual(da_course.num_labs, 3)
+        self.assertEqual(da_course.instructor, "not_set@uwm.edu")
+
+        # create a new course as supervisor
+        self.assertTrue(self.sup1.create_course("CS251-401", 3))
+        # get the added course from the db
+        da_course = models.ModelCourse.objects.get(course_id="CS251-401")
+        # make sure found course is the same
+        self.assertEqual(da_course.course_id, "CS251-401")
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
@@ -41,6 +52,38 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.course_id, "CS361-402")
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
+
+        # parameter errors
+        # missing number of lab sections
+        with self.assertRaises(TypeError):
+            self.ad1.create_course("CS101-401")
+        # missing course_id/wrong type
+        with self.assertRaises(TypeError):
+            self.ad1.create_course(3)
+        # course_id too long and not right format
+        with self.assertRaises(Exception):
+            self.ad1.create_course("totally_a_good_course_id", 2)
+        # course_id missing CS at beginning
+        with self.assertRaises(Exception):
+            self.ad1.create_course("123456789", 2)
+        # course_id does not start with uppercase CS
+        with self.assertRaises(Exception):
+            self.ad1.create_course("cs361-401", 2)
+        # course_id doesn't have only numbers for course number
+        with self.assertRaises(Exception):
+            self.ad1.create_course("CS3F4-321", 2)
+        # course_id doesn't have a hyphen to separate course number and section number
+        with self.assertRaises(Exception):
+            self.ad1.create_course("CS3611234", 2)
+        # course_id doesn't have only numbers for section number
+        with self.assertRaises(Exception):
+            self.ad1.create_course("CS361-1F3", 2)
+        # number of sections too big
+        with self.assertRaises(Exception):
+            self.ad1.create_course("CS361-401", 99)
+        # number of sections is less than 0
+        with self.assertRaises(Exception):
+            self.ad1.create_course("CS361-401", -1)
 
     def test_create_account(self):
         # Jeff's tests
