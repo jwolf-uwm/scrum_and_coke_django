@@ -55,7 +55,7 @@ class Administrator(Person):
         # returns False if account was unable to be created
         # throws exceptions if you do it wrong
 
-        if account_type != "instructor" or account_type != "ta":
+        if account_type != "instructor" and account_type != "ta":
             return False
 
         try:
@@ -79,7 +79,7 @@ class Administrator(Person):
             return True
 
         elif account_type == "ta":
-            new_ta = TA(email, password)
+            new_ta = TA(email, password, "ta")
             return True
 
     def edit_account(self, email, field, content):
