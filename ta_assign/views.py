@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.views import View
+from classes.CmdHandler import CmdHandler
 
 # Create your views here.
 
@@ -16,5 +17,5 @@ class Home(View):
         #    response = your_instance.command(command_input)
         # else:
         #    response = ""
-        response = command_input
+        response = CmdHandler().deal_with_command(command_input)
         return render(request, 'main/index.html', {"message": response})
