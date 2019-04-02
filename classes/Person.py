@@ -10,7 +10,7 @@ class Person:
         self.name = "DEFAULT"
         self.isLoggedIn = False
 
-        some_guy = models.Person()
+        some_guy = models.ModelPerson()
         some_guy.email = self.email
         some_guy.password = self.password
         some_guy.name = self.name
@@ -35,7 +35,7 @@ class Person:
 
     def login(self, email, password):
 
-        if self.email != email | self.password != password:
+        if self.email != email or self.password != password:
             return "Invalid login info."
         if self.isLoggedIn is True:
             return "User already logged in"

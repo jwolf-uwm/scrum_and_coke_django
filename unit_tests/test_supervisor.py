@@ -1,13 +1,14 @@
 # created by Evan
 
-from unittest import TestCase
+from django.test import TestCase
 from classes.Supervisor import Supervisor
+from ta_assign import models
 
 
 class TestSupervisor(TestCase):
-    def setUp(self):
-        self.sup = Supervisor("sup@uwm.edu", "sup_pass")
+    sup = Supervisor("sup@uwm.edu", "sup_pass")
 
+    def setUp(self):
         # fake instructors
         self.ins1_courses = []
         self.ins1 = "ins1@uwm.edu"
@@ -86,3 +87,5 @@ class TestSupervisor(TestCase):
         self.assertRaises(self.sup.assign_ta_lab(self.ta1, self.course2[0]), OverflowError)
 
         self.assertRaises(self.sup.assign_ta_lab(self.ins1, self.course1[0]), TypeError)
+
+    models.ModelPerson.objects.all().delete()

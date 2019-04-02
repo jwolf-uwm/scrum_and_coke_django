@@ -1,3 +1,4 @@
+from ta_assign import models
 
 
 class Course:
@@ -5,8 +6,15 @@ class Course:
         self.course_id = course_id
         self.num_labs = num_labs
         # instructor should be a class at some point
-        self.instructor = "Dr. Default"
+        self.instructor = "not_set@uwm.edu"
         self.tee_ays = []
+
+        some_course = models.ModelCourse()
+        some_course.course_id = self.course_id
+        some_course.num_labs = self.num_labs
+        some_course.instructor = self.instructor
+        # don't think there's any need to port over an empty list
+        some_course.save()
 
     def set_course_id(self, course_id):
         return

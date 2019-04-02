@@ -1,12 +1,15 @@
-from unittest import TestCase
+from django.test import TestCase
 from classes.Course import Course
+from ta_assign import models
 
 
 class TestCourse(TestCase):
+    course1 = Course("CS251", 2)
+    course2 = Course("CS535", 0)
 
     def setup(self):
-        self.course1 = Course("CS251", 2)
-        self.course2 = Course("CS535", 0)
+        # self.course1 = Course("CS251", 2)
+        # self.course2 = Course("CS535", 0)
         # fake instructor
         self.instructor1 = "Professor Professorson"
         # fake TAs
@@ -59,3 +62,5 @@ class TestCourse(TestCase):
         self.assertEquals(self.course2.get_tee_ays(), [self.ta3])
         self.assertNotEquals(self.course1.get_tee_ays(), [])
         self.assertNotEquals(self.course2.get_tee_ays(), [])
+
+    models.ModelCourse.objects.all().delete()

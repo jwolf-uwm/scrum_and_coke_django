@@ -4,7 +4,8 @@ from classes.Person import Person
 from classes.Instructor import Instructor
 from classes.TA import TA
 from classes.Course import Course
-from classes.Database import Database
+# from classes.Database import Database
+from ta_assign import models
 
 
 class Administrator(Person):
@@ -23,30 +24,78 @@ class Administrator(Person):
     def __init__(self, email, password):
         super().__init__(email, password)
 
+        some_guy = models.ModelAdministrator()
+        some_guy.email = self.email
+        some_guy.password = self.password
+        some_guy.name = self.name
+        some_guy.phone = self.phone_number
+        some_guy.isLoggedOn = self.isLoggedIn
+        some_guy.save()
+
     def create_course(self, course_id, num_labs):
+        if len(course_id) != 9:
+            raise Exception("{} is too short to be of the right form (CS###-###)".format(course_id))
+        if course_id[0:2] != "CS":
+            raise Exception("{} is not a CS course (CS###-###)".format(course_id))
+        if not course_id[2:5].isdigit():
+            raise Exception("The course number contains an invalid digit (CS###-###)")
+        if course_id[5] != "-":
+            raise Exception("The course and section number should be separated by a hyphen (CS###-###)")
+        if not course_id[6:].isdigit():
+            raise Exception("The section number contains an invalid digit (CS###-###)")
+        if num_labs < 0 or num_labs > 5:
+            raise Exception("The number of lab sections should be positive and not exceed 5")
+        try:
+            find_course = models.ModelCourse.objects.get(course_id=course_id)
+        except models.ModelCourse.DoesNotExist:
+            find_course = "none"
+
+        if find_course != "none":
+            return False
+
         new_course = Course(course_id, num_labs)
-        if Database.courses.contains(course_id):
-            return "Course already exists"
-        Database.courses.append(course_id)
-        return new_course
+        return True
 
     def create_account(self, email, password, account_type):
+        # Jeff's method
+        # Usage: (string: email, string: password, string: account_type)
+        # returns True if account successfully created in DB
+        # returns False if account was unable to be created
+        # throws exceptions if you do it wrong
 
-        parse_at_symbol = email.split("@")
-        parse_period = parse_at_symbol[1].split(".")
+        if account_type == "instructor":
+            try:
+                find_email = models.ModelInstructor.objects.get(email=email)
+            except models.ModelInstructor.DoesNotExist:
+                find_email = "none"
 
-        if parse_period[0] != "uwm":
-            return "Email address must be a UWM address."
+        elif account_type == "ta":
+            try:
+                find_email = models.ModelTA.objects.get(email=email)
+            except models.ModelTA.DoesNotExist:
+                find_email = "none"
+
+        else:
+            return False
+
+        if find_email != "none":
+            return False
+
+        parse_at = email.split("@")
+
+        try:
+            if parse_at[1] != "uwm.edu" or len(parse_at) != 2:
+                return False
+        except IndexError:
+            return False
 
         if account_type == "instructor":
             new_instructor = Instructor(email, password)
-            return new_instructor
+            return True
 
         elif account_type == "ta":
             new_ta = TA(email, password)
-            return new_ta
-
-        return "Not a valid account type for creation."
+            return True
 
     def edit_account(self, email, field, content):
         return
@@ -58,4 +107,47 @@ class Administrator(Person):
         return
 
     def access_info(self):
-        return
+        # Jeff's method
+        # Usage: access_info()
+        # returns a list of strings of all users in the database
+        # each string is as follows:
+        #   "ACCOUNT_TYPE: name | email address | phone"
+        # if user is instructor following strings are:
+        #   "Classes assigned: class1, class2, class3"
+        #   "TAs assigned : ta1, ta2, ta3"
+        # if user is ta, following strings are:
+        #   "Classes assigned: class1, class2, class3"
+        #   NOT IMPLEMENTED: "Labs assigned: lab1, lab2, lab3"
+
+        string_list = []
+
+        # not idea
+        # l workaround here, supervisor inherits from admin, so it shows up as an admin in the database
+        # as well as a supervisor, so we just grab the first admin, which better be the right one
+        admin = models.ModelAdministrator.objects.all()
+        string_list.append("Administrator: " + admin[0].name + " | " + admin[0].email + " | " + str(admin[0].phone))
+        string_list.append("")
+
+        for supervi in models.ModelSupervisor.objects.all():
+            string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
+            string_list.append("")
+
+        for instruct in models.ModelInstructor.objects.all():
+            string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
+
+            for courses in models.ModelCourse.objects.all():
+                if courses.instructor == instruct.email:
+                    string_list.append("Course: " + courses.course_id)
+
+            string_list.append("")
+
+        for tee_ayy in models.ModelTA.objects.all():
+            string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
+
+            for ta_courses in models.ModelTACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list.append("Course: " + ta_courses.course.course_id)
+
+            string_list.append("")
+
+        return string_list
