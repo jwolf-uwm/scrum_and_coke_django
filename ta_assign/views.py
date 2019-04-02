@@ -13,9 +13,9 @@ class Home(View):
     def post(self, request):
         # your_instance = SomeCommandClass()
         command_input = request.POST["command"]
-        # if command_input:
-        #    response = your_instance.command(command_input)
-        # else:
-        #    response = ""
-        response = CmdHandler().deal_with_command(command_input)
+        if command_input:
+            response = CmdHandler().deal_with_command(command_input)
+        else:
+            response = ""
+
         return render(request, 'main/index.html', {"message": response})
