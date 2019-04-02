@@ -60,10 +60,10 @@ class CmdHandler:
                 if len(parse_cmd) != 3:
                     return "Create course not of the right format: create_course course_id num_labs"
                 if self.current_user.type == "administrator":
-                    adm = Administrator(current_user.email, current_user.password)
+                    adm = Administrator(self.current_user.email, self.current_user.password, self.current_user.type)
                     adm.create_course(parse_cmd[1], int(parse_cmd[2]))
                 elif self.current_user.type == "supervisor":
-                    sup = Supervisor(current_user.email, current_user.password)
+                    sup = Supervisor(self.current_user.email, self.current_user.password, self.current_user.type)
                     sup.create_course(parse_cmd[1], int(parse_cmd[2]))
                 else:
                     return "Yeah, you don't have access to that command. Nice try buddy."
