@@ -11,11 +11,11 @@ class Home(View):
         return render(request, 'main/index.html')
 
     def post(self, request):
-        # your_instance = SomeCommandClass()
+        get_workin = CmdHandler()
         command_input = request.POST["command"]
         if command_input:
-            response = CmdHandler().deal_with_command(command_input)
+            response = get_workin.deal_with_command(command_input)
         else:
-            response = ""
+            response = "Please type a command to do stuff."
 
         return render(request, 'main/index.html', {"message": response})
