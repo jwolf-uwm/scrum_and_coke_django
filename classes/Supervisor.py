@@ -7,16 +7,8 @@ from ta_assign import models
 
 
 class Supervisor(Administrator):
-    def __init__(self, email, password):
-        super().__init__(email, password)
-
-        some_guy = models.ModelSupervisor()
-        some_guy.email = self.email
-        some_guy.password = self.password
-        some_guy.name = self.name
-        some_guy.phone = self.phone_number
-        some_guy.isLoggedOn = self.isLoggedIn
-        some_guy.save()
+    def __init__(self, email, password, account_type):
+        super().__init__(email, password, account_type)
 
     def assign_instructor(self, email, course_id, section_id):
         """

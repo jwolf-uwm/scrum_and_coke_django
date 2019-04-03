@@ -7,28 +7,13 @@ class ModelPerson(models.Model):
     password = models.CharField(max_length=20)
     phone = models.IntegerField(default=-1)
     name = models.CharField(max_length=50, default="DEFAULT")
+    type = models.CharField(max_length=20, default="person")
     isLoggedOn = models.BooleanField(default=False)
 
 
-class ModelAdministrator(ModelPerson):
-    pass
-
-
-class ModelSupervisor(ModelPerson):
-    pass
-
-
-class ModelTA(ModelPerson):
-    pass
-
-
-class ModelInstructor(ModelPerson):
-    pass
-
-
 class ModelCourse(models.Model):
-    course_id = models.CharField(max_length = 10)
-    num_labs = models.IntegerField(default = 0)
+    course_id = models.CharField(max_length=10)
+    num_labs = models.IntegerField(default=0)
     instructor = models.CharField(max_length=50)
     # temp disabled
     # tee_ays = models.ForeignKey(ModelTA, on_delete=models.CASCADE)
@@ -36,4 +21,4 @@ class ModelCourse(models.Model):
 
 class ModelTACourse(models.Model):
     course = models.ForeignKey(ModelCourse, on_delete=models.CASCADE)
-    TA = models.ForeignKey(ModelTA, on_delete=models.CASCADE)
+    TA = models.ForeignKey(ModelPerson, on_delete=models.CASCADE)

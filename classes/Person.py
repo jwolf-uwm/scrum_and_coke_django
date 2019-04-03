@@ -3,20 +3,28 @@ from ta_assign import models
 
 
 class Person:
-    def __init__(self, email, password):
+    def __init__(self, email, password, account_type):
         self.email = email
         self.password = password
         self.phone_number = -1
         self.name = "DEFAULT"
+        self.type = account_type
         self.isLoggedIn = False
 
-        some_guy = models.ModelPerson()
-        some_guy.email = self.email
-        some_guy.password = self.password
-        some_guy.name = self.name
-        some_guy.phone = self.phone_number
-        some_guy.isLoggedOn = self.isLoggedIn
-        some_guy.save()
+        try:
+            find_email = models.ModelPerson.objects.get(email=email)
+        except models.ModelPerson.DoesNotExist:
+            find_email = "none"
+
+        if find_email == "none":
+            some_guy = models.ModelPerson()
+            some_guy.email = self.email
+            some_guy.password = self.password
+            some_guy.name = self.name
+            some_guy.phone = self.phone_number
+            some_guy.type = self.type
+            some_guy.isLoggedOn = self.isLoggedIn
+            some_guy.save()
 
     def change_password(self, old, new):
         return

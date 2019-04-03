@@ -89,13 +89,13 @@ class TestAdministrator(TestCase):
         # Jeff's tests
 
         # setup admin
-        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
+        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
 
         # Create Instructor Tests
         # create unused instructor account
         self.assertTrue(self.ad1.create_account("DustyBottoms@uwm.edu", "better_password", "instructor"))
         # get account that was just setup
-        test_model_ins = models.ModelInstructor.objects.get(email="DustyBottoms@uwm.edu")
+        test_model_ins = models.ModelPerson.objects.get(email="DustyBottoms@uwm.edu")
         # make sure email is equal
         self.assertEqual(test_model_ins.email, "DustyBottoms@uwm.edu")
         # make sure password is equal
@@ -111,7 +111,7 @@ class TestAdministrator(TestCase):
         # create unused ta account
         self.assertTrue(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
         # get account
-        test_model_ta = models.ModelTA.objects.get(email="FredClaus@uwm.edu")
+        test_model_ta = models.ModelPerson.objects.get(email="FredClaus@uwm.edu")
         # test email
         self.assertEqual(test_model_ta.email, "FredClaus@uwm.edu")
         # test password
