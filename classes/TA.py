@@ -10,6 +10,11 @@ class TA(Person):
         super().__init__(email, password, account_type)
 
     def view_ta_assignments(self, course_catalog):
+        assignment_list = []
+        ta_assignments = models.ModelTACourse.objects.all()
+        for i in ta_assignments:
+            assignment_list.append(i)
+        print(assignment_list)
         return
 
     def read_public_contact(self, class_list):
