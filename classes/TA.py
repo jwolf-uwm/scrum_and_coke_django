@@ -9,7 +9,7 @@ class TA(Person):
     def __init__(self, email, password, account_type):
         super().__init__(email, password, account_type)
 
-    def view_ta_assignments(self, course_catalog):
+    def view_ta_assignments(self):
         assignment_list = []
         ta_assignments = models.ModelTACourse.objects.all()
         for i in ta_assignments:
