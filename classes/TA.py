@@ -13,7 +13,7 @@ class TA(Person):
         assignment_list = []
         ta_assignments = models.ModelTACourse.objects.all()
         for i in ta_assignments:
-            assignment_list.append(i)
+            assignment_list.append("Course: " + ta_assignments[i].course + "TA: " + ta_assignments[i].TA + " | ")
         print(assignment_list)
         return
 
