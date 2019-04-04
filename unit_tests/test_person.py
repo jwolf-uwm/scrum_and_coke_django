@@ -6,8 +6,8 @@ from ta_assign import models
 
 
 class TestPerson(TestCase):
-    person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
-    person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD")
+    person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "person")
+    person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD", "person")
 
     def test_init_(self):
         # self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
