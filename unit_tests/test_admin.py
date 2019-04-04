@@ -231,8 +231,8 @@ class TestAdministrator(TestCase):
         # Jeff's tests
 
         # Admin/Sup only tests
-        self.ad1 = Administrator("admin@uwm.edu", "password")
-        self.sp1 = Supervisor("super@uwm.edu", "password")
+        self.ad1 = Administrator("admin@uwm.edu", "password", "administrator")
+        self.sp1 = Supervisor("super@uwm.edu", "password", "supervisor")
         # access as admin
         access_info = self.ad1.access_info()
         # admin info
@@ -252,14 +252,14 @@ class TestAdministrator(TestCase):
         self.assertEqual(access_info[3], "")
 
         # Add instructor, no course assignments
-        self.inst1 = Instructor("inst1@uwm.edu", "password")
+        self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
         # access as admin
         access_info = self.ad1.access_info()
         self.assertEqual(access_info[4], "Instructor: DEFAULT | inst1@uwm.edu | -1")
         self.assertEqual(access_info[5], "")
 
         # Add TA, no course assignments
-        self.ta1 = TA("ta1@uwm.edu", "password")
+        self.ta1 = TA("ta1@uwm.edu", "password", "ta")
         # access as admin
         access_info = self.ad1.access_info()
         self.assertEqual(access_info[6], "TA: DEFAULT | ta1@uwm.edu | -1")

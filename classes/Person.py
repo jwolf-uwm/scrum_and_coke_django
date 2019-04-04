@@ -9,7 +9,7 @@ class Person:
         self.phone_number = -1
         self.name = "DEFAULT"
         self.type = account_type
-        self.isLoggedIn = False
+        self.isLoggedOn = False
 
         try:
             find_email = models.ModelPerson.objects.get(email=email)
@@ -23,36 +23,67 @@ class Person:
             some_guy.name = self.name
             some_guy.phone = self.phone_number
             some_guy.type = self.type
-            some_guy.isLoggedOn = self.isLoggedIn
+            some_guy.isLoggedOn = self.isLoggedOn
             some_guy.save()
 
-    def change_password(self, old, new):
-        return
+    def change_password(self, new):
+        self.password = new
+        return True
 
     def change_email(self, address):
-        return
+        parse_at = address.split("@")
+
+        try:
+            if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
+                return False
+        except ValueError:
+            return False
+
+        self.email = address
+        return True
 
     def change_name(self, name):
-        return
+        self.name = name
+        return True
 
     def change_phone(self, phone):
-        return
+        if not isinstance(phone, int):
+            print("phone number contains illegal characters")
+            return False
+        elif int(phone/1000000000) >= 10 or int(phone/1000000000) <= 0:
+            print("phone number is the wrong length")
+            return False
+        else:
+            self.phone_number = phone
+        return True
 
     def get_contact_info(self):
         return
 
-    def login(self, email, password):
+    @staticmethod
+    def login(email, password):
 
-        if self.email != email or self.password != password:
-            return "Invalid login info."
-        if self.isLoggedIn is True:
+        people = models.ModelPerson.objects.all()
+
+        temp = None
+
+        for i in people:
+            if i.email == email:
+                temp = i
+
+        if temp is None:
+            return "Invalid login info"
+        elif temp.email != email or temp.password != password:
+            return "Invalid login info"
+        if temp.isLoggedOn is True:
             return "User already logged in"
-        self.isLoggedIn = True
-        return "Login successful."
+        temp.isLoggedOn = True
+        temp.save()
+        return "Login successful"
 
     def logout(self):
 
-        if self.isLoggedIn is False:
+        if self.isLoggedOn is False:
             return False
-        self.isLoggedIn = False
+        self.isLoggedOn = False
         return True

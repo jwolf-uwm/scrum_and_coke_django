@@ -6,8 +6,8 @@ from ta_assign import models
 
 
 class TestPerson(TestCase):
-    person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
-    person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD")
+    person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "person")
+    person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD", "person")
 
     def test_init_(self):
         # self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD")
@@ -18,21 +18,18 @@ class TestPerson(TestCase):
         # self.assertEquals(self.person1.phone_number, 0000000000)
 
     def test_change_password(self):
-        self.assertTrue(self.person1.change_password("DEFAULT_PASSWORD", "password"))
+        self.assertTrue(self.person1.change_password("password"))
         self.assertEquals(self.person1.password, "password")
         self.assertNotEquals(self.person1.password, "DEFAULT_PASSWORD")
-        self.assertFalse(self.person1.change_password("DEFAULT_PASSWORD", "some_password"))
 
     def test_change_email(self):
         self.person1.change_email("snoop@uwm.edu")
         self.assertEquals(self.person1.email, "snoop@uwm.edu")
         self.assertNotEquals(self.person1.email, "person1@uwm.edu")
 
-        with self.assertRaises(ValueError):
-            self.person1.change_email("snoop@gmail.com")
+        self.assertFalse(self.person1.change_email("snoop@gmail.com"))
 
-        with self.assertRaises(ValueError):
-            self.person1.change_email("no_at_symbol_or_dot_something")
+        self.assertFalse(self.person1.change_email("no_at_symbol_or_dot_something"))
 
     def test_change_phone(self):
         self.person1.change_phone(4144244343)

@@ -69,7 +69,7 @@ class Administrator(Person):
         parse_at = email.split("@")
 
         try:
-            if parse_at[1] != "uwm.edu" or len(parse_at) != 2:
+            if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
                 return False
         except IndexError:
             return False
@@ -83,7 +83,22 @@ class Administrator(Person):
             return True
 
     def edit_account(self, email, field, content):
-        return
+        try:
+            this_account = models.ModelPerson.objects.get(email=email)
+        except models.ModelPerson.DoesNotExist:
+            return False
+
+        if field == "email":
+            return this_account.change_email(content)
+        elif field == "password":
+            return this_account.change_password(content)
+        elif field == "phone_number":
+            return this_account.change_phone(content)
+        elif field == "name":
+            return this_account.change_name(content)
+        else:
+            print("The entered field is incorrect")
+            return False
 
     def delete_account(self, email):
         return
