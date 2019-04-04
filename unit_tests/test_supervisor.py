@@ -46,8 +46,24 @@ class TestSupervisor(TestCase):
         with self.assertRaises(TypeError):
             self.sup.assign_instructor(self.sup, self.course1)
 
+        self.sup.create_course("CS337-401", 3)
+        da_course = models.ModelCourse.objects.get(course_id="CS337-401")
+        self.test_course = Course(da_course.course_id, da_course.num_labs)
+        self.sup.assign_instructor(self.ins1, self.test_course)
+        da_courseaa = models.ModelCourse.objects.get(course_id="CS337-401")
+        self.assertEquals(da_courseaa.num_labs, da_course.num_labs)
+        self.assertEquals(da_courseaa.course_id, da_course.course_id)
+        self.assertEquals(da_courseaa.instructor, self.ins1.email)
+
     def test_assign_ta_course(self):
         # TA 1 is assigned CS101
+        # fake instructors
+        self.ta1 = Instructor("ta1@uwm.edu", "blah", "TA")
+        self.ta2 = Instructor("ta2@uwm.edu", "inspass", "TA")
+        # fake course
+        self.course1 = Course("CS101", 2)
+        self.course2 = Course("CS202", 0)
+        # instructor 1 is assigned CS101
         self.sup.assign_ta_course(self.ta1, self.course1[0])
         self.assertEqual(self.ta1_course, "CS101")
         self.assertEqual(self.course1_tas[0], "ta1@uwm.edu")
