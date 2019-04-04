@@ -19,10 +19,107 @@ class CmdHandler:
         # check if an administrator exists
         try:
             models.ModelPerson.objects.get(type="administrator")
+
         except models.ModelPerson.DoesNotExist:
             return False
+
+        try:
+            models.ModelPerson.objects.get(type="supervisor")
+
+        except models.ModelPerson.DoesNotExist:
+            return False
+
         return True
 
+    def setup(self):
+        new_admin = Administrator("ta_assign_admin@uwm.edu", "password", "administrator")
+        new_super = Supervisor("ta_assign_super@uwm.edu", "password", "supervisor")
+        return "Admin/Supervisor accounts setup!"
+
+    # might not be all that useful
+    def query_by_email(self, email_addy):
+        # give an email address, get the info you need to instantiate in a tuple
+        person_stuff = []
+
+        try:
+            some_person = models.ModelPerson.objects.get(email=email_addy)
+
+        except models.ModelPerson.DoesNotExist:
+            return person_stuff
+
+        else:
+            person_stuff.append(some_person.email)
+            person_stuff.append(some_person.password)
+            person_stuff.append(some_person.type)
+
+            return person_stuff
+
+    def parse_command(self, some_cmd):
+        # if we don't have an admin yet
+        if not self.check_setup():
+            # if we didn't type setup, tell them to setup
+            if some_cmd != "setup":
+                return "Please run setup before attempting to execute commands."
+            # create a new admin
+            else:
+                self.setup()
+
+        else:
+            parse_cmd = some_cmd.split()
+            first_parse = parse_cmd[0]
+
+            if first_parse == "login":
+                self.login(some_cmd)
+
+            elif first_parse == "logout":
+                self.logout(some_cmd)
+
+            elif first_parse == "create_course":
+                self.create_course(some_cmd)
+
+            elif first_parse == "create_account":
+                self.create_account(some_cmd)
+
+            elif first_parse == "access_info":
+                self.access_info(some_cmd)
+
+            elif first_parse == "assign_instructor":
+                self.assign_instructor(some_cmd)
+
+            elif first_parse == "assign_ta":
+                self.assign_ta(some_cmd)
+
+            elif first_parse == "view_ta_assign":
+                self.view_ta_assign(some_cmd)
+
+            else:
+                return "Command not found."
+
+    def login(self, some_cmd):
+        return
+
+    def logout(self, some_cmd):
+        return
+
+    def create_course(self, some_cmd):
+        return
+
+    def create_account(self, some_cmd):
+        return
+
+    def access_info(self, some_cmd):
+        return
+
+    def assign_instructor(self, some_cmd):
+        return
+
+    def assign_ta(self, some_cmd):
+        return
+
+    def view_ta_assign(self, some_cmd):
+        return
+
+    """
     def deal_with_command(self, some_cmd):
         # if we don't have an admin yet
         if not self.check_setup():
@@ -72,3 +169,4 @@ class CmdHandler:
                     return "Yeah, you don't have access to that command. Nice try buddy."
 
             return "I don't even know what the heck you just wrote. Do it again but better."
+    """
