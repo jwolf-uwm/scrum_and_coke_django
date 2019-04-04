@@ -3,6 +3,7 @@
 from classes.Administrator import Administrator
 from classes.Person import Person
 from classes.Course import Course
+from classes.Instructor import Instructor
 from ta_assign import models
 
 
@@ -10,36 +11,54 @@ class Supervisor(Administrator):
     def __init__(self, email, password, account_type):
         super().__init__(email, password, account_type)
 
-    def assign_instructor(self, email, course_id, section_id):
+    def assign_instructor(self, instructor, course):
         """
         assigns the given instructor's course to the course parameter
         """
+        if instructor.type != "instructor":
+            raise TypeError("invalid type")
         try:
-            find_course = models.ModelCourse.objects.get(course_id=course_id)
+            find_course = models.ModelCourse.objects.get(course_id=course.course_id)
         except models.ModelCourse.DoesNotExist:
             find_course = "none"
 
-        if find_course != "none":
-            find_course.instructor = email
-        else:
-            print("No such course")
-        return
+        try:
+            find_instructor = models.ModelPerson.objects.get(email=instructor.email)
+        except models.ModelPerson.DoesNotExist:
+            find_instructor = "none"
 
-    def assign_ta_course(self, email, course_id, course_section):
+        if find_course != "none" and find_instructor != "none":
+            find_course.instructor = instructor.email
+            if course.instructor != "not_set@uwm.edu":
+                course.instructor.courses.remove(course)
+            course.instructor = instructor
+            instructor.courses.append(course)
+            return True
+        else:
+            return False
+        return False
+
+    def assign_ta_course(self, ta, course):
         """
         assigns the given TA's course to the course parameter
         """
         try:
-            ta_course = models.ModelTACourseCourse.objects.get(course_id=course_id)
+            ta_course = models.ModelTACourse.objects.get(course_id=course.course_id)
         except models.ModelCourse.DoesNotExist:
             ta_course = "none"
 
-        if ta_course != "none":
-            ta_course.TA
+        try:
+            find_ta = models.ModelPerson.objects.get(email=ta.email)
+        except models.ModelPerson.DoesNotExist:
+            find_ta = "none"
+
+        if ta_course != "none" and find_ta != "none":
+            ta_course.TA = ta.email
+            course.tee_ays.append(ta.email)
+            return True
         else:
-            print("No such course")
-        course_id.tee_ays.append(email)
-        return
+            return False
+        return False
 
     def assign_ta_lab(self, email, course_id, lab_section):
         """
