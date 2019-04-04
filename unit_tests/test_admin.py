@@ -11,12 +11,6 @@ from classes.Course import Course
 
 class TestAdministrator(TestCase):
 
-    # We likely don't need this anymore, because best I can figure it doesn't work well with django - Jeff
-    # def setUp(self):
-        # self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
-        # self.data = Database()
-        # pass
-
     def setUp(self):
         self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
 
