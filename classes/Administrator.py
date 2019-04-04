@@ -69,7 +69,7 @@ class Administrator(Person):
         parse_at = email.split("@")
 
         try:
-            if parse_at[1] != "uwm.edu" or len(parse_at) != 2:
+            if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
                 return False
         except IndexError:
             return False
@@ -97,7 +97,8 @@ class Administrator(Person):
         elif field == "name":
             return this_account.change_name(content)
         else:
-            raise Exception("The entered field is incorrect")
+            print("The entered field is incorrect")
+            return False
 
     def delete_account(self, email):
         return

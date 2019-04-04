@@ -34,9 +34,9 @@ class Person:
         parse_at = address.split("@")
 
         try:
-            if parse_at[1] != "uwm.edu" or len(parse_at) != 2:
+            if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
                 return False
-        except IndexError:
+        except ValueError:
             return False
 
         self.email = address
