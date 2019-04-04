@@ -88,9 +88,10 @@ class TestAdministrator(TestCase):
         with self.assertRaises(Exception):
             self.ad1.create_course("CS361-401", -1)
 
-    # Create Instructor Tests
+    # Create Account Tests
     # created by Jeff
     def test_create_instructor(self):
+        # Create Instructor Tests
         # create unused instructor account
         self.assertTrue(self.ad1.create_account("DustyBottoms@uwm.edu", "better_password", "instructor"))
         # get account that was just setup
