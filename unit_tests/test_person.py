@@ -18,10 +18,10 @@ class TestPerson(TestCase):
         # self.assertEquals(self.person1.phone_number, 0000000000)
 
     def test_change_password(self):
-        self.assertTrue(self.person1.change_password("DEFAULT_PASSWORD", "password"))
+        self.assertTrue(self.person1.change_password("password"))
         self.assertEquals(self.person1.password, "password")
         self.assertNotEquals(self.person1.password, "DEFAULT_PASSWORD")
-        self.assertFalse(self.person1.change_password("DEFAULT_PASSWORD", "some_password"))
+        self.assertFalse(self.person1.change_password("some_password"))
 
     def test_change_email(self):
         self.person1.change_email("snoop@uwm.edu")
