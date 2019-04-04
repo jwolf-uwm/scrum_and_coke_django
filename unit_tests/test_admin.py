@@ -1,5 +1,6 @@
 # created by Matt
 from django.test import TestCase
+from classes.Person import Person
 from classes.Administrator import Administrator
 from classes.Supervisor import Supervisor
 from classes.Instructor import Instructor
@@ -181,29 +182,39 @@ class TestAdministrator(TestCase):
         # self.assertFalse(self.ad1.create_account("George_Likes_Beef@uwm.edu", "better_password"))
 
     def test_edit_account(self):
-        self.random_user = ("rando@uwm.edu", "im_random", 1234567, "Jerry Seinfeld")
-
+        # setup admin
+        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
+        # setup supervisor
+        self.sup1 = Supervisor("sup1@uwm.edu", "sup1pass", "supervisor")
+        # create a test user in the system
+        tester = models.ModelPerson()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
         # test edit password
         self.ad1.edit_account("rando@uwm.edu", "password", "new_pass")
-        self.assertEqual(self.random_user[2], "new_pass")
+
+        self.assertEqual(tester.password, "new_pass")
 
         # test edit email
         self.ad1.edit_account("rando@uwm.edu", "email", "NEW_EMAIL@uwm.edu")
-        self.assertEqual(self.random_user[1], "NEW_EMAIL@uwm.edu")
+        self.assertEqual(tester.email, "NEW_EMAIL@uwm.edu")
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail@uwm.edu@uwm.edu"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail@gmail.com"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail"))
 
         # test edit phone
-        self.ad1.edit_account("rando@uwm.edu", "phone", 3456789)
-        self.assertEqual(self.random_user[3], 3456789)
+        self.ad1.edit_account("rando@uwm.edu", "phone", 1234567890)
+        self.assertEqual(tester.phone_number, 1234567890)
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", "not a number"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 12341))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 111111111111111111))
 
         # test edit name
         self.ad1.edit_account("rando@uwm.edu", "name", "Howard Stern")
-        self.assertEqual(self.random_user[4], "Howard Stern")
+        self.assertEqual(tester.name, "Howard Stern")
 
-        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "password"))
-        self.assertFalse(self.ad1.edit_account("rando@uwm.edu"))
         self.assertFalse(self.ad1.edit_account("wrong_email@uwm.edu", "password", "new_pass"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "wrong_field", "new_pass"))
-        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "password", ";\"π  /\\# bad `  pass ' chars"))
 
     def test_delete_account(self):
         self.deleted_user = ("delete_me@uwm.edu", "delete_me_pass")
