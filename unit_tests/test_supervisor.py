@@ -58,8 +58,8 @@ class TestSupervisor(TestCase):
     def test_assign_ta_course(self):
         # TA 1 is assigned CS101
         # fake instructors
-        self.ta1 = Instructor("ta1@uwm.edu", "blah", "TA")
-        self.ta2 = Instructor("ta2@uwm.edu", "inspass", "TA")
+        self.ta1 = TA("ta1@uwm.edu", "blah", "TA")
+        self.ta2 = TA("ta2@uwm.edu", "inspass", "TA")
         # fake course
         self.course1 = Course("CS101", 2)
         self.course2 = Course("CS202", 0)
