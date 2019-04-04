@@ -3,7 +3,8 @@ from classes.Course import Course
 from classes.Instructor import Instructor
 from classes.Person import Person
 from classes.Supervisor import Supervisor
-from classes import TA
+from classes.TA import TA
+
 from ta_assign import models
 
 # importing all the things, because who knows
@@ -31,7 +32,9 @@ class CmdHandler:
             # create a new admin
             else:
                 # do setup stuff here
-                return "This will set stuff up someday."
+                new_admin = Administrator("ta_assign_admin", "password", "administrator")
+                new_super = Supervisor("ta_assign_super", "password", "supervisor")
+                return "Admin/Supervisor accounts setup!"
 
         else:
             parse_cmd = some_cmd.split()
