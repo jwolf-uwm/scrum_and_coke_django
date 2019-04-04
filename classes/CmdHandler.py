@@ -19,17 +19,40 @@ class CmdHandler:
         # check if an administrator exists
         try:
             models.ModelPerson.objects.get(type="administrator")
+
         except models.ModelPerson.DoesNotExist:
             return False
+
+        try:
+            models.ModelPerson.objects.get(type="supervisor")
+
+        except models.ModelPerson.DoesNotExist:
+            return False
+
         return True
 
     def setup(self):
-        new_admin = Administrator("ta_assign_admin", "password", "administrator")
-        new_super = Supervisor("ta_assign_super", "password", "supervisor")
+        new_admin = Administrator("ta_assign_admin@uwm.edu", "password", "administrator")
+        new_super = Supervisor("ta_assign_super@uwm.edu", "password", "supervisor")
         return "Admin/Supervisor accounts setup!"
 
-    def query_by_email(self):
-        return
+    # might not be all that useful
+    def query_by_email(self, email_addy):
+        # give an email address, get the info you need to instantiate in a tuple
+        person_stuff = []
+
+        try:
+            some_person = models.ModelPerson.objects.get(email=email_addy)
+
+        except models.ModelPerson.DoesNotExist:
+            return person_stuff
+
+        else:
+            person_stuff.append(some_person.email)
+            person_stuff.append(some_person.password)
+            person_stuff.append(some_person.type)
+
+            return person_stuff
 
     def parse_command(self, some_cmd):
         # if we don't have an admin yet
@@ -48,7 +71,7 @@ class CmdHandler:
             if first_parse == "login":
                 self.login(some_cmd)
 
-            elif first_parse == "logout:":
+            elif first_parse == "logout":
                 self.logout(some_cmd)
 
             elif first_parse == "create_course":
@@ -68,6 +91,9 @@ class CmdHandler:
 
             elif first_parse == "view_ta_assign":
                 self.view_ta_assign(some_cmd)
+
+            else:
+                return "Command not found."
 
     def login(self, some_cmd):
         return
@@ -92,8 +118,6 @@ class CmdHandler:
 
     def view_ta_assign(self, some_cmd):
         return
-
-
 
     """
     def deal_with_command(self, some_cmd):
