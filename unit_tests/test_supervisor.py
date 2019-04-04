@@ -6,7 +6,7 @@ from ta_assign import models
 
 
 class TestSupervisor(TestCase):
-    sup = Supervisor("sup@uwm.edu", "sup_pass")
+    sup = Supervisor("sup@uwm.edu", "sup_pass", "supervisor")
 
     def setUp(self):
         # fake instructors

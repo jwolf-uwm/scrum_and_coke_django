@@ -69,54 +69,63 @@ class CmdHandler:
             first_parse = parse_cmd[0]
 
             if first_parse == "login":
-                self.login(some_cmd)
+                self.login(parse_cmd)
 
             elif first_parse == "logout":
-                self.logout(some_cmd)
+                self.logout(parse_cmd)
 
             elif first_parse == "create_course":
-                self.create_course(some_cmd)
+                self.create_course(parse_cmd)
 
             elif first_parse == "create_account":
-                self.create_account(some_cmd)
+                self.create_account(parse_cmd)
 
             elif first_parse == "access_info":
-                self.access_info(some_cmd)
+                self.access_info(parse_cmd)
 
             elif first_parse == "assign_instructor":
-                self.assign_instructor(some_cmd)
+                self.assign_instructor(parse_cmd)
 
             elif first_parse == "assign_ta":
-                self.assign_ta(some_cmd)
+                self.assign_ta(parse_cmd)
 
             elif first_parse == "view_ta_assign":
-                self.view_ta_assign(some_cmd)
+                self.view_ta_assign(parse_cmd)
 
             else:
                 return "Command not found."
 
-    def login(self, some_cmd):
+    def login(self, parse_cmd):
         return
 
-    def logout(self, some_cmd):
+    def logout(self, parse_cmd):
         return
 
-    def create_course(self, some_cmd):
+    def create_course(self, parse_cmd):
+        if len(parse_cmd) != 3:
+            return "Create course not of the right format: [create_course CS###-### #]"
+        if self.current_user.type == "administrator":
+            adm = Administrator(self.current_user.email, self.current_user.password, self.current_user.type)
+            adm.create_course(parse_cmd[1], int(parse_cmd[2]))
+        elif self.current_user.type == "supervisor":
+            sup = Supervisor(self.current_user.email, self.current_user.password, self.current_user.type)
+            sup.create_course(parse_cmd[1], int(parse_cmd[2]))
+        else:
+            return "Yeah, you don't have access to that command. Nice try buddy."
+
+    def create_account(self, parse_cmd):
         return
 
-    def create_account(self, some_cmd):
+    def access_info(self, parse_cmd):
         return
 
-    def access_info(self, some_cmd):
+    def assign_instructor(self, parse_cmd):
         return
 
-    def assign_instructor(self, some_cmd):
+    def assign_ta(self, parse_cmd):
         return
 
-    def assign_ta(self, some_cmd):
-        return
-
-    def view_ta_assign(self, some_cmd):
+    def view_ta_assign(self, parse_cmd):
         return
 
     """
