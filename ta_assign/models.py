@@ -8,6 +8,7 @@ class ModelPerson(models.Model):
     phone = models.IntegerField(default=-1)
     name = models.CharField(max_length=50, default="DEFAULT")
     type = models.CharField(max_length=20, default="person")
+    isLoggedOn = models.BooleanField(default=False)
 
 
 class ModelCourse(models.Model):
