@@ -83,7 +83,21 @@ class Administrator(Person):
             return True
 
     def edit_account(self, email, field, content):
-        return
+        try:
+            this_account = models.ModelPerson.objects.get(email=email)
+        except models.ModelPerson.DoesNotExist:
+            return False
+
+        if field == "email":
+            return this_account.change_email(content)
+        elif field == "password":
+            return this_account.change_password(content)
+        elif field == "phone_number":
+            return this_account.change_phone(content)
+        elif field == "name":
+            return this_account.change_name(content)
+        else:
+            raise Exception("The entered field is incorrect")
 
     def delete_account(self, email):
         return

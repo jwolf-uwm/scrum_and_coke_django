@@ -26,17 +26,36 @@ class Person:
             some_guy.isLoggedOn = self.isLoggedIn
             some_guy.save()
 
-    def change_password(self, old, new):
-        return
+    def change_password(self, new):
+        self.password = new
+        return True
 
     def change_email(self, address):
-        return
+        parse_at = address.split("@")
+
+        try:
+            if parse_at[1] != "uwm.edu" or len(parse_at) != 2:
+                return False
+        except IndexError:
+            return False
+
+        self.email = address
+        return True
 
     def change_name(self, name):
-        return
+        self.name = name
+        return True
 
     def change_phone(self, phone):
-        return
+        if not isinstance(phone, int):
+            print("phone number contains illegal characters")
+            return False
+        elif int(phone/1000000000) >= 10 or int(phone/1000000000) <= 0:
+            print("phone number is the wrong length")
+            return False
+        else:
+            self.phone_number = phone
+        return True
 
     def get_contact_info(self):
         return
