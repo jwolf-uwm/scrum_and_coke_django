@@ -185,6 +185,7 @@ class TestAdministrator(TestCase):
 
     def test_create_invalid_parameter_taken_email(self):
         # email taken
+        self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta")
         self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
     def test_edit_account(self):
