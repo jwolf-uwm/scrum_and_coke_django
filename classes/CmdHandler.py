@@ -4,6 +4,7 @@ from classes.Instructor import Instructor
 from classes.Person import Person
 from classes.Supervisor import Supervisor
 from classes.TA import TA
+
 from ta_assign import models
 
 # importing all the things, because who knows
