@@ -7,7 +7,6 @@ from classes.Instructor import Instructor
 from classes.TA import TA
 from ta_assign import models
 from classes.Course import Course
-# from classes.Database import Database
 
 
 class TestAdministrator(TestCase):
