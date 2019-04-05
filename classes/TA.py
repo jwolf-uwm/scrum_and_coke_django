@@ -10,11 +10,18 @@ class TA(Person):
         super().__init__(email, password, account_type)
 
     def view_ta_assignments(self):
-        assignment_list = []
-        ta_courses = models.ModelTACourse.objects.all()
-        for i in ta_courses:
-            assignment_list.append("Course: " + ta_courses[i].course.course_id + "TA: " + ta_courses[i].TA.email + " | ")
-        return assignment_list
+        string_list = []
+        tee_ayys = models.ModelPerson.objects.filter(type="ta")
+        for tee_ayy in tee_ayys:
+            # string_list.append("TA: " + tee_ayy.email)
+
+            for ta_courses in models.ModelTACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list.append("Course: " + ta_courses.course.course_id + " TA: " + ta_courses.TA.name + ", "
+                                       + ta_courses.TA.email)
+
+            string_list.append("")
+        return string_list
 
     def read_public_contact(self, class_list):
         return
