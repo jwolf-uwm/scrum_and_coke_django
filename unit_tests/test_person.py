@@ -9,11 +9,8 @@ class TestPerson(TestCase):
 
     def test_init_(self):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
-        # self.person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD")
         self.assertEquals(self.person1.email, "person1@uwm.edu")
         self.assertEquals(self.person1.password, "DEFAULT_PASSWORD")
-        # self.assertEquals(self.person1.name, "DEFAULT")
-        # self.assertEquals(self.person1.phone_number, 0000000000)
 
     def test_change_password(self):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
@@ -26,9 +23,7 @@ class TestPerson(TestCase):
         self.person1.change_email("snoop@uwm.edu")
         self.assertEquals(self.person1.email, "snoop@uwm.edu")
         self.assertNotEquals(self.person1.email, "person1@uwm.edu")
-
         self.assertFalse(self.person1.change_email("snoop@gmail.com"))
-
         self.assertFalse(self.person1.change_email("no_at_symbol_or_dot_something"))
 
     def test_change_phone(self):
@@ -60,8 +55,3 @@ class TestPerson(TestCase):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
         self.assertTrue(self.person1.logout())
-
-
-    # careful, this will delete all people in the database to cleanup
-    # disable if there's something you need to persist
-    models.ModelPerson.objects.all().delete()
