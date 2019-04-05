@@ -96,7 +96,7 @@ class CmdHandler:
                 self.view_ta_assign(parse_cmd)
 
             else:
-                return "Command not found."
+                return "I don't even know what the heck you just wrote. Do it again but better."
 
     def login(self, parse_cmd):
         return
