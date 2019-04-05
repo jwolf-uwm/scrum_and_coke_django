@@ -84,7 +84,7 @@ class Administrator(Person):
 
     def edit_account(self, email, field, content):
         try:
-            this_account = models.ModelPerson.objects.get(email=email)
+            models.ModelPerson.objects.get(email=email)
         except models.ModelPerson.DoesNotExist:
             return False
 
@@ -95,13 +95,11 @@ class Administrator(Person):
                     return False
             except ValueError:
                 return False
-            this_account.email = content
-            this_account.save()
+            models.ModelPerson.objects.filter(email=email).update(email=content)
             return True
 
         elif field == "password":
-            this_account.password = content
-            this_account.save()
+            models.ModelPerson.objects.filter(email=email).update(password=content)
             return True
 
         elif field == "phone_number":
@@ -112,13 +110,11 @@ class Administrator(Person):
                 print("phone number is the wrong length")
                 return False
             else:
-                this_account.phone_number = content
-                this_account.save()
+                models.ModelPerson.objects.filter(email=email).update(phone=content)
                 return True
 
         elif field == "name":
-            this_account.name = content
-            this_account.save()
+            models.ModelPerson.objects.filter(email=email).update(name=content)
             return True
         else:
             print("The entered field is incorrect")

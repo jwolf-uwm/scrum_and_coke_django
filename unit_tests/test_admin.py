@@ -220,7 +220,7 @@ class TestAdministrator(TestCase):
 
         # test edit phone
         self.ad1.edit_account("rando@uwm.edu", "phone", 1234567890)
-        self.assertEqual(tester.phone_number, 1234567890)
+        self.assertEqual(tester.phone, 1234567890)
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", "not a number"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 12341))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 111111111111111111))
