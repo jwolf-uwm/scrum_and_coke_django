@@ -58,7 +58,9 @@ class TestPerson(TestCase):
         person2.password = "DEFAULT_PASSWORD"
         person2.save()
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
+        person1 = models.ModelPerson.objects.get(email=person1.email)
         self.assertTrue(person1.isLoggedOn)
+        self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
         self.assertEquals(Person.login("snoop@uwm.edu", "password"), "Invalid login info")
 
     def test_logout(self):
@@ -67,7 +69,8 @@ class TestPerson(TestCase):
         person1.password = "DEFAULT_PASSWORD"
         person1.save()
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
-        self.assertTrue(self.person1.logout())
+        person2 = models.ModelPerson.objects.get()
+        self.assertTrue(person2.isLoggedOn)
 
     # careful, this will delete all people in the database to cleanup
     # disable if there's something you need to persist
