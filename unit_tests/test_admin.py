@@ -7,7 +7,6 @@ from classes.Instructor import Instructor
 from classes.TA import TA
 from ta_assign import models
 from classes.Course import Course
-# from classes.Database import Database
 
 
 class TestAdministrator(TestCase):
@@ -37,7 +36,6 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
     def test_create_course_again(self):
-        # create a new course as admin
         self.assertTrue(self.ad1.create_course("CS361-401", 3))
         # create the same course again with no changes
         self.assertFalse(self.ad1.create_course("CS361-401", 3))
@@ -51,8 +49,6 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
-        # parameter errors
-        # missing number of lab sections
     def test_create_course_missing_parameters(self):
         with self.assertRaises(TypeError):
             self.ad1.create_course("CS101-401")
@@ -196,7 +192,7 @@ class TestAdministrator(TestCase):
         self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta")
         self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
-    def test_edit_account(self):
+    def test_edit_account_password(self):
         # create a test user in the system
         tester = models.ModelPerson()
         tester.email = "rando@uwm.edu"
@@ -205,26 +201,52 @@ class TestAdministrator(TestCase):
         # test edit password
         self.ad1.edit_account("rando@uwm.edu", "password", "new_pass")
 
+        tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
         self.assertEqual(tester.password, "new_pass")
 
+    def test_edit_account_email(self):
+        # create a test user in the system
+        tester = models.ModelPerson()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
+        tester.save()
         # test edit email
         self.ad1.edit_account("rando@uwm.edu", "email", "NEW_EMAIL@uwm.edu")
+
+        with self.assertRaises(models.ModelPerson.DoesNotExist):
+            models.ModelPerson.objects.get(email="rando@uwm.edu")
+        tester = models.ModelPerson.objects.get(email="NEW_EMAIL@uwm.edu")
         self.assertEqual(tester.email, "NEW_EMAIL@uwm.edu")
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail@uwm.edu@uwm.edu"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail@gmail.com"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail"))
 
+    def test_edit_account_phone(self):
+        # create a test user in the system
+        tester = models.ModelPerson()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
+        tester.save()
         # test edit phone
         self.ad1.edit_account("rando@uwm.edu", "phone", 1234567890)
+
+        tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
         self.assertEqual(tester.phone, 1234567890)
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", "not a number"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 12341))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 111111111111111111))
 
+    def test_edit_account_phone(self):
+        # create a test user in the system
+        tester = models.ModelPerson()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
+        tester.save()
         # test edit name
         self.ad1.edit_account("rando@uwm.edu", "name", "Howard Stern")
-        self.assertEqual(tester.name, "Howard Stern")
 
+        tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
+        self.assertEqual(tester.name, "Howard Stern")
         self.assertFalse(self.ad1.edit_account("wrong_email@uwm.edu", "password", "new_pass"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "wrong_field", "new_pass"))
 
@@ -237,30 +259,21 @@ class TestAdministrator(TestCase):
     def test_send_notification(self):
         self.assertTrue(self.ad1.send_notification("I Like To Eat French Fries In The Rain"))
 
-    def test_access_info(self):
-        # Jeff's tests
-
-        # Admin/Sup only tests
-        # self.ad1 = Administrator("admin@uwm.edu", "password", "administrator")
-        # self.sp1 = Supervisor("super@uwm.edu", "password", "supervisor")
-        # access as admin
+    # Access Info Tests
+    # Jeff's tests
+    def test_access_info_admin(self):
         access_info = self.ad1.access_info()
         # admin info
         self.assertEqual(access_info[0], "Administrator: DEFAULT | ad1@uwm.edu | -1")
         self.assertEqual(access_info[1], "")
-        # sup info
-        self.assertEqual(access_info[2], "Supervisor: DEFAULT | sup1@uwm.edu | -1")
-        self.assertEqual(access_info[3], "")
-        # access as sup
-        # is it ok to do this here? this is the only place where we test access info
-        access_info = self.sup1.access_info()
-        # admin info
-        self.assertEqual(access_info[0], "Administrator: DEFAULT | ad1@uwm.edu | -1")
-        self.assertEqual(access_info[1], "")
+
+    def test_access_info_sup(self):
+        access_info = self.ad1.access_info()
         # sup info
         self.assertEqual(access_info[2], "Supervisor: DEFAULT | sup1@uwm.edu | -1")
         self.assertEqual(access_info[3], "")
 
+    def test_access_info_inst_no_course(self):
         # Add instructor, no course assignments
         self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
         # access as admin
@@ -268,14 +281,17 @@ class TestAdministrator(TestCase):
         self.assertEqual(access_info[4], "Instructor: DEFAULT | inst1@uwm.edu | -1")
         self.assertEqual(access_info[5], "")
 
+    def test_access_info_ta_no_course(self):
         # Add TA, no course assignments
         self.ta1 = TA("ta1@uwm.edu", "password", "ta")
         # access as admin
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[6], "TA: DEFAULT | ta1@uwm.edu | -1")
-        self.assertEqual(access_info[7], "")
+        self.assertEqual(access_info[4], "TA: DEFAULT | ta1@uwm.edu | -1")
+        self.assertEqual(access_info[5], "")
 
+    def test_access_info_inst_one_course(self):
         # Instructor with a course
+        self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
         self.course1 = Course("CS101", 0)
         self.course1.instructor = "inst1@uwm.edu"
         mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
@@ -285,21 +301,16 @@ class TestAdministrator(TestCase):
         access_info = self.ad1.access_info()
         self.assertEqual(access_info[5], "Course: CS101")
 
+    def test_access_info_ta_one_course(self):
         # TA with a course
+        self.ta1 = TA("ta1@uwm.edu", "password", "ta")
         mod_ta_course1 = models.ModelTACourse()
+        self.course1 = Course("CS101", 0)
+        mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
         mod_ta_course1.course = mod_course1
         mod_ta1 = models.ModelPerson.objects.get(email="ta1@uwm.edu")
         mod_ta_course1.TA = mod_ta1
         mod_ta_course1.save()
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[8], "Course: CS101")
+        self.assertEqual(access_info[5], "Course: CS101")
 
-        # commenting out old tests, writing my own - Jeff
-        # creating stuff in the system
-        # self.user = ("email@uwm.edu", "pass")
-        # self.system_stuff = ([self.ad1, self.ad2, self.user],
-                            # ["ad1@uwm.edu", "ad2@uwm.edu", "email@uwm.edu"],
-                            # ["ad1pass", "ad2pass", "pass"])
-        # self.assertEqual(self.ad1.access_info(), self.system_stuff)
-
-    # models.ModelPerson.objects.all().delete()
