@@ -197,10 +197,6 @@ class TestAdministrator(TestCase):
         self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
     def test_edit_account(self):
-        # setup admin
-        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
-        # setup supervisor
-        self.sup1 = Supervisor("sup1@uwm.edu", "sup1pass", "supervisor")
         # create a test user in the system
         tester = models.ModelPerson()
         tester.email = "rando@uwm.edu"
@@ -220,7 +216,7 @@ class TestAdministrator(TestCase):
 
         # test edit phone
         self.ad1.edit_account("rando@uwm.edu", "phone", 1234567890)
-        self.assertEqual(tester.phone_number, 1234567890)
+        self.assertEqual(tester.phone, 1234567890)
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", "not a number"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 12341))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 111111111111111111))
