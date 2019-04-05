@@ -62,33 +62,44 @@ class TestSupervisor(TestCase):
         # fake instructors
         self.ta1 = TA("ta1@uwm.edu", "blah", "TA")
         self.ta2 = TA("ta2@uwm.edu", "inspass", "TA")
+        self.ta3 = TA("ta3@uwm.edu", "pass3", "TA")
         # fake course
         self.course1 = Course("CS101-301", 2)
         self.course2 = Course("CS202-201", 0)
         # instructor 1 is assigned CS101
         self.assertTrue(self.sup.assign_ta_course(self.ta1, self.course1))
         self.assertEqual(self.course1.tee_ays[0], "ta1@uwm.edu")
-        db_ta_course = models.ModelTACourse.objects.get(course_id="CS101-301")
+        db_ta_course = models.ModelTACourse.objects.get(course_id="CS101-301", TA="ta1@uwm.edu")
         self.assertEqual(db_ta_course.TA, "ta1@uwm.edu")
 
         # assign TA 1 another course
         self.assertTrue(self.sup.assign_ta_course(self.ta1, self.course2))
         self.assertEqual(self.course2.tee_ays[0], "ta1@uwm.edu")
-        db_ta_course2 = models.ModelTACourse.objects.get(course_id="CS202-201")
+        db_ta_course2 = models.ModelTACourse.objects.get(course_id="CS202-201", TA="ta1@uwm.edu")
         self.assertEquals(db_ta_course2.TA, "ta1@uwm.edu")
 
         # TA 2 is assigned CS101
         self.assertTrue(self.sup.assign_ta_course(self.ta2, self.course1))
         self.assertEqual(self.course1.tee_ays[1], "ta2@uwm.edu")
-        db_ta_course = models.ModelTACourse.objects.get(course_id="CS101-301")
-        self.assertEqual(db_ta_course.TA, "ta1@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course_id="CS101-301", TA="ta2@uwm.edu")
+        self.assertEqual(db_ta_course.TA, "ta2@uwm.edu")
 
         # Try to assign a third TA to CS101
-        self.sup.assign_ta_course(self.ta3, self.course1[0])
-        self.assertNotEqual(self.ta3_course, "CS101")
-        self.assertNotEqual(self.course1_tas[2], "ins3@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta3, self.course1))
+        self.assertEqual(self.course1.tee_ays[2], "ta3@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course_id="CS101-301", TA="ta3@uwm.edu")
+        self.assertEqual(db_ta_course.TA, "ta3@uwm.edu")
 
-        self.assertRaises(self.sup.assign_ta_course(self.ins1, self.course1[0]), TypeError)
+        self.admin1 = Administrator("admin@uwm.edu", "admin1", "Administrator")
+        with self.assertRaises(TypeError):
+            self.sup.assign_instructor(self.admin1, self.course1)
+
+        with self.assertRaises(TypeError):
+            self.sup.assign_instructor(self.sup, self.course1)
+
+        self.ins1 = Instructor("ins@uwm.edu", "ins11111", "Instructor")
+        with self.assertRaises(TypeError):
+            self.sup.assign_instructor(self.ins1, self.course1)
 
     def test_assign_ta_lab(self):
         # TA 1 is assigned CS101 - 801

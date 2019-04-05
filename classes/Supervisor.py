@@ -41,6 +41,8 @@ class Supervisor(Administrator):
         """
         assigns the given TA's course to the course parameter
         """
+        if ta.type != "instructor":
+            raise TypeError("invalid type")
         try:
             find_course = models.ModelTACourse.objects.get(course_id=course.course_id)
         except models.ModelCourse.DoesNotExist:
