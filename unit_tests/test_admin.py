@@ -250,19 +250,19 @@ class TestAdministrator(TestCase):
         # access as admin
         access_info = self.ad1.access_info()
         # admin info
-        self.assertEqual(access_info[0], "Administrator: DEFAULT | admin@uwm.edu | -1")
+        self.assertEqual(access_info[0], "Administrator: DEFAULT | ad1@uwm.edu | -1")
         self.assertEqual(access_info[1], "")
         # sup info
-        self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
+        self.assertEqual(access_info[2], "Supervisor: DEFAULT | sup1@uwm.edu | -1")
         self.assertEqual(access_info[3], "")
         # access as sup
         # is it ok to do this here? this is the only place where we test access info
-        access_info = self.sp1.access_info()
+        access_info = self.sup1.access_info()
         # admin info
-        self.assertEqual(access_info[0], "Administrator: DEFAULT | admin@uwm.edu | -1")
+        self.assertEqual(access_info[0], "Administrator: DEFAULT | ad1@uwm.edu | -1")
         self.assertEqual(access_info[1], "")
         # sup info
-        self.assertEqual(access_info[2], "Supervisor: DEFAULT | super@uwm.edu | -1")
+        self.assertEqual(access_info[2], "Supervisor: DEFAULT | sup1@uwm.edu | -1")
         self.assertEqual(access_info[3], "")
 
         # Add instructor, no course assignments
@@ -292,7 +292,7 @@ class TestAdministrator(TestCase):
         # TA with a course
         mod_ta_course1 = models.ModelTACourse()
         mod_ta_course1.course = mod_course1
-        mod_ta1 = models.ModelTA.objects.get(email="ta1@uwm.edu")
+        mod_ta1 = models.ModelPerson.objects.get(email="ta1@uwm.edu")
         mod_ta_course1.TA = mod_ta1
         mod_ta_course1.save()
         access_info = self.ad1.access_info()
