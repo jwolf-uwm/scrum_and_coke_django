@@ -24,7 +24,6 @@ class TestTA(TestCase):
 
     def test_view_ta_assignments(self):
         self.assertEqual(self.ta1.view_ta_assignments, "TA: ta1@uwm.edu Course: CS101")
-        self.assertEqual(self.ta1.view_ta_assignments, "Course: CS101")
 
     def test_read_public_contact(self):
         # self.assertEqual(self.ta1.read_public_contact(self.class_list))
