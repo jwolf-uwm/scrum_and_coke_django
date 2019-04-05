@@ -175,4 +175,9 @@ class Administrator(Person):
 
             string_list.append("")
 
+        courses = models.ModelCourse.objects.all()
+        for course in courses:
+            string_list.append("Course: " + course.course_id)
+
+            string_list.append("")
         return string_list
