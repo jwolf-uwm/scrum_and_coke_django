@@ -108,7 +108,7 @@ class Administrator(Person):
             if not isinstance(content, int):
                 print("phone number contains illegal characters")
                 return False
-            elif int(content / 1000000000) >= 10 or int(phone / 1000000000) <= 0:
+            elif int(content / 1000000000) >= 10 or int(content / 1000000000) <= 0:
                 print("phone number is the wrong length")
                 return False
             else:
@@ -145,18 +145,18 @@ class Administrator(Person):
 
         string_list = []
 
-        # not idea
-        # l workaround here, supervisor inherits from admin, so it shows up as an admin in the database
-        # as well as a supervisor, so we just grab the first admin, which better be the right one
-        admin = models.ModelAdministrator.objects.all()
-        string_list.append("Administrator: " + admin[0].name + " | " + admin[0].email + " | " + str(admin[0].phone))
-        string_list.append("")
+        admins = models.ModelPerson.objects.filter(type="administrator")
+        for admin in admins:
+            string_list.append("Administrator: " + admin.name + " | " + admin.email + " | " + str(admin.phone))
+            string_list.append("")
 
-        for supervi in models.ModelSupervisor.objects.all():
+        supers = models.ModelPerson.objects.filter(type="supervisor")
+        for supervi in supers:
             string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
             string_list.append("")
 
-        for instruct in models.ModelInstructor.objects.all():
+        instructs = models.ModelPerson.objects.filter(type="instructor")
+        for instruct in instructs:
             string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
 
             for courses in models.ModelCourse.objects.all():
@@ -165,7 +165,8 @@ class Administrator(Person):
 
             string_list.append("")
 
-        for tee_ayy in models.ModelTA.objects.all():
+        tee_ayys = models.ModelPerson.objects.filter(type="ta")
+        for tee_ayy in tee_ayys:
             string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
 
             for ta_courses in models.ModelTACourse.objects.all():
