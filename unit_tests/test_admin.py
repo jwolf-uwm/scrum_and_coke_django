@@ -245,8 +245,8 @@ class TestAdministrator(TestCase):
         # Jeff's tests
 
         # Admin/Sup only tests
-        self.ad1 = Administrator("admin@uwm.edu", "password", "administrator")
-        self.sp1 = Supervisor("super@uwm.edu", "password", "supervisor")
+        # self.ad1 = Administrator("admin@uwm.edu", "password", "administrator")
+        # self.sp1 = Supervisor("super@uwm.edu", "password", "supervisor")
         # access as admin
         access_info = self.ad1.access_info()
         # admin info
