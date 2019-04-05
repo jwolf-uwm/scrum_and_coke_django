@@ -14,13 +14,9 @@ class TestAdministrator(TestCase):
 
     def setUp(self):
         self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
-
-    def test_create_course(self):
-        # setup admin
-        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
-        # setup supervisor
         self.sup1 = Supervisor("sup1@uwm.edu", "sup1pass", "supervisor")
 
+    def test_create_course_as_administrator(self):
         # create a new course as admin
         self.assertTrue(self.ad1.create_course("CS361-401", 3))
         # get the added course from the db
@@ -30,6 +26,7 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
+    def test_create_course_as_supervisor(self):
         # create a new course as supervisor
         self.assertTrue(self.sup1.create_course("CS251-401", 3))
         # get the added course from the db
@@ -39,11 +36,14 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
+    def test_create_course_again(self):
+        # create a new course as admin
+        self.assertTrue(self.ad1.create_course("CS361-401", 3))
         # create the same course again with no changes
         self.assertFalse(self.ad1.create_course("CS361-401", 3))
         # create the same course with a different number of labs
         self.assertFalse(self.ad1.create_course("CS361-401", 2))
-        # create teh same course with a different section number (technically a new course)
+        # create the same course with a different section number (technically a new course)
         self.assertTrue(self.ad1.create_course("CS361-402", 3))
         da_course = models.ModelCourse.objects.get(course_id="CS361-402")
         # make sure found course is the same
@@ -53,14 +53,19 @@ class TestAdministrator(TestCase):
 
         # parameter errors
         # missing number of lab sections
+    def test_create_course_missing_parameters(self):
         with self.assertRaises(TypeError):
             self.ad1.create_course("CS101-401")
         # missing course_id/wrong type
         with self.assertRaises(TypeError):
             self.ad1.create_course(3)
+
+    def test_create_course_long_course_id(self):
         # course_id too long and not right format
         with self.assertRaises(Exception):
             self.ad1.create_course("totally_a_good_course_id", 2)
+
+    def test_create_course_course_id_incorrect(self):
         # course_id missing CS at beginning
         with self.assertRaises(Exception):
             self.ad1.create_course("123456789", 2)
@@ -76,6 +81,8 @@ class TestAdministrator(TestCase):
         # course_id doesn't have only numbers for section number
         with self.assertRaises(Exception):
             self.ad1.create_course("CS361-1F3", 2)
+
+    def test_create_course_bad_num_sections(self):
         # number of sections too big
         with self.assertRaises(Exception):
             self.ad1.create_course("CS361-401", 99)
