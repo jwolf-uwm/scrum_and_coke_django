@@ -1,28 +1,29 @@
 # created by Dillan
 
 from django.test import TestCase
+from classes.Person import Person
+from classes.Administrator import Administrator
+from classes.Supervisor import Supervisor
+from classes.Instructor import Instructor
 from classes.TA import TA
 from ta_assign import models
+from classes.Course import Course
 
 
 class TestTA(TestCase):
 
-    ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD", "ta")
-
     def setup(self):
-        # self.ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
-        self.instructor1 = ("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
-        self.instructor2 = ("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
-        self.instructor3 = ("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
-        self.course1 = ("DEFAULT_ID", 101, self.instructor1, [])
-        self.course_catalog = (("DEFAULT_ID1", 101, self.instructor1, [self.ta1]),
-                              ("DEFAULT_ID2", 101, self.instructor1, []),
-                              ("DEFAULT_ID3", 101, self.instructor1, [self.ta1]),
-                              ("DEFAULT_ID4", 101, self.instructor1, []))
-        self.class_list = (self.instructor1, self.instructor2, self.instructor3, self.ta1)
+        self.ta1 = TA("ta1@uwm.edu", "password", "ta")
+        self.course1 = Course("CS101", 0)
+        mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
+        mod_ta_course1 = models.ModelTACourse()
+        mod_ta_course1.course = mod_course1
+        mod_ta1 = models.ModelPerson.objects.get(email="ta1@uwm.edu")
+        mod_ta_course1.TA = mod_ta1
+        mod_ta_course1.save()
 
     def test_view_ta_assignments(self):
-        self.assertEqual(self.ta1.view_ta_assignment(self.course_catalog), ["DEFAULT_ID1", "DEFAULT_ID3"])
+        self.assertEqual(self.ta1.view_ta_assignment(self), "Course: CS101 TA: ta1@uwm.edu | ")
 
     def test_read_public_contact(self):
         self.assertEqual(self.ta1.read_public_contact(self.class_list))

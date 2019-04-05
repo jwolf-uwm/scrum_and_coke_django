@@ -13,7 +13,7 @@ class TA(Person):
         assignment_list = []
         ta_courses = models.ModelTACourse.objects.all()
         for i in ta_courses:
-            assignment_list.append("Course: " + ta_courses[i].course.course_id + "TA: " + ta_courses[i].TA.name + " | ")
+            assignment_list.append("Course: " + ta_courses[i].course.course_id + "TA: " + ta_courses[i].TA.email + " | ")
         return assignment_list
 
     def read_public_contact(self, class_list):
