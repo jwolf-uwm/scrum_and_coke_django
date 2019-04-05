@@ -80,6 +80,9 @@ class CmdHandler:
             elif first_parse == "create_account":
                 self.create_account(parse_cmd)
 
+            elif first_parse == "edit_account":
+                self.edit_account(parse_cmd)
+
             elif first_parse == "access_info":
                 self.access_info(parse_cmd)
 
@@ -114,6 +117,18 @@ class CmdHandler:
             return "Yeah, you don't have access to that command. Nice try buddy."
 
     def create_account(self, parse_cmd):
+        return
+
+    def edit_account(self, parse_cmd):
+        if parse_cmd[1] == "name":
+
+        elif parse_cmd[1] == "email":
+
+        elif parse_cmd[1] == "password":
+
+        elif parse_cmd[1] == "phone":
+
+        else:
         return
 
     def access_info(self, parse_cmd):
