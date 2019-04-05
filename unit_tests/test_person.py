@@ -49,28 +49,18 @@ class TestPerson(TestCase):
         self.assertNotEquals(self.person1.get_contact_info(), "DEFAULT, person1@uwm.edu, 0000000000")
 
     def test_login(self):
-        person1 = models.ModelPerson()
-        person1.email = "person1@uwm.edu"
-        person1.password = "DEFAULT_PASSWORD"
-        person1.save()
-        person2 = models.ModelPerson()
-        person2.email = "person2@uwm.edu"
-        person2.password = "DEFAULT_PASSWORD"
-        person2.save()
+        self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
-        person1 = models.ModelPerson.objects.get(email=person1.email)
-        self.assertTrue(person1.isLoggedOn)
+        model_person1 = models.ModelPerson.objects.get(email=self.person1.email)
+        self.assertTrue(model_person1.isLoggedOn)
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
         self.assertEquals(Person.login("snoop@uwm.edu", "password"), "Invalid login info")
 
     def test_logout(self):
-        person1 = models.ModelPerson()
-        person1.email = "person1@uwm.edu"
-        person1.password = "DEFAULT_PASSWORD"
-        person1.save()
+        self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
-        person2 = models.ModelPerson.objects.get()
-        self.assertTrue(person2.isLoggedOn)
+        self.assertTrue(self.person1.logout())
+
 
     # careful, this will delete all people in the database to cleanup
     # disable if there's something you need to persist
