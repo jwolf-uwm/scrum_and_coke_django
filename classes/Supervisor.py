@@ -15,7 +15,7 @@ class Supervisor(Administrator):
         """
         assigns the given instructor's course to the course parameter
         """
-        if instructor.type != "instructor":
+        if instructor.type != "Instructor":
             raise TypeError("invalid type")
         try:
             find_course = models.ModelCourse.objects.get(course_id=course.course_id)
@@ -41,23 +41,24 @@ class Supervisor(Administrator):
         """
         assigns the given TA's course to the course parameter
         """
-        if ta.type != "instructor":
+        if ta.type != "TA":
             raise TypeError("invalid type")
         try:
-            find_course = models.ModelTACourse.objects.get(course_id=course.course_id)
+            find_course = models.ModelCourse.objects.get(course_id=course.course_id)
         except models.ModelCourse.DoesNotExist:
             find_course = "none"
 
         try:
             find_ta = models.ModelPerson.objects.get(email=ta.email)
-        except models.ModelPerson.DoesNotExist:
+        except models.ModelCourse.DoesNotExist:
             find_ta = "none"
 
         if find_course != "none" and find_ta != "none":
             ta_course = models.ModelTACourse()
-            ta_course.TA = ta.email
-            ta_course.course = course.course_id
+            ta_course.TA = find_ta
+            ta_course.course = find_course
             course.tee_ays.append(ta.email)
+            ta_course.save()
             return True
         else:
             return False
