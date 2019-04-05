@@ -23,7 +23,7 @@ class TestTA(TestCase):
         mod_ta_course1.save()
 
     def test_view_ta_assignments(self):
-        self.assertEqual(self.ta1.view_ta_assignments(), ['Course: CS101 TA: DEFAULT, ta1@uwm.edu', ''])
+        self.assertEqual(self.ta1.view_ta_assignments()[0], "Course: CS101 TA: DEFAULT, ta1@uwm.edu")
 
     def test_read_public_contact(self):
         # self.assertEqual(self.ta1.read_public_contact(self.class_list))
