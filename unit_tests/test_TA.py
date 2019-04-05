@@ -13,6 +13,7 @@ from classes.Course import Course
 class TestTA(TestCase):
 
     def setUp(self):
+        self.ta0 = TA("ta0@uwm.edu", "password", "ta")
         self.ta1 = TA("ta1@uwm.edu", "password", "ta")
         self.ta2 = TA("ta2@uwm.edu", "password", "ta")
         self.ta3 = TA("ta3@uwm.edu", "password", "ta")
@@ -36,7 +37,7 @@ class TestTA(TestCase):
         mod_ta2 = models.ModelPerson.objects.get(email="ta2@uwm.edu")
         mod_ta_course2.TA = mod_ta2
         mod_ta_course2.save()
-        self.assertEqual(self.ta1.view_ta_assignments()[0], "Course: CS201 TA: DEFAULT, ta2@uwm.edu")
+        self.assertEqual(self.ta2.view_ta_assignments()[0], "Course: CS201 TA: DEFAULT, ta2@uwm.edu")
 
     def test_view_ta_assignments3(self):
         mod_course3 = models.ModelCourse.objects.get(course_id="CS301")
@@ -45,7 +46,7 @@ class TestTA(TestCase):
         mod_ta3 = models.ModelPerson.objects.get(email="ta3@uwm.edu")
         mod_ta_course3.TA = mod_ta3
         mod_ta_course3.save()
-        self.assertEqual(self.ta1.view_ta_assignments()[0], "Course: CS301 TA: DEFAULT, ta3@uwm.edu")
+        self.assertEqual(self.ta3.view_ta_assignments()[0], "Course: CS301 TA: DEFAULT, ta3@uwm.edu")
 
     def test_view_ta_assignments4(self):
         mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
@@ -66,10 +67,10 @@ class TestTA(TestCase):
         mod_ta3 = models.ModelPerson.objects.get(email="ta3@uwm.edu")
         mod_ta_course3.TA = mod_ta3
         mod_ta_course3.save()
-        self.assertEqual(self.ta1.view_ta_assignments()[0], "Course: CS101 TA: DEFAULT, ta1@uwm.edu")
-        self.assertEqual(self.ta1.view_ta_assignments()[1], "Course: CS201 TA: DEFAULT, ta2@uwm.edu")
-        self.assertEqual(self.ta1.view_ta_assignments()[2], "Course: CS301 TA: DEFAULT, ta3@uwm.edu")
-        self.assertEqual(self.ta1.view_ta_assignments(), ['Course: CS101 TA: DEFAULT, ta1@uwm.edu',
+        self.assertEqual(self.ta0.view_ta_assignments()[0], "Course: CS101 TA: DEFAULT, ta1@uwm.edu")
+        self.assertEqual(self.ta0.view_ta_assignments()[1], "Course: CS201 TA: DEFAULT, ta2@uwm.edu")
+        self.assertEqual(self.ta0.view_ta_assignments()[2], "Course: CS301 TA: DEFAULT, ta3@uwm.edu")
+        self.assertEqual(self.ta0.view_ta_assignments(), ['Course: CS101 TA: DEFAULT, ta1@uwm.edu',
                                                           'Course: CS201 TA: DEFAULT, ta2@uwm.edu',
                                                           'Course: CS301 TA: DEFAULT, ta3@uwm.edu'])
 
