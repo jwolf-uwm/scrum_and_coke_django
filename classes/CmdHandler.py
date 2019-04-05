@@ -51,6 +51,14 @@ class CmdHandler:
 
             return person_stuff
 
+    def whos_logged_in(self):
+        try:
+            some_person = models.ModelPerson.objects.get(isLoggedOn=True)
+        except models.ModelPerson.DoesNotExist:
+            return None
+
+        return some_person
+
     def parse_command(self, some_cmd):
         # if we don't have an admin yet
         if not self.check_setup():
