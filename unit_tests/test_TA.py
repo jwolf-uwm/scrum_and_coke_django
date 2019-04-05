@@ -19,7 +19,6 @@ class TestTA(TestCase):
         self.course1 = Course("CS101", 0)
         self.course2 = Course("CS201", 0)
         self.course3 = Course("CS301", 0)
-        self.course4 = Course("CS401", 0)
 
     def test_view_ta_assignments1(self):
         mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
