@@ -37,7 +37,6 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
     def test_create_course_again(self):
-        # create a new course as admin
         self.assertTrue(self.ad1.create_course("CS361-401", 3))
         # create the same course again with no changes
         self.assertFalse(self.ad1.create_course("CS361-401", 3))
@@ -51,8 +50,6 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
-        # parameter errors
-        # missing number of lab sections
     def test_create_course_missing_parameters(self):
         with self.assertRaises(TypeError):
             self.ad1.create_course("CS101-401")
@@ -196,7 +193,7 @@ class TestAdministrator(TestCase):
         self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta")
         self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
-    def test_edit_account(self):
+    def test_edit_account_password(self):
         # create a test user in the system
         tester = models.ModelPerson()
         tester.email = "rando@uwm.edu"
@@ -205,26 +202,52 @@ class TestAdministrator(TestCase):
         # test edit password
         self.ad1.edit_account("rando@uwm.edu", "password", "new_pass")
 
+        tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
         self.assertEqual(tester.password, "new_pass")
 
+    def test_edit_account_email(self):
+        # create a test user in the system
+        tester = models.ModelPerson()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
+        tester.save()
         # test edit email
         self.ad1.edit_account("rando@uwm.edu", "email", "NEW_EMAIL@uwm.edu")
+
+        with self.assertRaises(models.ModelPerson.DoesNotExist):
+            models.ModelPerson.objects.get(email="rando@uwm.edu")
+        tester = models.ModelPerson.objects.get(email="NEW_EMAIL@uwm.edu")
         self.assertEqual(tester.email, "NEW_EMAIL@uwm.edu")
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail@uwm.edu@uwm.edu"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail@gmail.com"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "email", "badEmail"))
 
+    def test_edit_account_phone(self):
+        # create a test user in the system
+        tester = models.ModelPerson()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
+        tester.save()
         # test edit phone
         self.ad1.edit_account("rando@uwm.edu", "phone", 1234567890)
+
+        tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
         self.assertEqual(tester.phone, 1234567890)
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", "not a number"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 12341))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 111111111111111111))
 
+    def test_edit_account_phone(self):
+        # create a test user in the system
+        tester = models.ModelPerson()
+        tester.email = "rando@uwm.edu"
+        tester.password = "random_password"
+        tester.save()
         # test edit name
         self.ad1.edit_account("rando@uwm.edu", "name", "Howard Stern")
-        self.assertEqual(tester.name, "Howard Stern")
 
+        tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
+        self.assertEqual(tester.name, "Howard Stern")
         self.assertFalse(self.ad1.edit_account("wrong_email@uwm.edu", "password", "new_pass"))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "wrong_field", "new_pass"))
 
