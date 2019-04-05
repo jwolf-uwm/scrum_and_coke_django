@@ -89,13 +89,37 @@ class Administrator(Person):
             return False
 
         if field == "email":
-            return this_account.change_email(content)
+            parse_at = content.split("@")
+            try:
+                if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
+                    return False
+            except ValueError:
+                return False
+            this_account.email = content
+            this_account.save()
+            return True
+
         elif field == "password":
-            return this_account.change_password(content)
+            this_account.password = content
+            this_account.save()
+            return True
+
         elif field == "phone_number":
-            return this_account.change_phone(content)
+            if not isinstance(content, int):
+                print("phone number contains illegal characters")
+                return False
+            elif int(content / 1000000000) >= 10 or int(phone / 1000000000) <= 0:
+                print("phone number is the wrong length")
+                return False
+            else:
+                this_account.phone_number = content
+                this_account.save()
+                return True
+
         elif field == "name":
-            return this_account.change_name(content)
+            this_account.name = content
+            this_account.save()
+            return True
         else:
             print("The entered field is incorrect")
             return False
