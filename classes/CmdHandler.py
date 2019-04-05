@@ -12,9 +12,6 @@ from ta_assign import models
 
 class CmdHandler:
 
-    current_user = None
-    logged_in = False
-
     def check_setup(self):
         # check if an administrator exists
         try:
