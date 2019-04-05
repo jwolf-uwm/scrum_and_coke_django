@@ -42,17 +42,19 @@ class Supervisor(Administrator):
         assigns the given TA's course to the course parameter
         """
         try:
-            ta_course = models.ModelTACourse.objects.get(course_id=course.course_id)
+            find_course = models.ModelTACourse.objects.get(course_id=course.course_id)
         except models.ModelCourse.DoesNotExist:
-            ta_course = "none"
+            find_course = "none"
 
         try:
             find_ta = models.ModelPerson.objects.get(email=ta.email)
         except models.ModelPerson.DoesNotExist:
             find_ta = "none"
 
-        if ta_course != "none" and find_ta != "none":
+        if find_course != "none" and find_ta != "none":
+            ta_course = models.ModelTACourse()
             ta_course.TA = ta.email
+            ta_course.course = course.course_id
             course.tee_ays.append(ta.email)
             return True
         else:

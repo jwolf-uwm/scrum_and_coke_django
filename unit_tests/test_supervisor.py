@@ -63,23 +63,25 @@ class TestSupervisor(TestCase):
         self.ta1 = TA("ta1@uwm.edu", "blah", "TA")
         self.ta2 = TA("ta2@uwm.edu", "inspass", "TA")
         # fake course
-        self.course1 = Course("CS101", 2)
-        self.course2 = Course("CS202", 0)
+        self.course1 = Course("CS101-301", 2)
+        self.course2 = Course("CS202-201", 0)
         # instructor 1 is assigned CS101
-        self.sup.assign_ta_course(self.ta1, self.course1[0])
-        self.assertEqual(self.ta1_course, "CS101")
-        self.assertEqual(self.course1_tas[0], "ta1@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta1, self.course1))
+        self.assertEqual(self.course1.tee_ays[0], "ta1@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course_id="CS101-301")
+        self.assertEqual(db_ta_course.TA, "ta1@uwm.edu")
 
         # assign TA 1 another course
-        self.sup.assign_ta_course(self.ta1, self.course2[0])
-        self.assertEqual(self.ta1_course, "CS202")
-        self.assertEqual(self.course2_tas[0], "ta1@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta1, self.course2))
+        self.assertEqual(self.course2.tee_ays[0], "ta1@uwm.edu")
+        db_ta_course2 = models.ModelTACourse.objects.get(course_id="CS202-201")
+        self.assertEquals(db_ta_course2.TA, "ta1@uwm.edu")
 
         # TA 2 is assigned CS101
-        self.sup.assign_ta_course(self.ta2, self.course1[0])
-        self.assertEqual(self.ta2_course, "CS101")
-        self.assertEqual(self.course1_tas[1], "ins2@uwm.edu")
-        self.assertEqual(self.course1_tas[0], "ins1@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta2, self.course1))
+        self.assertEqual(self.course1.tee_ays[1], "ta2@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course_id="CS101-301")
+        self.assertEqual(db_ta_course.TA, "ta1@uwm.edu")
 
         # Try to assign a third TA to CS101
         self.sup.assign_ta_course(self.ta3, self.course1[0])
