@@ -82,7 +82,8 @@ class Person:
 
     def logout(self):
 
-        if self.isLoggedOn is False:
+        person = models.ModelPerson.objects.get(email=self.email)
+        if person.isLoggedOn is False:
             return False
-        models.ModelPerson.objects.filter(self.email).update(isLoggedOn=False)
+        models.ModelPerson.objects.filter(email = self.email).update(isLoggedOn=False)
         return True
