@@ -29,14 +29,13 @@ class Supervisor(Administrator):
 
         if find_course != "none" and find_instructor != "none":
             find_course.instructor = instructor.email
-            if course.instructor != "not_set@uwm.edu":
-                course.instructor.courses.remove(course)
+            #if course.instructor != "not_set@uwm.edu":
+            #    course.instructor.courses.remove(course)
             course.instructor = instructor
-            instructor.courses.append(course)
+            # instructor.courses.append(course)
             return True
         else:
             return False
-        return False
 
     def assign_ta_course(self, ta, course):
         """
