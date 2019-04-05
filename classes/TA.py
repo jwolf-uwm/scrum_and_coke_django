@@ -20,7 +20,6 @@ class TA(Person):
                     string_list.append("Course: " + ta_courses.course.course_id + " TA: " + ta_courses.TA.name + ", "
                                        + ta_courses.TA.email)
 
-            string_list.append("")
         return string_list
 
     def read_public_contact(self, class_list):
