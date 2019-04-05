@@ -77,13 +77,12 @@ class Person:
             return "Invalid login info"
         if temp.isLoggedOn is True:
             return "User already logged in"
-        temp.isLoggedOn = True
-        temp.save()
+        models.ModelPerson.objects.filter(email=email).update(isLoggedOn=True)
         return "Login successful"
 
     def logout(self):
 
         if self.isLoggedOn is False:
             return False
-        self.isLoggedOn = False
+        models.ModelPerson.objects.filter(self.email).update(isLoggedOn=False)
         return True
