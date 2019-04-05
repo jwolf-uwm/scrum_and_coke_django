@@ -17,7 +17,7 @@ class TA(Person):
 
             for ta_courses in models.ModelTACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list.append("Course: " + ta_courses.course.course_id + "TA: " + ta_courses.TA.email)
+                    string_list.append("Course: " + ta_courses.course.course_id)
 
             string_list.append("")
         return string_list
