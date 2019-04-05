@@ -8,7 +8,7 @@ from classes.CmdHandler import CmdHandler
 class Home(View):
     get_workin = CmdHandler()
 
-    def get(self, request):
+    def get(self,request):
         return render(request, 'main/index.html')
 
     def post(self, request):
@@ -19,3 +19,4 @@ class Home(View):
             response = "Please type a command to do stuff."
 
         return render(request, 'main/index.html', {"message": response})
+
