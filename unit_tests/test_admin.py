@@ -12,11 +12,8 @@ from classes.Course import Course
 
 class TestAdministrator(TestCase):
 
-    # We likely don't need this anymore, because best I can figure it doesn't work well with django - Jeff
-    # def setUp(self):
-        # self.ad1 = Administrator("ad1@uwm.edu", "ad1pass")
-        # self.data = Database()
-        # pass
+    def setUp(self):
+        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
 
     def test_create_course(self):
         # setup admin
@@ -86,12 +83,9 @@ class TestAdministrator(TestCase):
         with self.assertRaises(Exception):
             self.ad1.create_course("CS361-401", -1)
 
-    def test_create_account(self):
-        # Jeff's tests
-
-        # setup admin
-        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
-
+    # Create Account Tests
+    # created by Jeff
+    def test_create_account_instructor(self):
         # Create Instructor Tests
         # create unused instructor account
         self.assertTrue(self.ad1.create_account("DustyBottoms@uwm.edu", "better_password", "instructor"))
@@ -108,6 +102,7 @@ class TestAdministrator(TestCase):
         # login false test
         self.assertFalse(test_model_ins.isLoggedOn)
 
+    def test_create_account_TA(self):
         # Create TA Tests
         # create unused ta account
         self.assertTrue(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
@@ -124,62 +119,75 @@ class TestAdministrator(TestCase):
         # login false test
         self.assertFalse(test_model_ta.isLoggedOn)
 
-        # Invalid account type tests
+    # Invalid account type tests
+    def test_create_account_supervisor(self):
         # create supervisor test
         self.assertFalse(self.ad1.create_account("superdude@uwm.edu", "super1", "supervisor"))
         # not in db
         with self.assertRaises(models.ModelPerson.DoesNotExist):
             models.ModelPerson.objects.get(email="superdude@uwm.edu")
+
+    def test_create_account_administrator(self):
         # create admin test
         self.assertFalse(self.ad1.create_account("adminotaur@uwm.edu", "labyrinth", "administrator"))
         # not in db
         with self.assertRaises(models.ModelPerson.DoesNotExist):
             models.ModelPerson.objects.get(email="adminotaur@uwm.edu")
+
+    def test_create_account_other(self):
         # create whatever test
         self.assertFalse(self.ad1.create_account("farfelkugel@uwm.edu", "not_today", "horse"))
         # not in db
         with self.assertRaises(models.ModelPerson.DoesNotExist):
             models.ModelPerson.objects.get(email="farfelkugel@uwm.edu")
 
-        # Invalid parameter tests
+    # Invalid parameter tests
+    def test_create_account_invalid_parameter_no_email(self):
         # no email
         with self.assertRaises(TypeError):
             self.ad1.create_account("password", "instructor")
+
+    def test_create_account_invalid_parameter_no_password(self):
         # no password
         with self.assertRaises(TypeError):
             self.ad1.create_account("no_password@uwm.edu", "instructor")
+
+    def test_create_account_invalid_parameter_no_account_type(self):
         # no account type
         with self.assertRaises(TypeError):
             self.ad1.create_account("some_doof@uwm.edu", "password3")
+
+    def test_create_account_invalid_parameter_non_uwm_email(self):
         # non uwm email
         self.assertFalse(self.ad1.create_account("bobross@bobross.com", "happy_trees", "instructor"))
         # not in db
         with self.assertRaises(models.ModelPerson.DoesNotExist):
             models.ModelPerson.objects.get(email="bobross@bobross.com")
+
+    def test_create_account_invalid_parameter_weird_email(self):
         # weird email, props to Grant for this test
         self.assertFalse(self.ad1.create_account("bobross@uwm.edu@uwm.edu", "lotta_bob", "instructor"))
         # not in db
         with self.assertRaises(models.ModelPerson.DoesNotExist):
             models.ModelPerson.objects.get(email="bobross@uwm.edu@uwm.edu")
+
+    def test_create_account_invalid_parameter_not_an_email_addy(self):
         # not really an email addy
         self.assertFalse(self.ad1.create_account("TRUST_ME_IM_EMAIL", "seriously_real_address", "ta"))
         # not in db
         with self.assertRaises(models.ModelPerson.DoesNotExist):
             models.ModelPerson.objects.get(email="TRUST_ME_IM_EMAIL")
+
+    def test_create_account_invalid_parameter_wrong_arg_types(self):
         # int args
         self.assertFalse(self.ad1.create_account(7, 8, 9))
         with self.assertRaises(models.ModelPerson.DoesNotExist):
             models.ModelPerson.objects.get(email=7)
-        # email taken
-        self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
-        # old tests, making my own - Jeff
-        # self.instructor2 = Instructor("ad2@uwm.edu", "ad2pass")
-        # taken email
-        # self.assertFalse(self.ad1.create_account("ad2@uwm.edu", "new_pass", "instructor"))
-        # taken password
-        # I'm not sure that we should care if two or more people pick the same password - Jeff
-        # self.assertFalse(self.ad1.create_account("George_Likes_Beef@uwm.edu", "better_password"))
+    def test_create_account_invalid_parameter_taken_email(self):
+        # email taken
+        self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta")
+        self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
     def test_edit_account(self):
         # setup admin
@@ -190,6 +198,7 @@ class TestAdministrator(TestCase):
         tester = models.ModelPerson()
         tester.email = "rando@uwm.edu"
         tester.password = "random_password"
+        tester.save()
         # test edit password
         self.ad1.edit_account("rando@uwm.edu", "password", "new_pass")
 

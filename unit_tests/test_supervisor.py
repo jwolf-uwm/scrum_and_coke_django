@@ -3,55 +3,69 @@
 from django.test import TestCase
 from classes.Supervisor import Supervisor
 from ta_assign import models
+from classes.Course import Course
+from classes.Instructor import Instructor
+from classes.TA import TA
+from classes.Administrator import Administrator
 
 
 class TestSupervisor(TestCase):
-    sup = Supervisor("sup@uwm.edu", "sup_pass", "supervisor")
 
     def setUp(self):
-        # fake instructors
-        self.ins1_courses = []
-        self.ins1 = "ins1@uwm.edu"
-        self.ins2_courses = []
-        self.ins2 = "in2s@uwm.edu"
-        # fake course
-        self.course1_tas = []
-        self.course1_instructor = ""
-        self.course1 = ("CS101", 2)
-        self.course2_tas = []
-        self.course2_instructor = ""
-        self.course2 = ("CS202", 0)
-        # fake ta
-        self.ta1_sections = []
-        self.ta1_course = ""
-        self.ta1 = "ta1@uwm.edu"
-        self.ta2_sections = []
-        self.ta2_course = ""
-        self.ta2 = "ta2@uwm.edu"
-        self.ta3 = "ta3.uwm.edu"
-        self.ta3_course = ""
+        self.sup = Supervisor("sup@uwm.edu", "sup_pass", "Supervisor")
 
     def test_assign_instructor_course(self):
+        # fake instructors
+        self.ins1 = Instructor("ins1@uwm.edu", "blah", "instructor")
+        self.ins2 = Instructor("ins2@uwm.edu", "inspass", "instructor")
+        # fake course
+        self.course1 = Course("CS101", 2)
+        self.course2 = Course("CS202", 0)
         # instructor 1 is assigned CS101
-        self.sup.assign_instructor(self.ins1, self.course1[0])
-        self.assertEqual(self.ins1_courses[0], "CS101")
-        self.assertEqual(self.course1_instructor, "ins1@uwm.edu")
+        self.assertTrue(self.sup.assign_instructor(self.ins1, self.course1))
+        # self.assertEqual(self.ins1.courses[0], self.course1)
+        self.assertEqual(self.course1.instructor.email, "ins1@uwm.edu")
 
         # assign instructor 1 another course
-        self.sup.assign_instructor(self.ins1, self.course2[0])
-        self.assertEqual(self.ins1_courses[1], "CS202")
-        self.assertEqual(self.course2_instructor, "ins1@uwm.edu")
+        self.assertTrue(self.sup.assign_instructor(self.ins1, self.course2))
+        # self.assertEqual(self.ins1.courses[1], self.course2)
+        self.assertEqual(self.course2.instructor.email, "ins1@uwm.edu")
 
         # instructor 2 is assigned CS101
-        self.sup.assign_instructor(self.ins2, self.course1[0])
-        self.assertEqual(self.ins2_courses[0], "CS101")
-        self.assertEqual(self.course1_instructor, "ins2@uwm.edu")
-        self.assertNotEqual(self.ins1_courses[0], "CS101")
+        self.assertTrue(self.sup.assign_instructor(self.ins2, self.course1))
+        # self.assertEqual(self.ins2.courses[0], self.course1)
+        self.assertEqual(self.course1.instructor.email, "ins2@uwm.edu")
+        # self.assertNotEqual(self.ins1.courses[0], self.course1)
 
-        self.assertRaises(self.sup.assign_instructor(self.ta1, self.course1[0]), TypeError)
+        self.ta1 = TA("ta1@uwm.edu", "beh", "TA")
+        with self.assertRaises(TypeError):
+            self.sup.assign_instructor(self.ta1, self.course1)
+
+        self.admin1 = Administrator("admin@uwm.edu", "admin1", "Administrator")
+        with self.assertRaises(TypeError):
+            self.sup.assign_instructor(self.admin1, self.course1)
+
+        with self.assertRaises(TypeError):
+            self.sup.assign_instructor(self.sup, self.course1)
+
+        self.sup.create_course("CS337-401", 3)
+        da_course = models.ModelCourse.objects.get(course_id="CS337-401")
+        # self.test_course = Course(da_course.course_id, da_course.num_labs)
+        # self.sup.assign_instructor(self.ins1, self.test_course)
+        da_courseaa = models.ModelCourse.objects.get(course_id="CS337-401")
+        self.assertEquals(da_courseaa.num_labs, da_course.num_labs)
+        self.assertEquals(da_courseaa.course_id, da_course.course_id)
+        # self.assertEquals(da_courseaa.instructor, self.ins1.email)
 
     def test_assign_ta_course(self):
         # TA 1 is assigned CS101
+        # fake instructors
+        self.ta1 = Instructor("ta1@uwm.edu", "blah", "TA")
+        self.ta2 = Instructor("ta2@uwm.edu", "inspass", "TA")
+        # fake course
+        self.course1 = Course("CS101", 2)
+        self.course2 = Course("CS202", 0)
+        # instructor 1 is assigned CS101
         self.sup.assign_ta_course(self.ta1, self.course1[0])
         self.assertEqual(self.ta1_course, "CS101")
         self.assertEqual(self.course1_tas[0], "ta1@uwm.edu")
@@ -87,5 +101,3 @@ class TestSupervisor(TestCase):
         self.assertRaises(self.sup.assign_ta_lab(self.ta1, self.course2[0]), OverflowError)
 
         self.assertRaises(self.sup.assign_ta_lab(self.ins1, self.course1[0]), TypeError)
-
-    models.ModelPerson.objects.all().delete()
