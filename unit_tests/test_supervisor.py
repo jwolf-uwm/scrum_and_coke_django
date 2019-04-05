@@ -16,8 +16,8 @@ class TestSupervisor(TestCase):
 
     def test_assign_instructor_course(self):
         # fake instructors
-        self.ins1 = Instructor("ins1@uwm.edu", "blah", "instructor")
-        self.ins2 = Instructor("ins2@uwm.edu", "inspass", "instructor")
+        self.ins1 = Instructor("ins1@uwm.edu", "blah", "Instructor")
+        self.ins2 = Instructor("ins2@uwm.edu", "inspass", "Instructor")
         # fake course
         self.course1 = Course("CS101", 2)
         self.course2 = Course("CS202", 0)
@@ -48,6 +48,12 @@ class TestSupervisor(TestCase):
         with self.assertRaises(TypeError):
             self.sup.assign_instructor(self.sup, self.course1)
 
+        with self.assertRaises(AttributeError):
+            self.sup.assign_instructor(self.ins1, "CS301-111")
+
+        with self.assertRaises(AttributeError):
+            self.sup.assign_instructor("ins1@uwm.edu", self.course1)
+
         self.sup.create_course("CS337-401", 3)
         da_course = models.ModelCourse.objects.get(course_id="CS337-401")
         # self.test_course = Course(da_course.course_id, da_course.num_labs)
@@ -60,36 +66,63 @@ class TestSupervisor(TestCase):
     def test_assign_ta_course(self):
         # TA 1 is assigned CS101
         # fake instructors
-        self.ta1 = Instructor("ta1@uwm.edu", "blah", "TA")
-        self.ta2 = Instructor("ta2@uwm.edu", "inspass", "TA")
+        self.ta1 = TA("ta1@uwm.edu", "blah", "TA")
+        self.ta2 = TA("ta2@uwm.edu", "inspass", "TA")
+        self.ta3 = TA("ta3@uwm.edu", "pass3", "TA")
         # fake course
-        self.course1 = Course("CS101", 2)
-        self.course2 = Course("CS202", 0)
+        self.course1 = Course("CS101-301", 2)
+        self.course2 = Course("CS202-201", 0)
         # instructor 1 is assigned CS101
-        self.sup.assign_ta_course(self.ta1, self.course1[0])
-        self.assertEqual(self.ta1_course, "CS101")
-        self.assertEqual(self.course1_tas[0], "ta1@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta1, self.course1))
+        self.assertEqual(self.course1.tee_ays[0], "ta1@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course=models.ModelCourse.objects.get(course_id="CS101-301"), TA=models.ModelPerson.objects.get(email="ta1@uwm.edu"))
+        self.assertEqual(db_ta_course.TA, models.ModelPerson.objects.get(email="ta1@uwm.edu"))
+        self.assertEqual(db_ta_course.course, models.ModelCourse.objects.get(course_id="CS101-301"))
 
         # assign TA 1 another course
-        self.sup.assign_ta_course(self.ta1, self.course2[0])
-        self.assertEqual(self.ta1_course, "CS202")
-        self.assertEqual(self.course2_tas[0], "ta1@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta1, self.course2))
+        self.assertEqual(self.course1.tee_ays[0], "ta1@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course=models.ModelCourse.objects.get(course_id="CS202-201"),
+                                                        TA=models.ModelPerson.objects.get(email="ta1@uwm.edu"))
+        self.assertEqual(db_ta_course.TA, models.ModelPerson.objects.get(email="ta1@uwm.edu"))
+        self.assertEqual(db_ta_course.course, models.ModelCourse.objects.get(course_id="CS202-201"))
 
         # TA 2 is assigned CS101
-        self.sup.assign_ta_course(self.ta2, self.course1[0])
-        self.assertEqual(self.ta2_course, "CS101")
-        self.assertEqual(self.course1_tas[1], "ins2@uwm.edu")
-        self.assertEqual(self.course1_tas[0], "ins1@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta2, self.course1))
+        self.assertEqual(self.course1.tee_ays[0], "ta1@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course=models.ModelCourse.objects.get(course_id="CS101-301"),
+                                                        TA=models.ModelPerson.objects.get(email="ta2@uwm.edu"))
+        self.assertEqual(db_ta_course.TA, models.ModelPerson.objects.get(email="ta2@uwm.edu"))
+        self.assertEqual(db_ta_course.course, models.ModelCourse.objects.get(course_id="CS101-301"))
 
         # Try to assign a third TA to CS101
-        self.sup.assign_ta_course(self.ta3, self.course1[0])
-        self.assertNotEqual(self.ta3_course, "CS101")
-        self.assertNotEqual(self.course1_tas[2], "ins3@uwm.edu")
+        self.assertTrue(self.sup.assign_ta_course(self.ta3, self.course1))
+        self.assertEqual(self.course1.tee_ays[0], "ta1@uwm.edu")
+        db_ta_course = models.ModelTACourse.objects.get(course=models.ModelCourse.objects.get(course_id="CS101-301"),
+                                                        TA=models.ModelPerson.objects.get(email="ta3@uwm.edu"))
+        self.assertEqual(db_ta_course.TA, models.ModelPerson.objects.get(email="ta3@uwm.edu"))
+        self.assertEqual(db_ta_course.course, models.ModelCourse.objects.get(course_id="CS101-301"))
 
-        self.assertRaises(self.sup.assign_ta_course(self.ins1, self.course1[0]), TypeError)
+        self.admin1 = Administrator("admin@uwm.edu", "admin1", "Administrator")
+        with self.assertRaises(TypeError):
+            self.sup.assign_ta_course(self.admin1, self.course1)
+
+        with self.assertRaises(TypeError):
+            self.sup.assign_ta_course(self.sup, self.course1)
+
+        self.ins1 = Instructor("ins@uwm.edu", "ins11111", "Instructor")
+        with self.assertRaises(TypeError):
+            self.sup.assign_ta_course(self.ins1, self.course1)
+
+        with self.assertRaises(AttributeError):
+            self.sup.assign_ta_course(self.ta1, "CS301-111")
+
+        with self.assertRaises(AttributeError):
+            self.sup.assign_ta_course("ta1@uwm.edu", self.course1)
+
 
     def test_assign_ta_lab(self):
-        # TA 1 is assigned CS101 - 801
+        #TA 1 is assigned CS101 - 801
         self.sup.assign_ta_lab(self.ta1, "CS101", 801)
         self.assertEqual(self.ta1_sections[0], 801)
 
