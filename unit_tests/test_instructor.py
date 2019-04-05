@@ -7,8 +7,8 @@ from ta_assign import models
 
 class TestInstructor(TestCase):
 
-    instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD")
-    instructor2 = Instructor("instructor2@uwm.edu", "DEFAULT_PASSWORD")
+    instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD", "instructor")
+    instructor2 = Instructor("instructor2@uwm.edu", "DEFAULT_PASSWORD", "instructor")
 
     def setup(self):
         # self.instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD")

@@ -7,7 +7,7 @@ from ta_assign import models
 
 class TestTA(TestCase):
 
-    ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
+    ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD", "ta")
 
     def setup(self):
         # self.ta1 = TA("DEFAULT_EMAIL@uwm.edu", "DEFAULT_PASSWORD")
