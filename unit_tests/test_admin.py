@@ -197,10 +197,6 @@ class TestAdministrator(TestCase):
         self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
     def test_edit_account(self):
-        # setup admin
-        self.ad1 = Administrator("ad1@uwm.edu", "ad1pass", "administrator")
-        # setup supervisor
-        self.sup1 = Supervisor("sup1@uwm.edu", "sup1pass", "supervisor")
         # create a test user in the system
         tester = models.ModelPerson()
         tester.email = "rando@uwm.edu"
