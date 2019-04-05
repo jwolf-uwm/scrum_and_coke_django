@@ -121,14 +121,15 @@ class Administrator(Person):
 
         string_list = []
 
-        # not idea
-        # l workaround here, supervisor inherits from admin, so it shows up as an admin in the database
-        # as well as a supervisor, so we just grab the first admin, which better be the right one
-        admin = models.ModelAdministrator.objects.all()
-        string_list.append("Administrator: " + admin[0].name + " | " + admin[0].email + " | " + str(admin[0].phone))
-        string_list.append("")
+        people = models.ModelPerson.objects.all()
 
-        for supervi in models.ModelSupervisor.objects.all():
+        admins = models.ModelPerson.objects.filter(type="administrator")
+        for admin in admins:
+            string_list.append("Administrator: " + admin[0].name + " | " + admin[0].email + " | " + str(admin[0].phone))
+            string_list.append("")
+
+        supers = models.ModelPerson.objects.filter(type="supervisor")
+        for supervi in supers:
             string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
             string_list.append("")
 
