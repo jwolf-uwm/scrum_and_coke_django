@@ -235,16 +235,16 @@ class CmdHandler:
 
     def access_info(self, parse_cmd):
 
-        if len(parse_cmd) != 1:
-            return "Invalid command."
-
-        some_guy = self.whos_logged_in()
         info = "Invalid command."
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 1 or some_guy is None:
+            return info
 
         if some_guy.type == "administrator":
             admin = Administrator(some_guy.email, some_guy.password, some_guy.type)
             info = admin.access_info()
-        elif some_guy.type == "supervisor":
+        else:
             sup = Supervisor(some_guy.email, some_guy.password, some_guy.type)
             info = sup.access_info()
 
