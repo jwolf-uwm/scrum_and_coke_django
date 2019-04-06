@@ -248,10 +248,10 @@ class CmdHandler:
             return "View TA assignments not of the right format: [view_ta_assign]"
         if current_user.type == "ta":
             tee_ayy = TA(current_user.email, current_user.password, current_user.type)
-            tee_ayy.view_ta_assignments()
+            return tee_ayy.view_ta_assignments()
         if current_user.type == "instructor":
             instructor = Instructor(current_user.email, current_user.password, current_user.type)
-            instructor.view_ta_assign()
+            return instructor.view_ta_assign()
         else:
             return "You don't have access to that command."
 
