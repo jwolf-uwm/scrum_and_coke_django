@@ -103,15 +103,18 @@ class Administrator(Person):
             return True
 
         elif field == "phone_number":
-            if not isinstance(content, int):
-                print("phone number contains illegal characters")
+            parse_phone = content.split(".")
+            if len(parse_phone) != 3:
+                print("Bad length")
                 return False
-            elif int(content / 1000000000) >= 10 or int(content / 1000000000) <= 0:
-                print("phone number is the wrong length")
+            if not parse_phone[0].isdigit() or not parse_phone[1].isdigit() or not parse_phone[2].isdigit():
+                print("Not digits")
                 return False
-            else:
-                models.ModelPerson.objects.filter(email=email).update(phone=content)
-                return True
+            if len(parse_phone[0]) != 3 or len(parse_phone[1]) != 3 or len(parse_phone[2]) != 4:
+                print("Substrings bad length")
+                return False
+            models.ModelPerson.objects.filter(email=email).update(phone=content)
+            return True
 
         elif field == "name":
             models.ModelPerson.objects.filter(email=email).update(name=content)
