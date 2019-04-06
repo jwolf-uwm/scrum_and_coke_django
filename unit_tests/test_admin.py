@@ -236,7 +236,7 @@ class TestAdministrator(TestCase):
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 12341))
         self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 111111111111111111))
 
-    def test_edit_account_phone(self):
+    def test_edit_account_name(self):
         # create a test user in the system
         tester = models.ModelPerson()
         tester.email = "rando@uwm.edu"
