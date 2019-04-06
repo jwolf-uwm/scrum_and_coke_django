@@ -149,9 +149,11 @@ class CmdHandler:
         if some_guy.type == "administrator":
             admin = Administrator(some_guy.email, some_guy.password, some_guy.type)
             did_work = admin.create_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
-        else:
+        elif some_guy.type == "supervisor":
             sup = Supervisor(some_guy.email, some_guy.password, some_guy.type)
             did_work = sup.create_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
+        else:
+            return "Invalid command."
 
         if did_work:
             return "Account created!"
