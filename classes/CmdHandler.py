@@ -107,10 +107,19 @@ class CmdHandler:
             return return_string
 
     def login(self, parse_cmd):
-        return
+        if len(parse_cmd) != 3:
+            return "Incorrect Command"
+        return Person.login(parse_cmd[1], parse_cmd[2])
 
     def logout(self, parse_cmd):
-        return
+        if len(parse_cmd) != 1:
+            return "Incorrect Command"
+        temp = self.whos_logged_in()
+        if temp is None:
+            return "Incorrect Command"
+
+        person = Person(temp.email, temp.password, temp.type)
+        return person.logout()
 
     def create_course(self, parse_cmd):
         current_user = self.whos_logged_in()
@@ -134,8 +143,7 @@ class CmdHandler:
     def create_account(self, parse_cmd):
         some_guy = self.whos_logged_in()
 
-        if len(parse_cmd) != 4 or some_guy is None or some_guy.type != "administrator" \
-                or some_guy.type != "supervisor":
+        if len(parse_cmd) != 4:
             return "Invalid command."
 
         if some_guy.type == "administrator":
@@ -238,10 +246,10 @@ class CmdHandler:
 
         if len(parse_cmd) != 1:
             return "View TA assignments not of the right format: [view_ta_assign]"
-        if self.current_user.type == "ta":
+        if current_user.type == "ta":
             tee_ayy = TA(current_user.email, current_user.password, current_user.type)
             tee_ayy.view_ta_assignments()
-        if self.current_user.type == "instructor":
+        if current_user.type == "instructor":
             instructor = Instructor(current_user.email, current_user.password, current_user.type)
             instructor.view_ta_assign()
         else:
