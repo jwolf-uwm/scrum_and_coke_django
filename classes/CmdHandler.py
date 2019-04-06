@@ -141,6 +141,9 @@ class CmdHandler:
             return "Yeah, you don't have access to that command. Nice try buddy."
 
     def create_account(self, parse_cmd):
+        # Jeff's method
+        # calls create_account for admin and supervisor
+
         some_guy = self.whos_logged_in()
 
         if len(parse_cmd) != 4:
@@ -234,11 +237,14 @@ class CmdHandler:
             return "That wasn't a very good account field."
 
     def access_info(self, parse_cmd):
+        # Jeff's method
+        # calls access_info for admin and supervisor
 
-        if len(parse_cmd) != 1:
-            return "Invalid command."
-
+        info = "Invalid command."
         some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 1 or some_guy is None:
+            return info
 
         if some_guy.type == "administrator":
             admin = Administrator(some_guy.email, some_guy.password, some_guy.type)

@@ -132,29 +132,26 @@ class Administrator(Person):
     def access_info(self):
         # Jeff's method
         # Usage: access_info()
-        # returns a list of strings of all users in the database
-        # each string is as follows:
-        #   "ACCOUNT_TYPE: name | email address | phone"
-        # if user is instructor following strings are:
-        #   "Classes assigned: class1, class2, class3"
-        #   "TAs assigned : ta1, ta2, ta3"
-        # if user is ta, following strings are:
-        #   "Classes assigned: class1, class2, class3"
-        #   NOT IMPLEMENTED: "Labs assigned: lab1, lab2, lab3"
+        # returns a string of all users/courses in the system
+        # with appropriate linebreaks for display
 
-        string_list = ""
+        string_list = "Administrator:\n"
 
         admins = models.ModelPerson.objects.filter(type="administrator")
         for admin in admins:
-            string_list = string_list + "Administrator: " + admin.name + " | " + admin.email + " | " + \
+            string_list = string_list + admin.name + " | " + admin.email + " | " + \
                           str(admin.phone) + "\n"
             string_list = string_list + "\n"
 
+        string_list = string_list + "Supervisor:\n"
+
         supers = models.ModelPerson.objects.filter(type="supervisor")
         for supervi in supers:
-            string_list = string_list + "Supervisor: " + supervi.name + " | " + supervi.email + " | " + \
+            string_list = string_list + supervi.name + " | " + supervi.email + " | " + \
                           str(supervi.phone) + "\n"
             string_list = string_list + "\n"
+
+        string_list = string_list + "Instructors:\n"
 
         instructs = models.ModelPerson.objects.filter(type="instructor")
         for instruct in instructs:
@@ -167,9 +164,13 @@ class Administrator(Person):
 
             string_list = string_list + "\n"
 
+        string_list = string_list + "\n"
+
+        string_list = string_list + "TAs:\n"
+
         tee_ayys = models.ModelPerson.objects.filter(type="ta")
         for tee_ayy in tee_ayys:
-            string_list = string_list + "TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone) + \
+            string_list = string_list + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone) + \
                           "\n"
 
             for ta_courses in models.ModelTACourse.objects.all():
@@ -178,7 +179,10 @@ class Administrator(Person):
 
             string_list = string_list + "\n"
 
+        string_list = string_list + "\n"
+
+        string_list = string_list + "Courses:\n"
         courses = models.ModelCourse.objects.all()
         for course in courses:
-            string_list = string_list + "Course: " + course.course_id + "\n"
+            string_list = string_list + course.course_id + "\n"
         return string_list
