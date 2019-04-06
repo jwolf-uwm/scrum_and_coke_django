@@ -242,7 +242,18 @@ class CmdHandler:
         return
 
     def view_ta_assign(self, parse_cmd):
-        return
+        current_user = self.whos_logged_in()
+
+        if len(parse_cmd) != 1:
+            return "View TA assignments not of the right format: [view_ta_assign]"
+        if self.current_user.type == "ta":
+            tee_ayy = TA(current_user.email, current_user.password, current_user.type)
+            tee_ayy.view_ta_assignments()
+        if self.current_user.type == "instructor":
+            instructor = Instructor(current_user.email, current_user.password, current_user.type)
+            instructor.view_ta_assign()
+        else:
+            return "You don't have access to that command."
 
     """
     def deal_with_command(self, some_cmd):
