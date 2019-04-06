@@ -200,7 +200,7 @@ class CmdHandler:
             if current_user.type == "administrator":
                 adm = Administrator(current_user.email, current_user.password, current_user.type)
                 if adm.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
-                    return "User's email has been changed successfully"
+                    return "User's " + parse_cmd[2] + " has been changed successfully"
                 else:
                     return "An error occurred"
             elif current_user.type == "supervisor":
@@ -217,7 +217,7 @@ class CmdHandler:
             if current_user.type == "administrator":
                 adm = Administrator(current_user.email, current_user.password, current_user.type)
                 if adm.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
-                    return "User's email has been changed successfully"
+                    return "User's " + parse_cmd[2] + " has been changed successfully"
                 else:
                     return "An error occurred"
             elif current_user.type == "supervisor":
