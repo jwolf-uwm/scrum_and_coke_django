@@ -165,7 +165,7 @@ class CmdHandler:
             name = ' '.join(parse_cmd[3:])
             if current_user.type == "administrator":
                 adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[1], name):
+                if adm.edit_account(parse_cmd[1], parse_cmd[2], name):
                     return "User's name has been changed successfully"
                 else:
                     return "An error occurred"
@@ -182,13 +182,13 @@ class CmdHandler:
                 return "Command not of the right format: [edit_account field content]"
             if current_user.type == "administrator":
                 adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[2], parse_cmd[3]):
+                if adm.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
                     return "User's email has been changed successfully"
                 else:
                     return "An error occurred"
             elif current_user.type == "supervisor":
                 sup = Supervisor(current_user.email, current_user.password, current_user.type)
-                if sup.create_course(parse_cmd[2], int(parse_cmd[3])):
+                if sup.edit_account(parse_cmd[1], parse_cmd[2], int(parse_cmd[3])):
                     return "User's " + parse_cmd[2] + " has been changed successfully"
                 else:
                     return "An error occurred"
@@ -199,13 +199,13 @@ class CmdHandler:
                 return "Command not of the right format: [edit_account field content]"
             if current_user.type == "administrator":
                 adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[2], parse_cmd[3]):
+                if adm.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
                     return "User's email has been changed successfully"
                 else:
                     return "An error occurred"
             elif current_user.type == "supervisor":
                 sup = Supervisor(current_user.email, current_user.password, current_user.type)
-                if sup.create_course(parse_cmd[2], int(parse_cmd[3])):
+                if sup.edit_account(parse_cmd[1], parse_cmd[2], int(parse_cmd[3])):
                     return "User's " + parse_cmd[2] + " has been changed successfully"
                 else:
                     return "An error occurred"
@@ -216,13 +216,13 @@ class CmdHandler:
                 return "Command not of the right format: [edit_account field content]"
             if current_user.type == "administrator":
                 adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[2], parse_cmd[3]):
+                if adm.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
                     return "User's email has been changed successfully"
                 else:
                     return "An error occurred"
             elif current_user.type == "supervisor":
                 sup = Supervisor(current_user.email, current_user.password, current_user.type)
-                if sup.create_course(parse_cmd[2], int(parse_cmd[3])):
+                if sup.edit_account(parse_cmd[1], parse_cmd[2], int(parse_cmd[3])):
                     return "User's " + parse_cmd[2] + " has been changed successfully"
                 else:
                     return "An error occurred"
