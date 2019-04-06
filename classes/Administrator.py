@@ -142,39 +142,43 @@ class Administrator(Person):
         #   "Classes assigned: class1, class2, class3"
         #   NOT IMPLEMENTED: "Labs assigned: lab1, lab2, lab3"
 
-        string_list = []
+        string_list = ""
 
         admins = models.ModelPerson.objects.filter(type="administrator")
         for admin in admins:
-            string_list.append("Administrator: " + admin.name + " | " + admin.email + " | " + str(admin.phone))
-            string_list.append("")
+            string_list = string_list + "Administrator: " + admin.name + " | " + admin.email + " | " + \
+                          str(admin.phone) + "\n"
+            string_list = string_list + "\n"
 
         supers = models.ModelPerson.objects.filter(type="supervisor")
         for supervi in supers:
-            string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
-            string_list.append("")
+            string_list = string_list + "Supervisor: " + supervi.name + " | " + supervi.email + " | " + \
+                          str(supervi.phone) + "\n"
+            string_list = string_list + "\n"
 
         instructs = models.ModelPerson.objects.filter(type="instructor")
         for instruct in instructs:
-            string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
+            string_list = string_list + "Instructor: " + instruct.name + " | " + instruct.email + " | " + \
+                          str(instruct.phone) + "\n"
 
             for courses in models.ModelCourse.objects.all():
                 if courses.instructor == instruct.email:
-                    string_list.append("Course: " + courses.course_id)
+                    string_list = string_list + "Course: " + courses.course_id + "\n"
 
-            string_list.append("")
+            string_list = string_list + "\n"
 
         tee_ayys = models.ModelPerson.objects.filter(type="ta")
         for tee_ayy in tee_ayys:
-            string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
+            string_list = string_list + "TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone) + \
+                          "\n"
 
             for ta_courses in models.ModelTACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list.append("Course: " + ta_courses.course.course_id)
+                    string_list = string_list + "Course: " + ta_courses.course.course_id + "\n"
 
-            string_list.append("")
+            string_list = string_list + "\n"
 
         courses = models.ModelCourse.objects.all()
         for course in courses:
-            string_list.append("Course: " + course.course_id)
+            string_list = string_list + "Course: " + course.course_id + "\n"
         return string_list

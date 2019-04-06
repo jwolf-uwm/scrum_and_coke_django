@@ -239,7 +239,6 @@ class CmdHandler:
             return "Invalid command."
 
         some_guy = self.whos_logged_in()
-        info = []
 
         if some_guy.type == "administrator":
             admin = Administrator(some_guy.email, some_guy.password, some_guy.type)
