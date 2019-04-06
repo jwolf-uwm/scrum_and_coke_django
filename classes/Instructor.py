@@ -22,7 +22,17 @@ class Instructor(Person):
         return
 
     def view_ta_assign(self):
-        return
+        string_list = []
+        tee_ayys = models.ModelPerson.objects.filter(type="ta")
+        for tee_ayy in tee_ayys:
+            # string_list.append("TA: " + tee_ayy.email)
+
+            for ta_courses in models.ModelTACourse.objects.all():
+                if ta_courses.TA.email == tee_ayy.email:
+                    string_list.append("Course: " + ta_courses.course.course_id + " TA: " + ta_courses.TA.name + ", "
+                                       + ta_courses.TA.email)
+
+        return string_list
 
     def edit_contact_info(self, field, content):
         return
