@@ -105,10 +105,13 @@ class Administrator(Person):
         elif field == "phone_number":
             parse_phone = content.split(".")
             if len(parse_phone) != 3:
+                print("Bad length")
                 return False
             if not parse_phone[0].isdigit() or not parse_phone[1].isdigit() or not parse_phone[2].isdigit():
+                print("Not digits")
                 return False
             if len(parse_phone[0]) != 3 or len(parse_phone[1]) != 3 or len(parse_phone[2]) != 4:
+                print("Substrings bad length")
                 return False
             models.ModelPerson.objects.filter(email=email).update(phone=content)
             return True
