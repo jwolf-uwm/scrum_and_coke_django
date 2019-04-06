@@ -120,9 +120,8 @@ class TestSupervisor(TestCase):
         with self.assertRaises(AttributeError):
             self.sup.assign_ta_course("ta1@uwm.edu", self.course1)
 
-
     def test_assign_ta_lab(self):
-        #TA 1 is assigned CS101 - 801
+        # TA 1 is assigned CS101 - 801
         self.sup.assign_ta_lab(self.ta1, "CS101", 801)
         self.assertEqual(self.ta1_sections[0], 801)
 
