@@ -246,10 +246,10 @@ class CmdHandler:
 
         if len(parse_cmd) != 1:
             return "View TA assignments not of the right format: [view_ta_assign]"
-        if self.current_user.type == "ta":
+        if current_user.type == "ta":
             tee_ayy = TA(current_user.email, current_user.password, current_user.type)
             tee_ayy.view_ta_assignments()
-        if self.current_user.type == "instructor":
+        if current_user.type == "instructor":
             instructor = Instructor(current_user.email, current_user.password, current_user.type)
             instructor.view_ta_assign()
         else:
