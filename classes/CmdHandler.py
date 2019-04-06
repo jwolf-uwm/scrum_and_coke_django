@@ -131,7 +131,13 @@ class CmdHandler:
         return
 
     def view_ta_assign(self, parse_cmd):
-        return
+        if len(parse_cmd) != 1:
+            return "View TA assignments not of the right format: [view_ta_assignments]"
+        if self.current_user.type == "ta":
+            tee_ayy = TA(self.current_user.email, self.current_user.password, self.current_user.type)
+            tee_ayy.view_ta_assignments()
+        else:
+            return "Yeah, you don't have access to that command."
 
     """
     def deal_with_command(self, some_cmd):
