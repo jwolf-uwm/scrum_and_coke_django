@@ -67,38 +67,41 @@ class CmdHandler:
                 return "Please run setup before attempting to execute commands."
             # create a new admin
             else:
-                self.setup()
-
+                setup_string = self.setup()
+                return setup_string
         else:
             parse_cmd = some_cmd.split()
             first_parse = parse_cmd[0]
+            return_string = ""
 
             if first_parse == "login":
-                self.login(parse_cmd)
+                return_string = self.login(parse_cmd)
 
             elif first_parse == "logout":
-                self.logout(parse_cmd)
+                return_string = self.logout(parse_cmd)
 
             elif first_parse == "create_course":
-                self.create_course(parse_cmd)
+                return_string = self.create_course(parse_cmd)
 
             elif first_parse == "create_account":
-                self.create_account(parse_cmd)
+                return_string = self.create_account(parse_cmd)
 
             elif first_parse == "access_info":
-                self.access_info(parse_cmd)
+                return_string = self.access_info(parse_cmd)
 
             elif first_parse == "assign_instructor":
-                self.assign_instructor(parse_cmd)
+                return_string = self.assign_instructor(parse_cmd)
 
             elif first_parse == "assign_ta":
-                self.assign_ta(parse_cmd)
+                return_string = self.assign_ta(parse_cmd)
 
             elif first_parse == "view_ta_assign":
-                self.view_ta_assign(parse_cmd)
+                return_string = self.view_ta_assign(parse_cmd)
 
             else:
                 return "Command not found."
+
+            return return_string
 
     def login(self, parse_cmd):
         return
@@ -119,7 +122,23 @@ class CmdHandler:
             return "Yeah, you don't have access to that command. Nice try buddy."
 
     def create_account(self, parse_cmd):
-        return
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 4 or some_guy is None or some_guy.type != "administrator" \
+                or some_guy.type != "supervisor":
+            return "Invalid command."
+
+        if some_guy.type == "administrator":
+            admin = Administrator(some_guy.email, some_guy.password, some_guy.type)
+            did_work = admin.create_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
+        else:
+            sup = Supervisor(some_guy.email, some_guy.password, some_guy.type)
+            did_work = sup.create_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
+
+        if did_work:
+            return "Account created!"
+        else:
+            return "Account creation error."
 
     def access_info(self, parse_cmd):
         return
