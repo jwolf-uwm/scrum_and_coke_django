@@ -222,7 +222,6 @@ class CmdHandler:
                 return "Yeah, you don't have access to that command. Nice try buddy."
         else:
             return "That wasn't a very good account field."
-        return
 
     def access_info(self, parse_cmd):
         return
