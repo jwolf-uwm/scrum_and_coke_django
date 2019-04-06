@@ -86,7 +86,7 @@ class TestAdministrator(TestCase):
         with self.assertRaises(Exception):
             self.ad1.create_course("CS361-401", "000.000.0000")
 
-    # Create Account Tests
+    # Create Account Tests Start
     # created by Jeff
     def test_create_account_instructor(self):
         # Create Instructor Tests
@@ -192,6 +192,8 @@ class TestAdministrator(TestCase):
         self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta")
         self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
+    # Create Account Tests End
+
     def test_edit_account_password(self):
         # create a test user in the system
         tester = models.ModelPerson()
@@ -263,19 +265,62 @@ class TestAdministrator(TestCase):
     def test_send_notification(self):
         self.assertTrue(self.ad1.send_notification("I Like To Eat French Fries In The Rain"))
 
-    # Access Info Tests
+    # Access Info Tests Start
     # Jeff's tests
-    def test_access_info_admin(self):
+    def test_access_info_admin_title(self):
         access_info = self.ad1.access_info()
-        # admin info
-        self.assertEqual(access_info[0], "Administrator: DEFAULT | ad1@uwm.edu | 000.000.0000")
-        self.assertEqual(access_info[1], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[0], "Administrator:")
+
+    def test_access_info_admin_(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[1], "DEFAULT | ad1@uwm.edu | 000.000.0000")
+
+    def test_access_info_blank_one(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[2], "")
+
+    def test_access_info_sup_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[3], "Supervisor:")
 
     def test_access_info_sup(self):
         access_info = self.ad1.access_info()
-        # sup info
-        self.assertEqual(access_info[2], "Supervisor: DEFAULT | sup1@uwm.edu | 000.000.0000")
-        self.assertEqual(access_info[3], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[4], "DEFAULT | sup1@uwm.edu | 000.000.0000")
+
+    def test_access_info_blank_two(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[5], "")
+
+    def test_access_info_inst_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[6], "Instructors:")
+
+    def test_access_info_blank_three(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[7], "")
+
+    def test_access_info_ta_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[8], "TAs:")
+
+    def test_access_info_blank_four(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[9], "")
+
+    def test_access_info_course_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[10], "Courses:")
 
     def test_access_info_inst_no_course(self):
         # Add instructor, no course assignments
@@ -318,3 +363,4 @@ class TestAdministrator(TestCase):
         access_info = self.ad1.access_info()
         self.assertEqual(access_info[5], "Course: CS101")
 
+    # Access Info Tests End
