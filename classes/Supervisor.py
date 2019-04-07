@@ -62,7 +62,6 @@ class Supervisor(Administrator):
             return True
         else:
             return False
-        return False
 
     def assign_ta_lab(self, email, course_id, lab_section):
         """
