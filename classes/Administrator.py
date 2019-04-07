@@ -26,17 +26,23 @@ class Administrator(Person):
 
     def create_course(self, course_id, num_labs):
         if len(course_id) != 9:
-            raise Exception("{} is too short to be of the right form (CS###-###)".format(course_id))
+            print(f"{course_id} is too short to be of the right form (CS###-###)")
+            return False
         if course_id[0:2] != "CS":
-            raise Exception("{} is not a CS course (CS###-###)".format(course_id))
+            print(f"{course_id} is not a CS course (CS###-###)")
+            return False
         if not course_id[2:5].isdigit():
-            raise Exception("The course number contains an invalid digit (CS###-###)")
+            print("The course number contains an invalid digit (CS###-###)")
+            return False
         if course_id[5] != "-":
-            raise Exception("The course and section number should be separated by a hyphen (CS###-###)")
+            print("The course and section number should be separated by a hyphen (CS###-###)")
+            return False
         if not course_id[6:].isdigit():
-            raise Exception("The section number contains an invalid digit (CS###-###)")
+            print("The section number contains an invalid digit (CS###-###)")
+            return False
         if num_labs < 0 or num_labs > 5:
-            raise Exception("The number of lab sections should be positive and not exceed 5")
+            print("The number of lab sections should be positive and not exceed 5")
+            return False
         try:
             find_course = models.ModelCourse.objects.get(course_id=course_id)
         except models.ModelCourse.DoesNotExist:

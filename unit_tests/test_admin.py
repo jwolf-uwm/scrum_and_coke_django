@@ -58,33 +58,25 @@ class TestAdministrator(TestCase):
 
     def test_create_course_long_course_id(self):
         # course_id too long and not right format
-        with self.assertRaises(Exception):
-            self.ad1.create_course("totally_a_good_course_id", 2)
+        self.assertFalse(self.ad1.create_course("totally_a_good_course_id", 2))
 
     def test_create_course_course_id_incorrect(self):
         # course_id missing CS at beginning
-        with self.assertRaises(Exception):
-            self.ad1.create_course("123456789", 2)
+        self.assertFalse(self.ad1.create_course("123456789", 2))
         # course_id does not start with uppercase CS
-        with self.assertRaises(Exception):
-            self.ad1.create_course("cs361-401", 2)
+        self.assertFalse(self.ad1.create_course("cs361-401", 2))
         # course_id doesn't have only numbers for course number
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS3F4-321", 2)
+        self.assertFalse(self.ad1.create_course("CS3F4-321", 2))
         # course_id doesn't have a hyphen to separate course number and section number
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS3611234", 2)
+        self.assertFalse(self.ad1.create_course("CS3611234", 2))
         # course_id doesn't have only numbers for section number
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS361-1F3", 2)
+        self.assertFalse(self.ad1.create_course("CS361-1F3", 2))
 
     def test_create_course_bad_num_sections(self):
         # number of sections too big
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS361-401", 99)
+        self.assertFalse(self.ad1.create_course("CS361-401", 99))
         # number of sections is less than 0
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS361-401", "000.000.0000")
+        self.assertFalse(self.ad1.create_course("CS361-401", -1))
 
     # Create Account Tests
     # created by Jeff
