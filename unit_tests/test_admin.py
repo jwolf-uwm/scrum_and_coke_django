@@ -327,7 +327,7 @@ class TestAdministrator(TestCase):
         self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
         access_info = self.ad1.access_info()
         parse_info = access_info.split("\n")
-        self.assertEqual(parse_info[7], "Instructor: DEFAULT | inst1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[7], "DEFAULT | inst1@uwm.edu | 000.000.0000")
 
     def test_access_info_ta_no_course(self):
         # Add TA, no course assignments
@@ -368,5 +368,55 @@ class TestAdministrator(TestCase):
         access_info = self.ad1.access_info()
         parse_info = access_info.split("\n")
         self.assertEqual(parse_info[11], "CS101")
+
+    def test_access_info_all_the_things(self):
+        # ALL THE THINGS
+        self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
+        self.inst2 = Instructor("inst2@uwm.edu", "password", "instructor")
+        self.ta1 = TA("ta1@uwm.edu", "password", "ta")
+        self.ta2 = TA("ta2@uwm.edu", "password", "ta")
+        self.course1 = Course("CS101", 0)
+        self.course2 = Course("CS102", 0)
+        self.course1.instructor = "inst1@uwm.edu"
+        mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
+        mod_course1.instructor = "inst1@uwm.edu"
+        mod_course1.save()
+        self.course2.instructor = "inst2@uwm.edu"
+        mod_course2 = models.ModelCourse.objects.get(course_id="CS102")
+        mod_course2.instructor = "inst2@uwm.edu"
+        mod_course2.save()
+        mod_ta_course1 = models.ModelTACourse()
+        mod_ta_course1.course = mod_course1
+        mod_ta1 = models.ModelPerson.objects.get(email="ta1@uwm.edu")
+        mod_ta_course1.TA = mod_ta1
+        mod_ta_course1.save()
+        mod_ta_course2 = models.ModelTACourse()
+        mod_ta_course2.course = mod_course2
+        mod_ta2 = models.ModelPerson.objects.get(email="ta2@uwm.edu")
+        mod_ta_course2.TA = mod_ta2
+        mod_ta_course2.save()
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[0], "Administrator:")
+        self.assertEqual(parse_info[1], "DEFAULT | ad1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[2], "")
+        self.assertEqual(parse_info[3], "Supervisor:")
+        self.assertEqual(parse_info[4], "DEFAULT | sup1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[5], "")
+        self.assertEqual(parse_info[6], "Instructors:")
+        self.assertEqual(parse_info[7], "DEFAULT | inst1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[8], "Course: CS101")
+        self.assertEqual(parse_info[9], "DEFAULT | inst2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[10], "Course: CS102")
+        self.assertEqual(parse_info[11], "")
+        self.assertEqual(parse_info[12], "TAs:")
+        self.assertEqual(parse_info[13], "DEFAULT | ta1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[14], "Course: CS101")
+        self.assertEqual(parse_info[15], "DEFAULT | ta2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[16], "Course: CS102")
+        self.assertEqual(parse_info[17], "")
+        self.assertEqual(parse_info[18], "Courses:")
+        self.assertEqual(parse_info[19], "CS101")
+        self.assertEqual(parse_info[20], "CS102")
 
     # Access Info Tests End

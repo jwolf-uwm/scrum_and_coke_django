@@ -155,7 +155,7 @@ class Administrator(Person):
 
         instructs = models.ModelPerson.objects.filter(type="instructor")
         for instruct in instructs:
-            string_list = string_list + "Instructor: " + instruct.name + " | " + instruct.email + " | " + \
+            string_list = string_list + instruct.name + " | " + instruct.email + " | " + \
                           str(instruct.phone) + "\n"
 
             for courses in models.ModelCourse.objects.all():
