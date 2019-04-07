@@ -138,49 +138,53 @@ class Administrator(Person):
     def access_info(self):
         # Jeff's method
         # Usage: access_info()
-        # returns a list of strings of all users in the database
-        # each string is as follows:
-        #   "ACCOUNT_TYPE: name | email address | phone"
-        # if user is instructor following strings are:
-        #   "Classes assigned: class1, class2, class3"
-        #   "TAs assigned : ta1, ta2, ta3"
-        # if user is ta, following strings are:
-        #   "Classes assigned: class1, class2, class3"
-        #   NOT IMPLEMENTED: "Labs assigned: lab1, lab2, lab3"
+        # returns a string of all users/courses in the system
+        # with appropriate linebreaks for display
 
-        string_list = []
+        string_list = "Administrator:\n"
 
         admins = models.ModelPerson.objects.filter(type="administrator")
         for admin in admins:
-            string_list.append("Administrator: " + admin.name + " | " + admin.email + " | " + str(admin.phone))
-            string_list.append("")
+            string_list = string_list + admin.name + " | " + admin.email + " | " + \
+                          str(admin.phone) + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "Supervisor:\n"
 
         supers = models.ModelPerson.objects.filter(type="supervisor")
         for supervi in supers:
-            string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
-            string_list.append("")
+            string_list = string_list + supervi.name + " | " + supervi.email + " | " + \
+                          str(supervi.phone) + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "Instructors:\n"
 
         instructs = models.ModelPerson.objects.filter(type="instructor")
         for instruct in instructs:
-            string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
+            string_list = string_list + instruct.name + " | " + instruct.email + " | " + \
+                          str(instruct.phone) + "\n"
 
             for courses in models.ModelCourse.objects.all():
                 if courses.instructor == instruct.email:
-                    string_list.append("Course: " + courses.course_id)
+                    string_list = string_list + "Course: " + courses.course_id + "\n"
 
-            string_list.append("")
+        string_list = string_list + "\n"
+
+        string_list = string_list + "TAs:\n"
 
         tee_ayys = models.ModelPerson.objects.filter(type="ta")
         for tee_ayy in tee_ayys:
-            string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
+            string_list = string_list + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone) + \
+                          "\n"
 
             for ta_courses in models.ModelTACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list.append("Course: " + ta_courses.course.course_id)
+                    string_list = string_list + "Course: " + ta_courses.course.course_id + "\n"
 
-            string_list.append("")
+        string_list = string_list + "\n"
 
+        string_list = string_list + "Courses:\n"
         courses = models.ModelCourse.objects.all()
         for course in courses:
-            string_list.append("Course: " + course.course_id)
+            string_list = string_list + course.course_id + "\n"
         return string_list

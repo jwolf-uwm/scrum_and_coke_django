@@ -15,7 +15,7 @@ class Supervisor(Administrator):
         """
         assigns the given instructor's course to the course parameter
         """
-        if instructor.type != "Instructor":
+        if instructor.type != "instructor":
             raise TypeError("invalid type")
         try:
             find_course = models.ModelCourse.objects.get(course_id=course.course_id)
@@ -41,7 +41,7 @@ class Supervisor(Administrator):
         """
         assigns the given TA's course to the course parameter
         """
-        if ta.type != "TA":
+        if ta.type != "ta":
             raise TypeError("invalid type")
         try:
             find_course = models.ModelCourse.objects.get(course_id=course.course_id)
@@ -62,7 +62,6 @@ class Supervisor(Administrator):
             return True
         else:
             return False
-        return False
 
     def assign_ta_lab(self, email, course_id, lab_section):
         """
