@@ -325,18 +325,16 @@ class TestAdministrator(TestCase):
     def test_access_info_inst_no_course(self):
         # Add instructor, no course assignments
         self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
-        # access as admin
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[4], "Instructor: DEFAULT | inst1@uwm.edu | 000.000.0000")
-        self.assertEqual(access_info[5], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[7], "Instructor: DEFAULT | inst1@uwm.edu | 000.000.0000")
 
     def test_access_info_ta_no_course(self):
         # Add TA, no course assignments
         self.ta1 = TA("ta1@uwm.edu", "password", "ta")
-        # access as admin
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[4], "TA: DEFAULT | ta1@uwm.edu | 000.000.0000")
-        self.assertEqual(access_info[5], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[9], "DEFAULT | ta1@uwm.edu | 000.000.0000")
 
     def test_access_info_inst_one_course(self):
         # Instructor with a course
@@ -346,9 +344,9 @@ class TestAdministrator(TestCase):
         mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
         mod_course1.instructor = "inst1@uwm.edu"
         mod_course1.save()
-        # access as admin
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[5], "Course: CS101")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[8], "Course: CS101")
 
     def test_access_info_ta_one_course(self):
         # TA with a course
@@ -361,6 +359,14 @@ class TestAdministrator(TestCase):
         mod_ta_course1.TA = mod_ta1
         mod_ta_course1.save()
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[5], "Course: CS101")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[10], "Course: CS101")
+
+    def test_access_info_course(self):
+        # just a course
+        self.course1 = Course("CS101", 0)
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[11], "CS101")
 
     # Access Info Tests End
