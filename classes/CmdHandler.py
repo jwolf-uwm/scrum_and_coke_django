@@ -290,10 +290,55 @@ class CmdHandler:
         return info
 
     def assign_instructor(self, parse_cmd):
-        return
+        if len(parse_cmd) != 3:
+            return "Incorrect Command"
+        temp = self.whos_logged_in()
+        if temp is None:
+            return "Incorrect Command"
+
+        some_guy = Supervisor(temp.email, temp.password, temp.type)
+        try:
+            check_ins = models.ModelPerson.objects.get(email=parse_cmd[1])
+        except models.ModelPerson.DoesNotExist:
+            check_ins = None
+        if check_ins is None:
+            return "no such instructor"
+        try:
+            check_course = models.ModelCourse.objects.get(course_id=parse_cmd[2])
+        except models.ModelCourse.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such class"
+
+        if some_guy.assign_instructor(check_ins, check_course):
+            return "command successful"
+        else:
+            return "command unsuccessful"
 
     def assign_ta(self, parse_cmd):
-        return
+        if len(parse_cmd) != 3:
+            return "Incorrect Command"
+        temp = self.whos_logged_in()
+        if temp is None:
+            return "Incorrect Command"
+        try:
+            check_ta = models.ModelPerson.objects.get(email=parse_cmd[1])
+        except models.ModelPerson.DoesNotExist:
+            check_ta = None
+        if check_ta is None:
+            return "no such instructor"
+        try:
+            check_course = models.ModelCourse.objects.get(course_id=parse_cmd[2])
+        except models.ModelCourse.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such class"
+
+        some_guy = Supervisor(temp.email, temp.password, temp.type)
+        if some_guy.assign_ta_course(check_ta, check_course):
+            return "command successful"
+        else:
+            return "command unsuccessful"
 
     def view_ta_assign(self, parse_cmd):
         current_user = self.whos_logged_in()
