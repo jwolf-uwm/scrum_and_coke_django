@@ -166,8 +166,8 @@ class CmdHandler:
             return "Account creation error."
 
     def edit_account(self, parse_cmd):
-        current_user = self.whos_logged_in()
 
+        current_user = self.whos_logged_in()
         fail_string = "Invalid command"
 
         if current_user.type != "administrator" and current_user.type != "supervisor":
