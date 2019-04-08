@@ -256,10 +256,30 @@ class CmdHandler:
         return info
 
     def assign_instructor(self, parse_cmd):
-        return
+        if len(parse_cmd) != 3:
+            return "Incorrect Command"
+        temp = self.whos_logged_in()
+        if temp is None:
+            return "Incorrect Command"
+
+        some_guy = Supervisor(temp.email, temp.password, temp.type)
+        if some_guy.assign_instructor(parse_cmd[1], parse_cmd[2]):
+            return "command successful"
+        else:
+            return "command unsuccessful"
 
     def assign_ta(self, parse_cmd):
-        return
+        if len(parse_cmd) != 3:
+            return "Incorrect Command"
+        temp = self.whos_logged_in()
+        if temp is None:
+            return "Incorrect Command"
+
+        some_guy = Supervisor(temp.email, temp.password, temp.type)
+        if some_guy.assign_ta_course(parse_cmd[1], parse_cmd[2]):
+            return "command successful"
+        else:
+            return "command unsuccessful"
 
     def view_ta_assign(self, parse_cmd):
         current_user = self.whos_logged_in()
