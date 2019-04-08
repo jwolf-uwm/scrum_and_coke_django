@@ -72,7 +72,7 @@ class CmdHandler:
         else:
             parse_cmd = some_cmd.split()
             first_parse = parse_cmd[0]
-            return_string = ""
+            return_string = "Invalid command."
 
             if first_parse == "login":
                 return_string = self.login(parse_cmd)
@@ -100,9 +100,6 @@ class CmdHandler:
 
             elif first_parse == "view_ta_assign":
                 return_string = self.view_ta_assign(parse_cmd)
-
-            else:
-                return "I don't even know what the heck you just wrote. Do it again but better."
 
             return return_string
 
@@ -171,7 +168,7 @@ class CmdHandler:
         if current_user.type != "administrator" and current_user.type != "supervisor":
             return return_string
 
-        if parse_cmd[2] == "name":
+        if parse_cmd[2] == "name" and len(parse_cmd) > 3:
             i = 4
             while i < len(parse_cmd):
                 parse_cmd[3] = parse_cmd[3] + " " + parse_cmd[i]
