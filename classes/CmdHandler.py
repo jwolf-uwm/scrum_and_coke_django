@@ -166,6 +166,38 @@ class CmdHandler:
     def edit_account(self, parse_cmd):
         current_user = self.whos_logged_in()
 
+        return_string = "Invalid command"
+
+        if current_user.type != "administrator" and current_user.type != "supervisor":
+            return return_string
+
+        if parse_cmd[2] == "name":
+            i = 4
+            while i < len(parse_cmd):
+                parse_cmd[3] = parse_cmd[3] + " " + parse_cmd[i]
+                i = i + 1
+        else:
+            if len(parse_cmd) != 4:
+                return return_string
+
+        if current_user.type == "administrator":
+            admin1 = Administrator(current_user.email, current_user.password, current_user.type)
+            if admin1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
+                return_string = "Command successful."
+            else:
+                return_string = "An error occurred."
+        else:
+            super1 = Supervisor(current_user.email, current_user.password, current_user.type)
+            if super1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
+                return_string = "Command successful."
+            else:
+                return_string = "An error occurred."
+
+        return return_string
+    """
+    def edit_account(self, parse_cmd):
+        current_user = self.whos_logged_in()
+
         if parse_cmd[2] == "name":
             name = ' '.join(parse_cmd[3:])
             if current_user.type == "administrator":
@@ -235,6 +267,7 @@ class CmdHandler:
                 return "Yeah, you don't have access to that command. Nice try buddy."
         else:
             return "That wasn't a very good account field."
+    """
 
     def access_info(self, parse_cmd):
         # Jeff's method
