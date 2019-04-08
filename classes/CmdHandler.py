@@ -297,7 +297,20 @@ class CmdHandler:
             return "Incorrect Command"
 
         some_guy = Supervisor(temp.email, temp.password, temp.type)
-        if some_guy.assign_instructor(parse_cmd[1], parse_cmd[2]):
+        try:
+            check_ins = models.ModelPerson.objects.get(email=parse_cmd[1])
+        except models.ModelPerson.DoesNotExist:
+            check_ins = None
+        if check_ins is None:
+            return "no such instructor"
+        try:
+            check_course = models.ModelCourse.objects.get(course_id=parse_cmd[2])
+        except models.ModelCourse.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such class"
+
+        if some_guy.assign_instructor(check_ins, check_course):
             return "command successful"
         else:
             return "command unsuccessful"
@@ -308,9 +321,21 @@ class CmdHandler:
         temp = self.whos_logged_in()
         if temp is None:
             return "Incorrect Command"
+        try:
+            check_ta = models.ModelPerson.objects.get(email=parse_cmd[1])
+        except models.ModelPerson.DoesNotExist:
+            check_ta = None
+        if check_ta is None:
+            return "no such instructor"
+        try:
+            check_course = models.ModelCourse.objects.get(course_id=parse_cmd[2])
+        except models.ModelCourse.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such class"
 
         some_guy = Supervisor(temp.email, temp.password, temp.type)
-        if some_guy.assign_ta_course(parse_cmd[1], parse_cmd[2]):
+        if some_guy.assign_ta_course(check_ta, check_course):
             return "command successful"
         else:
             return "command unsuccessful"
