@@ -166,12 +166,14 @@ class CmdHandler:
             return "Account creation error."
 
     def edit_account(self, parse_cmd):
-        current_user = self.whos_logged_in()
+        # Jeff's method
+        # calls edit_account for admin and supervisor
 
-        return_string = "Invalid command"
+        current_user = self.whos_logged_in()
+        fail_string = "Invalid command"
 
         if current_user.type != "administrator" and current_user.type != "supervisor":
-            return return_string
+            return fail_string
 
         if parse_cmd[2] == "name" and len(parse_cmd) > 3:
             i = 4
@@ -180,22 +182,19 @@ class CmdHandler:
                 i = i + 1
         else:
             if len(parse_cmd) != 4:
-                return return_string
+                return fail_string
 
         if current_user.type == "administrator":
             admin1 = Administrator(current_user.email, current_user.password, current_user.type)
-            if admin1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
-                return_string = "Command successful."
-            else:
-                return_string = "An error occurred."
+            did_work = admin1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
         else:
             super1 = Supervisor(current_user.email, current_user.password, current_user.type)
-            if super1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
-                return_string = "Command successful."
-            else:
-                return_string = "An error occurred."
+            did_work = super1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
 
-        return return_string
+        if did_work:
+            return "Command successful."
+        else:
+            return "Command error."
     """
     def edit_account(self, parse_cmd):
         current_user = self.whos_logged_in()
