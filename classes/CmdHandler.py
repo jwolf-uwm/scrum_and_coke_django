@@ -74,6 +74,11 @@ class CmdHandler:
             first_parse = parse_cmd[0]
             return_string = "Invalid command."
 
+            some_person = self.whos_logged_in()
+
+            if first_parse != "login" and some_person is None:
+                return "Please login first."
+
             if first_parse == "login":
                 return_string = self.login(parse_cmd)
 
