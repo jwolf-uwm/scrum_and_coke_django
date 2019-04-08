@@ -57,7 +57,6 @@ class Supervisor(Administrator):
             ta_course = models.ModelTACourse()
             ta_course.TA = find_ta
             ta_course.course = find_course
-            course.tee_ays.append(ta.email)
             ta_course.save()
             return True
         else:

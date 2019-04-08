@@ -326,7 +326,7 @@ class CmdHandler:
         except models.ModelPerson.DoesNotExist:
             check_ta = None
         if check_ta is None:
-            return "no such instructor"
+            return "no such ta"
         try:
             check_course = models.ModelCourse.objects.get(course_id=parse_cmd[2])
         except models.ModelCourse.DoesNotExist:
