@@ -72,7 +72,12 @@ class CmdHandler:
         else:
             parse_cmd = some_cmd.split()
             first_parse = parse_cmd[0]
-            return_string = ""
+            return_string = "Invalid command."
+
+            some_person = self.whos_logged_in()
+
+            if first_parse != "login" and some_person is None:
+                return "Please login first."
 
             if first_parse == "login":
                 return_string = self.login(parse_cmd)
@@ -100,9 +105,6 @@ class CmdHandler:
 
             elif first_parse == "view_ta_assign":
                 return_string = self.view_ta_assign(parse_cmd)
-
-            else:
-                return "I don't even know what the heck you just wrote. Do it again but better."
 
             return return_string
 
@@ -163,6 +165,38 @@ class CmdHandler:
         else:
             return "Account creation error."
 
+    def edit_account(self, parse_cmd):
+        current_user = self.whos_logged_in()
+
+        return_string = "Invalid command"
+
+        if current_user.type != "administrator" and current_user.type != "supervisor":
+            return return_string
+
+        if parse_cmd[2] == "name" and len(parse_cmd) > 3:
+            i = 4
+            while i < len(parse_cmd):
+                parse_cmd[3] = parse_cmd[3] + " " + parse_cmd[i]
+                i = i + 1
+        else:
+            if len(parse_cmd) != 4:
+                return return_string
+
+        if current_user.type == "administrator":
+            admin1 = Administrator(current_user.email, current_user.password, current_user.type)
+            if admin1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
+                return_string = "Command successful."
+            else:
+                return_string = "An error occurred."
+        else:
+            super1 = Supervisor(current_user.email, current_user.password, current_user.type)
+            if super1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3]):
+                return_string = "Command successful."
+            else:
+                return_string = "An error occurred."
+
+        return return_string
+    """
     def edit_account(self, parse_cmd):
         current_user = self.whos_logged_in()
 
@@ -235,6 +269,7 @@ class CmdHandler:
                 return "Yeah, you don't have access to that command. Nice try buddy."
         else:
             return "That wasn't a very good account field."
+    """
 
     def access_info(self, parse_cmd):
         # Jeff's method
