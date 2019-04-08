@@ -25,16 +25,6 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
-    def test_create_course_as_supervisor(self):
-        # create a new course as supervisor
-        self.assertTrue(self.sup1.create_course("CS251-401", 3))
-        # get the added course from the db
-        da_course = models.ModelCourse.objects.get(course_id="CS251-401")
-        # make sure found course is the same
-        self.assertEqual(da_course.course_id, "CS251-401")
-        self.assertEqual(da_course.num_labs, 3)
-        self.assertEqual(da_course.instructor, "not_set@uwm.edu")
-
     def test_create_course_again(self):
         self.assertTrue(self.ad1.create_course("CS361-401", 3))
         # create the same course again with no changes
@@ -412,3 +402,58 @@ class TestAdministrator(TestCase):
         self.assertEqual(parse_info[20], "CS102")
 
     # Access Info Tests End
+
+    # Person tests
+    def test_init_(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(self.Administrator1.email, "Administrator1@uwm.edu")
+        self.assertEquals(self.Administrator1.password, "DEFAULT_PASSWORD")
+
+    def test_change_password(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertTrue(self.Administrator1.change_password("password"))
+        self.assertEquals(self.Administrator1.password, "password")
+        self.assertNotEquals(self.Administrator1.password, "DEFAULT_PASSWORD")
+
+    def test_change_email(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.Administrator1.change_email("snoop@uwm.edu")
+        self.assertEquals(self.Administrator1.email, "snoop@uwm.edu")
+        self.assertNotEquals(self.Administrator1.email, "Administrator1@uwm.edu")
+        self.assertFalse(self.Administrator1.change_email("snoop@gmail.com"))
+        self.assertFalse(self.Administrator1.change_email("no_at_symbol_or_dot_something"))
+
+    def test_change_phone(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.Administrator1.change_phone("414.414.4141")
+        self.assertEquals(self.Administrator1.phone_number, "414.414.4141")
+        self.assertNotEquals(self.Administrator1.phone_number, "000.000.0000")
+        self.assertFalse(self.Administrator1.change_phone("1234567890"))
+        self.assertFalse(self.Administrator1.change_phone("414-414-4141"))
+        self.assertFalse(self.Administrator1.change_phone("(414)414-4141"))
+        self.assertFalse(self.Administrator1.change_phone("abc.abc.abcd"))
+        self.assertFalse(self.Administrator1.change_phone("1234.1234.1234"))
+
+    def test_change_name(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.Administrator1.change_name("Snoop Doggy Dog")
+        self.assertEquals(self.Administrator1.name, "Snoop Doggy Dog")
+        self.assertNotEquals(self.Administrator1.name, "DEFAULT")
+
+    def test_get_contact_info(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(self.Administrator1.get_contact_info(), "Snoop Doggy Dog, snoop@uwm.edu, 4144244343")
+        self.assertNotEquals(self.Administrator1.get_contact_info(), "DEFAULT, Administrator1@uwm.edu, 0000000000")
+
+    def test_login(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(Administrator.login("Administrator1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
+        model_administrator1 = models.ModelPerson.objects.get(email=self.Administrator1.email)
+        self.assertTrue(model_administrator1.isLoggedOn)
+        self.assertEquals(Administrator.login("Administrator1@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
+        self.assertEquals(Administrator.login("snoop@uwm.edu", "password"), "Invalid login info")
+
+    def test_logout(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(Administrator.login("Administrator1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
+        self.assertTrue(self.Administrator1.logout())
