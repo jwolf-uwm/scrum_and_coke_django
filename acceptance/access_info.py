@@ -1,27 +1,21 @@
-import unittest
-from classes.Administrator import Administrator
-from classes.Supervisor import Supervisor
-from classes.Instructor import Instructor
-from classes.TA import TA
+from django.test import TestCase
+from classes.CmdHandler import CmdHandler
 
 
-class AccessInfoTests(unittest.TestCase):
+class CreateAccountTests(TestCase):
     def setUp(self):
-        self.ADMIN = Administrator("admin@uwm.edu", "adminPass")
-        self.ADMIN.change_name("Dave Brubeck")
-        self.ADMIN.change_phone(4141234567)
+        self.ui = CmdHandler()
 
-        self.SUPER = Supervisor("super@uwm.edu", "superPass")
-        self.SUPER.change_name("Donna Summer")
-        self.SUPER.change_phone(4149876543)
+    def test_access_info_no_setup(self):
+        self.assertEqual(self.ui.parse_command("access_info"),
+                         "Please run setup before attempting to execute commands.")
 
-        self.INSTR = Instructor("instr@uwm.edu", "instrPass")
-        self.INSTR.change_name("Dean Martin")
-        self.INSTR.change_phone(2621234567)
+    def test_command_access_info_no_login(self):
+        self.ui.parse_command("setup")
+        self.assertEqual(self.ui.parse_command("create_account ta@uwm.edu password ta"),
+                         "Please login first.")
 
-        self.T_AYY = TA("t_ayy@uwm.edu", "t_ayyPass")
-        self.T_AYY.change_name("Daniel Craig")
-        self.T_AYY.change_phone(2629876543)
+
 
     def test_valid_access_admin(self):
         self.ui.command("Login admin@uwm.edu adminPass")
