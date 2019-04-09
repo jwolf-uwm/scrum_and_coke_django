@@ -42,49 +42,49 @@ class AssignInstructorTests(TestCase):
         If the instructor entered does not exist, failure:
         - "Instructor does not exist."
     """
-    def test_command_assign_instructor_no_setup(self):
+    def test_assign_instructor_no_setup(self):
         self.assertEqual(self.ui.parse_command("assign_instructor ins1@uwm.edu CS201-401"),
                          "Please run setup before attempting to execute commands.")
 
-    def test_command_create_account_no_login(self):
+    def test_create_account_no_login(self):
         self.ui.parse_command("setup")
         self.assertEqual(self.ui.parse_command("assign_instructor ins1@uwm.edu CS201-401"),
                          "Please login first.")
 
-    def test_command_assign_instructor_supervisor(self):
+    def test_assign_instructor_supervisor(self):
         self.ui.parse_command("login supervisor@uwm.edu SupervisorPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu CS201-401"),
                          "command successful")
 
-    def test_command_assign_instructor_administrator(self):
+    def test_assign_instructor_administrator(self):
         self.ui.parse_command("login admin@uwm.edu AdministratorPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu CS201-401"),
                          "Access Denied")
 
-    def test_command_assign_instructor_instructor(self):
+    def test_assign_instructor_instructor(self):
         self.ui.parse_command("login instructor@uwm.edu InstructorPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu CS201-401"),
                          "Access Denied")
 
-    def test_command_assign_instructor_TA(self):
+    def test_assign_instructor_TA(self):
         self.ui.parse_command("login ta@uwm.edu TAPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu CS201-401"),
                          "Access Denied")
 
-    def test_command_assign_instructor_invalid_arguments(self):
+    def test_assign_instructor_invalid_arguments(self):
         self.ui.parse_command("login supervisor@uwm.edu SupervisorPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu"),
                          "Incorrect Command")
 
-    def test_command_assign_instructor_assign_TA(self):
+    def test_assign_instructor_assign_TA(self):
         self.ui.parse_command("login supervisor@uwm.edu SupervisorPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor ta@uwm.edu CS201-401"),
                          "no such instructor")
 
-    def test_command_invalid_email(self):
+    def test_invalid_email(self):
         self.ui.parse_command("login supervisor@uwm.edu SupervisorPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor ins1, SomeCSClass3"), "no such instructor")
 
-    def test_command_nonexistent_course(self):
+    def test_nonexistent_course(self):
         self.ui.parse_command("login supervisor@uwm.edu SupervisorPassword")
         self.assertEqual(self.ui.parse_command("assign_instructor ins1@uwm.edu CS400-601"), "no such course")
