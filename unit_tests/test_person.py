@@ -50,13 +50,17 @@ class TestPerson(TestCase):
 
     def test_login(self):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(Person.login("snoop@uwm.edu", "password"), "Invalid login info")
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
         model_person1 = models.ModelPerson.objects.get(email=self.person1.email)
         self.assertTrue(model_person1.isLoggedOn)
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
-        self.assertEquals(Person.login("snoop@uwm.edu", "password"), "Invalid login info")
+        self.assertEquals(Person.login("person2@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
 
     def test_logout(self):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.person2 = Person("person2@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.assertEquals(Person.login("person1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
+        self.assertEquals(Person.login("person2@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
         self.assertTrue(self.person1.logout())
