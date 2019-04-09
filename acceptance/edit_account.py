@@ -1,16 +1,10 @@
-import unittest
-from classes.Administrator import Administrator
-from classes.Supervisor import Supervisor
-from classes.Instructor import Instructor
-from classes.TA import TA
+from django.test import TestCase
+from classes.CmdHandler import CmdHandler
 
 
-class EditAccountTests(unittest.TestCase):
+class EditAccountTests(TestCase):
     def setUp(self):
-        self.SUP = Supervisor("SUP@uwm.edu", "SUP")
-        self.ADMIN = Administrator("ADMN@uwm.edu", "ADMIN")
-        self.INS = Instructor("INS@uwm.edu", "INS")
-        self.TA = TA("TA@uwm.edu", "TA")
+        self.ui = CmdHandler()
 
         """
         Admins and supervisors have permission to edit accounts
@@ -29,36 +23,107 @@ class EditAccountTests(unittest.TestCase):
         """
 
     def test_edit_admin(self):
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.assertEqual("edit_account ADMN@uwm.edu password admn", "account edited")
-        self.assertEqual(self.ADMIN.password, "admn")
-        self.assertEqual("edit_account ADMN@uwm.edu username ADMN2@uwm.edu", "account edited")
-        self.assertEqual(self.ADMIN.username, "ADMN2@uwm.edu")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_admin@uwm.edu password new_password"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_admin@uwm.edu name Dr. John Tang Boyland"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_admin@uwm.edu phone_number 999.999.9999"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_admin@uwm.edu email new_email@uwm.edu"),
+                         "Command successful.")
 
     def test_edit_sup(self):
-        self.ui.command("login SUP@uwm.edu SUP")
-        self.assertEqual("edit_account SUP@uwm.edu password admn", "account edited")
-        self.assertEqual(self.SUP.password, "admn")
-        self.assertEqual("edit_account SUP@uwm.edu username SUP2@uwm.edu", "account edited")
-        self.assertEqual(self.SUP.username, "SUP2@uwm.edu")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_super@uwm.edu password new_password"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_super@uwm.edu name Dr. John Tang Boyland"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_super@uwm.edu phone_number 999.999.9999"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_super@uwm.edu email new_email@uwm.edu"),
+                         "Command successful.")
 
-    def test_edit_TA(self):
-        self.ui.command("login TA@uwm.edu TA")
-        self.assertEqual("edit_account TA@uwm.edu password admn", "do not have permission to edit accounts")
-        self.assertEqual("edit_account TA@uwm.edu username TA3@uwm.edu", "do not have permission to edit accounts")
+    def test_edit_TA_as_admin(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu password new_password"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu name Dr. John Tang Boyland"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu phone_number 999.999.9999"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu email new_email@uwm.edu"),
+                         "Command successful.")
 
-    def test_edit_ins(self):
-        self.ui.command("login INS@uwm.edu INS")
-        self.assertEqual("edit_account INS@uwm.edu password admn", "do not have permission to edit accounts")
-        self.assertEqual("edit_account INS@uwm.edu username INS3@uwm.edu", "do not have permission to edit accounts")
+    def test_edit_TA_as_super(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu password new_password"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu name Dr. John Tang Boyland"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu phone_number 999.999.9999"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ta@uwm.edu email new_email@uwm.edu"),
+                         "Command successful.")
+
+    def test_edit_ins_as_admin(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account ins@uwm.edu password instructor")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu password new_password"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu name Dr. John Tang Boyland"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu phone_number 999.999.9999"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu email new_email@uwm.edu"),
+                         "Command successful.")
+
+    def test_edit_ins_as_super(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ins@uwm.edu password instructor")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu password new_password"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu name Dr. John Tang Boyland"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu phone_number 999.999.9999"),
+                         "Command successful.")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu email new_email@uwm.edu"),
+                         "Command successful.")
+
+    def test_edit_as_ta(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu email new_email@uwm.edu"),
+                         "Invalid command")
+
+    def test_edit_as_ins(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("edit_account ins@uwm.edu email new_email@uwm.edu"),
+                         "Invalid command")
 
     def test_edit_noargs(self):
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.assertEqual("edit_account  password admn", "invalid number of arguments")
-        self.assertEqual("edit_account admn", "invalid number of arguments")
-        self.assertEqual("edit_account", "invalid number of arguments")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("edit_account"),
+                         "Invalid command")
 
-    def test_edit_invalidargs(self):
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.assertEqual("edit_account ADMN@uwm.edu jajajaj admn", "invalid data to edit")
-        self.assertEqual("edit_account ADMN@uwm.edu cs250 admn", "invalid data to edit")
+    def test_edit_invalid_args(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("edit_account ta_assign_admin@uwm.edu jajajaj new_password"),
+                         "Command error.")
