@@ -48,25 +48,28 @@ class AssignInstructorTests(TestCase):
 
     def test_assign_instructor_administrator(self):
         self.ui.parse_command("setup")
-        self.ui.parse_command("login ta_assign_super@uwm.edu password")
-        self.ui.parse_command("create_account admin@uwm.edu password administrator")
-        self.ui.parse_command("logout")
-        self.ui.parse_command("login admin@uwm.edu password")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu CS201-401"),
                          "Access Denied")
 
     def test_assign_instructor_instructor(self):
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
-        self.ui.parse_command("login instructor@uwm.edu InstructorPassword")
-        self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu CS201-401"),
+        self.ui.parse_command("create_account inst@uwm.edu password instructor")
+        self.ui.parse_command("create_course CS201-401 3")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login inst@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("assign_instructor inst@uwm.edu CS201-401"),
                          "Access Denied")
 
     def test_assign_instructor_TA(self):
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu TAPassword ta")
+        self.ui.parse_command("create_course CS201-401 3")
+        self.ui.parse_command("logout")
         self.ui.parse_command("login ta@uwm.edu TAPassword")
-        self.assertEqual(self.ui.parse_command("assign_instructor instructor@uwm.edu CS201-401"),
+        self.assertEqual(self.ui.parse_command("assign_instructor inst@uwm.edu CS201-401"),
                          "Access Denied")
 
     def test_assign_instructor_invalid_arguments(self):
@@ -90,4 +93,5 @@ class AssignInstructorTests(TestCase):
     def test_nonexistent_course(self):
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ins1@uwm.edu password instructor")
         self.assertEqual(self.ui.parse_command("assign_instructor ins1@uwm.edu CS400-601"), "no such course")
