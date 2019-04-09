@@ -223,6 +223,8 @@ class CmdHandler:
             return "Incorrect Command"
 
         some_guy = Supervisor(temp.email, temp.password, temp.type)
+        if some_guy.type != "supervisor":
+            "Access Denied"
         try:
             check_ins = models.ModelPerson.objects.get(email=parse_cmd[1])
         except models.ModelPerson.DoesNotExist:

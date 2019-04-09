@@ -17,6 +17,10 @@ class AssignTACourse(unittest.TestCase):
         self.COURSE1 = Course("CS101", 2)
         self.COURSE2 = Course("CS222", 2)
 
+    def test_command_create_account_no_setup(self):
+        self.assertEqual(self.ui.parse_command("create_account ta@uwm.edu password ta"),
+                         "Please run setup before attempting to execute commands.")
+
     def assign_ta_course_sup(self):
         self.ui.command("Login sup@uwm.edu supPass")
         self.assertEqual(self.ui.command("assign_ta_course ta1@uwm.edu CS101"),
