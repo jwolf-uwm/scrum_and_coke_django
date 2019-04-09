@@ -175,6 +175,9 @@ class CmdHandler:
         if current_user.type != "administrator" and current_user.type != "supervisor":
             return fail_string
 
+        if len(parse_cmd) < 4:
+            return fail_string
+
         if parse_cmd[2] == "name" and len(parse_cmd) > 3:
             i = 4
             while i < len(parse_cmd):
