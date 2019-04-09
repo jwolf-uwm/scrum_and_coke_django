@@ -72,7 +72,12 @@ class CmdHandler:
         else:
             parse_cmd = some_cmd.split()
             first_parse = parse_cmd[0]
-            return_string = ""
+            return_string = "Invalid command."
+
+            some_person = self.whos_logged_in()
+
+            if first_parse != "login" and some_person is None:
+                return "Please login first."
 
             if first_parse == "login":
                 return_string = self.login(parse_cmd)
@@ -87,7 +92,7 @@ class CmdHandler:
                 return_string = self.create_account(parse_cmd)
 
             elif first_parse == "edit_account":
-                self.edit_account(parse_cmd)
+                return_string = self.edit_account(parse_cmd)
 
             elif first_parse == "access_info":
                 return_string = self.access_info(parse_cmd)
@@ -100,9 +105,6 @@ class CmdHandler:
 
             elif first_parse == "view_ta_assign":
                 return_string = self.view_ta_assign(parse_cmd)
-
-            else:
-                return "I don't even know what the heck you just wrote. Do it again but better."
 
             return return_string
 
@@ -141,6 +143,9 @@ class CmdHandler:
             return "Yeah, you don't have access to that command. Nice try buddy."
 
     def create_account(self, parse_cmd):
+        # Jeff's method
+        # calls create_account for admin and supervisor
+
         some_guy = self.whos_logged_in()
 
         if len(parse_cmd) != 4:
@@ -149,9 +154,11 @@ class CmdHandler:
         if some_guy.type == "administrator":
             admin = Administrator(some_guy.email, some_guy.password, some_guy.type)
             did_work = admin.create_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
-        else:
+        elif some_guy.type == "supervisor":
             sup = Supervisor(some_guy.email, some_guy.password, some_guy.type)
             did_work = sup.create_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
+        else:
+            return "Invalid command."
 
         if did_work:
             return "Account created!"
@@ -159,87 +166,105 @@ class CmdHandler:
             return "Account creation error."
 
     def edit_account(self, parse_cmd):
-        current_user = self.whos_logged_in()
+        # Jeff's method
+        # calls edit_account for admin and supervisor
 
-        if parse_cmd[1] == "name":
-            name = ' '.join(parse_cmd[2:])
-            if current_user.type == "administrator":
-                adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[1], name):
-                    return "User's name has been changed successfully"
-                else:
-                    return "An error occurred"
-            elif current_user.type == "supervisor":
-                sup = Supervisor(current_user.email, current_user.password, current_user.type)
-                if sup.edit_account(current_user.email, parse_cmd[1], name):
-                    return "User's name has been changed successfully"
-                else:
-                    return "An error occurred"
-            else:
-                return "Yeah, you don't have access to that command. Nice try buddy."
-        elif parse_cmd[1] == "email":
-            if len(parse_cmd) != 3:
-                return "Command not of the right format: [edit_account field content]"
-            if current_user.type == "administrator":
-                adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[1], parse_cmd[2]):
-                    return "User's email has been changed successfully"
-                else:
-                    return "An error occurred"
-            elif current_user.type == "supervisor":
-                sup = Supervisor(current_user.email, current_user.password, current_user.type)
-                if sup.create_course(parse_cmd[1], int(parse_cmd[2])):
-                    return "User's " + parse_cmd[1] + " has been changed successfully"
-                else:
-                    return "An error occurred"
-            else:
-                return "Yeah, you don't have access to that command. Nice try buddy."
-        elif parse_cmd[1] == "password":
-            if len(parse_cmd) != 3:
-                return "Command not of the right format: [edit_account field content]"
-            if current_user.type == "administrator":
-                adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[1], parse_cmd[2]):
-                    return "User's email has been changed successfully"
-                else:
-                    return "An error occurred"
-            elif current_user.type == "supervisor":
-                sup = Supervisor(current_user.email, current_user.password, current_user.type)
-                if sup.create_course(parse_cmd[1], int(parse_cmd[2])):
-                    return "User's " + parse_cmd[1] + " has been changed successfully"
-                else:
-                    return "An error occurred"
-            else:
-                return "Yeah, you don't have access to that command. Nice try buddy."
-        elif parse_cmd[1] == "phone":
-            if len(parse_cmd) != 3:
-                return "Command not of the right format: [edit_account field content]"
-            if current_user.type == "administrator":
-                adm = Administrator(current_user.email, current_user.password, current_user.type)
-                if adm.edit_account(current_user.email, parse_cmd[1], parse_cmd[2]):
-                    return "User's email has been changed successfully"
-                else:
-                    return "An error occurred"
-            elif current_user.type == "supervisor":
-                sup = Supervisor(current_user.email, current_user.password, current_user.type)
-                if sup.create_course(parse_cmd[1], int(parse_cmd[2])):
-                    return "User's " + parse_cmd[1] + " has been changed successfully"
-                else:
-                    return "An error occurred"
-            else:
-                return "Yeah, you don't have access to that command. Nice try buddy."
+        current_user = self.whos_logged_in()
+        fail_string = "Invalid command"
+
+        if current_user.type != "administrator" and current_user.type != "supervisor":
+            return fail_string
+
+        if parse_cmd[2] == "name" and len(parse_cmd) > 3:
+            i = 4
+            while i < len(parse_cmd):
+                parse_cmd[3] = parse_cmd[3] + " " + parse_cmd[i]
+                i = i + 1
         else:
-            return "That wasn't a very good account field."
-        return
+            if len(parse_cmd) != 4:
+                return fail_string
+
+        if current_user.type == "administrator":
+            admin1 = Administrator(current_user.email, current_user.password, current_user.type)
+            did_work = admin1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
+        else:
+            super1 = Supervisor(current_user.email, current_user.password, current_user.type)
+            did_work = super1.edit_account(parse_cmd[1], parse_cmd[2], parse_cmd[3])
+
+        if did_work:
+            return "Command successful."
+        else:
+            return "Command error."
 
     def access_info(self, parse_cmd):
-        return
+        # Jeff's method
+        # calls access_info for admin and supervisor
+
+        info = "Invalid command."
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 1 or some_guy is None:
+            return info
+
+        if some_guy.type == "administrator":
+            admin = Administrator(some_guy.email, some_guy.password, some_guy.type)
+            info = admin.access_info()
+        elif some_guy.type == "supervisor":
+            sup = Supervisor(some_guy.email, some_guy.password, some_guy.type)
+            info = sup.access_info()
+
+        return info
 
     def assign_instructor(self, parse_cmd):
-        return
+        if len(parse_cmd) != 3:
+            return "Incorrect Command"
+        temp = self.whos_logged_in()
+        if temp is None:
+            return "Incorrect Command"
+
+        some_guy = Supervisor(temp.email, temp.password, temp.type)
+        try:
+            check_ins = models.ModelPerson.objects.get(email=parse_cmd[1])
+        except models.ModelPerson.DoesNotExist:
+            check_ins = None
+        if check_ins is None:
+            return "no such instructor"
+        try:
+            check_course = models.ModelCourse.objects.get(course_id=parse_cmd[2])
+        except models.ModelCourse.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such class"
+
+        if some_guy.assign_instructor(check_ins, check_course):
+            return "command successful"
+        else:
+            return "command unsuccessful"
 
     def assign_ta(self, parse_cmd):
-        return
+        if len(parse_cmd) != 3:
+            return "Incorrect Command"
+        temp = self.whos_logged_in()
+        if temp is None:
+            return "Incorrect Command"
+        try:
+            check_ta = models.ModelPerson.objects.get(email=parse_cmd[1])
+        except models.ModelPerson.DoesNotExist:
+            check_ta = None
+        if check_ta is None:
+            return "no such ta"
+        try:
+            check_course = models.ModelCourse.objects.get(course_id=parse_cmd[2])
+        except models.ModelCourse.DoesNotExist:
+            check_course = None
+        if check_course is None:
+            return "no such class"
+
+        some_guy = Supervisor(temp.email, temp.password, temp.type)
+        if some_guy.assign_ta_course(check_ta, check_course):
+            return "command successful"
+        else:
+            return "command unsuccessful"
 
     def view_ta_assign(self, parse_cmd):
         current_user = self.whos_logged_in()
@@ -254,55 +279,3 @@ class CmdHandler:
             return instructor.view_ta_assign()
         else:
             return "You don't have access to that command."
-
-    """
-    def deal_with_command(self, some_cmd):
-        # if we don't have an admin yet
-        if not self.check_setup():
-            # if we didn't type setup, tell them to setup
-            if some_cmd != "setup":
-                return "Please run setup before attempting to execute commands."
-            # create a new admin
-            else:
-                # do setup stuff here
-                new_admin = Administrator("ta_assign_admin", "password", "administrator")
-                new_super = Supervisor("ta_assign_super", "password", "supervisor")
-                return "Admin/Supervisor accounts setup!"
-
-        else:
-            parse_cmd = some_cmd.split()
-            # check login
-            if not self.logged_in:
-                if parse_cmd[0] != "Login":
-                    return "You have to log in first dummy"
-                else:
-                    try:
-                        find_person = models.ModelPerson.objects.get(email=parse_cmd[1])
-                    except models.ModelPerson.DoesNotExist:
-                        return f"The user {parse_cmd[1]} is not in the database"
-                    if find_person.password != parse_cmd[2]:
-                        return "The entered password is incorrect"
-                    self.logged_in = True
-                    self.current_user = find_person
-                    return "Logged in successfully"
-
-            # check logout
-            if parse_cmd[0] == "Logout":
-                self.logged_in = False
-                return "Screw you guys, I'm going home"
-
-            # check create_course
-            if parse_cmd[0] == "create_course":
-                if len(parse_cmd) != 3:
-                    return "Create course not of the right format: create_course course_id num_labs"
-                if self.current_user.type == "administrator":
-                    adm = Administrator(self.current_user.email, self.current_user.password, self.current_user.type)
-                    adm.create_course(parse_cmd[1], int(parse_cmd[2]))
-                elif self.current_user.type == "supervisor":
-                    sup = Supervisor(self.current_user.email, self.current_user.password, self.current_user.type)
-                    sup.create_course(parse_cmd[1], int(parse_cmd[2]))
-                else:
-                    return "Yeah, you don't have access to that command. Nice try buddy."
-
-            return "I don't even know what the heck you just wrote. Do it again but better."
-    """
