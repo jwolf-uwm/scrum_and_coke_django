@@ -1,16 +1,11 @@
-from unittest import TestCase
-from classes.Supervisor import Supervisor
-from classes.Administrator import Administrator
-from classes.Instructor import Instructor
-from classes.TA import TA
+from django.test import TestCase
+from classes.CmdHandler import CmdHandler
 
 
 class CreateCourseTests(TestCase):
-    def setup(self):
-        self.Sup = Supervisor("supervisor@uwm.edu", "SupervisorPassword")
-        self.Admin = Administrator("admin@uwm.edu", "AdministratorPassword")
-        self.Inst = Instructor("instructor@uwm.edu", "InstructorPassword")
-        self.TA = TA("ta@uwm.edu", "TAPassword")
+    def setUp(self):
+        self.ui = CmdHandler()
+
 
     """
     When the create course cmd is entered, it takes < 3 > arguments:
@@ -27,30 +22,48 @@ class CreateCourseTests(TestCase):
     If Title already exists, failure:
     - "Course already exists."
     """
-    def test_command_create_course_admin(self):
-        self.ui.command("login admin@uwm.edu AdministratorPassword")
-        self.assertEqual(self.ui.command("create_course CS101 2"), "Created course CS101 with 2 labs.")
+    def test_create_course_admin(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("create_course CS361-401 3"), "CS361-401 has been created successfully.")
 
-    def test_command_create_course_supervisor(self):
-        self.ui.command("login supervisor@uwm.edu SupervisorPassword")
-        self.assertEqual(self.ui.command("create_course CS102 3"), "Created course CS102 with 3 labs.")
+    def test_create_course_supervisor(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("create_course CS361-401 3"), "CS361-401 has been created successfully.")
 
-    def test_command_create_course_instructor(self):
-        self.ui.command("login instructor@uwm.edu InstructorPassword")
-        self.assertEqual(self.ui.command("create_course CS103 1"), "You are not authorized to create courses.")
+    def test_create_course_instructor(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("create_course CS361-401 3"),
+                         "Yeah, you don't have access to that command. Nice try buddy.")
 
-    def test_command_create_course_ta(self):
-        self.ui.command("login ta@uwm.edu TAPassword")
-        self.assertEqual(self.ui.command("create_course CS103 1"), "You are not authorized to create courses.")
+    def test_create_course_ta(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("create_course CS361-401 3"),
+                         "Yeah, you don't have access to that command. Nice try buddy.")
 
-    def test_command_create_course_no_title(self):
-        self.ui.command("login supervisor@uwm.edu SupervisorPassword")
-        self.assertEqual(self.ui.command("create_course 1"), "Error creating course.")
+    def test_create_course_no_title(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("create_course 3"),
+                         "Command not of the right format: [create_course CS###-### #]")
 
     def test_command_create_course_no_num_labs(self):
-        self.ui.command("login supervisor@uwm.edu SupervisorPassword")
-        self.assertEqual(self.ui.command("create_course CS103"), "Error creating course.")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("create_course CS361-401"),
+                         "Command not of the right format: [create_course CS###-### #]")
 
     def test_command_create_course_already_exists(self):
-        self.ui.command("login supervisor@uwm.edu SupervisorPassword")
-        self.assertEqual(self.ui.command("create_course CS101 2"), "Course already exists.")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_course CS361-401 3")
+        self.assertEqual(self.ui.parse_command("create_course CS361-401 3"), "An error occurred")
