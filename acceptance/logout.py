@@ -1,16 +1,10 @@
-import unittest
-from classes.Administrator import Administrator
-from classes.Supervisor import Supervisor
-from classes.Instructor import Instructor
-from classes.TA import TA
+from django.test import TestCase
+from classes.CmdHandler import CmdHandler
 
 
-class LoginTests(unittest.TestCase):
+class LogoutTests(TestCase):
     def setUp(self):
-        self.SUP = Supervisor("SUP@uwm.edu", "SUP")
-        self.ADMIN = Administrator("ADMN@uwm.edu", "ADMIN")
-        self.INS = Instructor("INS@uwm.edu", "INS")
-        self.TA = TA("TA@uwm.edu", "TA")
+        self.ui = CmdHandler()
     """
     When a user wants to logout no arguments are required 
     if logout works properly
@@ -20,20 +14,29 @@ class LoginTests(unittest.TestCase):
     """
 
     def test_logout_Admin(self):
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.assertEqual(self.ui.command("logout"), "logout successful")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("login ADMN@uwm.edu ADMIN")
+        self.assertTrue(self.ui.parse_command("logout"))
 
     def test_logout_TA(self):
-        self.ui.command("login TA@uwm.edu TA")
-        self.assertEqual(self.ui.command("logout"), "logout successful")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("login TA@uwm.edu TA")
+        self.assertTrue(self.ui.parse_command("logout"))
 
     def test_logout_Instructor(self):
-        self.ui.command("login INS@uwm.edu INS")
-        self.assertEqual(self.ui.command("logout"), "logout successful")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("login INS@uwm.edu INS")
+        self.assertTrue(self.ui.parse_command("logout"))
 
     def test_logout_Supervisor(self):
-        self.ui.command("login SUP@uwm.edu SUP")
-        self.assertEqual(self.ui.command("logout"), "logout successful")
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("login SUP@uwm.edu SUP")
+        self.assertTrue(self.ui.parse_command("logout"))
 
     def test_invalid_logout(self):
-        self.assertEqual(self.ui.command("logout"), "logout failed")
+        self.ui.parse_command("setup")
+        self.assertEqual(self.ui.parse_command("logout"), "Please login first.")
