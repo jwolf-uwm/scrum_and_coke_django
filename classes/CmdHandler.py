@@ -222,12 +222,11 @@ class CmdHandler:
         if len(parse_cmd) != 3:
             return "Incorrect Command"
         temp = self.whos_logged_in()
-        if temp is None:
-            return "Incorrect Command"
-
+        if temp.type == "administrator" or temp.type == "instructor" or temp.type == "ta":
+            return "Access Denied"
         some_guy = Supervisor(temp.email, temp.password, temp.type)
         try:
-            check_ins = models.ModelPerson.objects.get(email=parse_cmd[1])
+            check_ins = models.ModelPerson.objects.get(email=parse_cmd[1], type="instructor")
         except models.ModelPerson.DoesNotExist:
             check_ins = None
         if check_ins is None:
@@ -237,7 +236,7 @@ class CmdHandler:
         except models.ModelCourse.DoesNotExist:
             check_course = None
         if check_course is None:
-            return "no such class"
+            return "no such course"
 
         if some_guy.assign_instructor(check_ins, check_course):
             return "command successful"
@@ -250,8 +249,10 @@ class CmdHandler:
         temp = self.whos_logged_in()
         if temp is None:
             return "Incorrect Command"
+        if temp.type != "supervisor":
+            return "Access Denied"
         try:
-            check_ta = models.ModelPerson.objects.get(email=parse_cmd[1])
+            check_ta = models.ModelPerson.objects.get(email=parse_cmd[1], type="ta")
         except models.ModelPerson.DoesNotExist:
             check_ta = None
         if check_ta is None:
@@ -261,7 +262,7 @@ class CmdHandler:
         except models.ModelCourse.DoesNotExist:
             check_course = None
         if check_course is None:
-            return "no such class"
+            return "no such course"
 
         some_guy = Supervisor(temp.email, temp.password, temp.type)
         if some_guy.assign_ta_course(check_ta, check_course):
