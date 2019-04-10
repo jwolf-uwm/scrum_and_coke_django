@@ -49,4 +49,3 @@ class LoginTests(TestCase):
         self.assertEqual(self.ui.parse_command("login ta_assign_super@uwm.edu password"), "User already logged in")
         self.ui.parse_command("logout")
         self.assertEqual(self.ui.parse_command("login ta_assign_super@uwm.edu wrong"), "Invalid login info")
-
