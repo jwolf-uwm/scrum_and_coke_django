@@ -82,8 +82,7 @@ class AssignInstructorTests(TestCase):
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
         self.ui.parse_command("create_account ta@uwm.edu password ta")
-        self.assertEqual(self.ui.parse_command("assign_instructor ta@uwm.edu CS201-401"),
-                         "no such instructor")
+        self.assertEqual(self.ui.parse_command("assign_instructor ta@uwm.edu CS201-401"),"no such instructor")
 
     def test_invalid_email(self):
         self.ui.parse_command("setup")
