@@ -249,6 +249,8 @@ class CmdHandler:
         temp = self.whos_logged_in()
         if temp is None:
             return "Incorrect Command"
+        if temp.type != "supervisor":
+            return "Access Denied"
         try:
             check_ta = models.ModelPerson.objects.get(email=parse_cmd[1], type="ta")
         except models.ModelPerson.DoesNotExist:

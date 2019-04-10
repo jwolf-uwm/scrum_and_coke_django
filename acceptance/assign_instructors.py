@@ -33,7 +33,7 @@ class AssignInstructorTests(TestCase):
         self.assertEqual(self.ui.parse_command("assign_instructor ins1@uwm.edu CS201-401"),
                          "Please run setup before attempting to execute commands.")
 
-    def test_create_account_no_login(self):
+    def test_assign_instructor_no_login(self):
         self.ui.parse_command("setup")
         self.assertEqual(self.ui.parse_command("assign_instructor ins1@uwm.edu CS201-401"),
                          "Please login first.")
