@@ -68,6 +68,8 @@ class Person:
         temp = None
 
         for i in people:
+            if i.isLoggedOn is True:
+                return "User already logged in"
             if i.email == email:
                 temp = i
 
@@ -75,8 +77,6 @@ class Person:
             return "Invalid login info"
         elif temp.email != email or temp.password != password:
             return "Invalid login info"
-        if temp.isLoggedOn is True:
-            return "User already logged in"
         models.ModelPerson.objects.filter(email=email).update(isLoggedOn=True)
         return "Login successful"
 

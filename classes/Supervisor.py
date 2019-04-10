@@ -28,7 +28,7 @@ class Supervisor(Administrator):
             find_instructor = "none"
 
         if find_course != "none" and find_instructor != "none":
-            find_course.instructor = instructor.email
+            models.ModelCourse.objects.filter(course_id=course.course_id).update(instructor=instructor.email)
             #if course.instructor != "not_set@uwm.edu":
             #    course.instructor.courses.remove(course)
             course.instructor = instructor
