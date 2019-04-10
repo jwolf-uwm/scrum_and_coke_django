@@ -1,5 +1,9 @@
 from ta_assign import models
 
+# Note these stubs are unimplemented as we are using calls from other classes to make
+# courses right now. We have left them here in case we need them for future changes
+# to the design or implementation.
+
 
 class Course:
     def __init__(self, course_id, num_labs):

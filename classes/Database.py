@@ -4,6 +4,9 @@ from classes.Instructor import Instructor
 from classes.TA import TA
 from classes.Course import Course
 
+# This class was added before we knew we'd be using django so soon. It is left here in case we need it,
+# but will likely be deleted before final release.
+
 
 class Database:
 
