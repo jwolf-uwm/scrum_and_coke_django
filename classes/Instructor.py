@@ -1,5 +1,4 @@
 # created by Jeff
-
 from classes.Person import Person
 from ta_assign import models
 
