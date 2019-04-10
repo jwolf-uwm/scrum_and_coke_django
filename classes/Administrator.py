@@ -26,17 +26,23 @@ class Administrator(Person):
 
     def create_course(self, course_id, num_labs):
         if len(course_id) != 9:
-            raise Exception("{} is too short to be of the right form (CS###-###)".format(course_id))
+            print(f"{course_id} is too short to be of the right form (CS###-###)")
+            return False
         if course_id[0:2] != "CS":
-            raise Exception("{} is not a CS course (CS###-###)".format(course_id))
+            print(f"{course_id} is not a CS course (CS###-###)")
+            return False
         if not course_id[2:5].isdigit():
-            raise Exception("The course number contains an invalid digit (CS###-###)")
+            print("The course number contains an invalid digit (CS###-###)")
+            return False
         if course_id[5] != "-":
-            raise Exception("The course and section number should be separated by a hyphen (CS###-###)")
+            print("The course and section number should be separated by a hyphen (CS###-###)")
+            return False
         if not course_id[6:].isdigit():
-            raise Exception("The section number contains an invalid digit (CS###-###)")
+            print("The section number contains an invalid digit (CS###-###)")
+            return False
         if num_labs < 0 or num_labs > 5:
-            raise Exception("The number of lab sections should be positive and not exceed 5")
+            print("The number of lab sections should be positive and not exceed 5")
+            return False
         try:
             find_course = models.ModelCourse.objects.get(course_id=course_id)
         except models.ModelCourse.DoesNotExist:
@@ -103,15 +109,18 @@ class Administrator(Person):
             return True
 
         elif field == "phone_number":
-            if not isinstance(content, int):
-                print("phone number contains illegal characters")
+            parse_phone = content.split(".")
+            if len(parse_phone) != 3:
+                print("Bad length")
                 return False
-            elif int(content / 1000000000) >= 10 or int(content / 1000000000) <= 0:
-                print("phone number is the wrong length")
+            if not parse_phone[0].isdigit() or not parse_phone[1].isdigit() or not parse_phone[2].isdigit():
+                print("Not digits")
                 return False
-            else:
-                models.ModelPerson.objects.filter(email=email).update(phone=content)
-                return True
+            if len(parse_phone[0]) != 3 or len(parse_phone[1]) != 3 or len(parse_phone[2]) != 4:
+                print("Substrings bad length")
+                return False
+            models.ModelPerson.objects.filter(email=email).update(phone=content)
+            return True
 
         elif field == "name":
             models.ModelPerson.objects.filter(email=email).update(name=content)
@@ -129,49 +138,53 @@ class Administrator(Person):
     def access_info(self):
         # Jeff's method
         # Usage: access_info()
-        # returns a list of strings of all users in the database
-        # each string is as follows:
-        #   "ACCOUNT_TYPE: name | email address | phone"
-        # if user is instructor following strings are:
-        #   "Classes assigned: class1, class2, class3"
-        #   "TAs assigned : ta1, ta2, ta3"
-        # if user is ta, following strings are:
-        #   "Classes assigned: class1, class2, class3"
-        #   NOT IMPLEMENTED: "Labs assigned: lab1, lab2, lab3"
+        # returns a string of all users/courses in the system
+        # with appropriate linebreaks for display
 
-        string_list = []
+        string_list = "Administrator:\n"
 
         admins = models.ModelPerson.objects.filter(type="administrator")
         for admin in admins:
-            string_list.append("Administrator: " + admin.name + " | " + admin.email + " | " + str(admin.phone))
-            string_list.append("")
+            string_list = string_list + admin.name + " | " + admin.email + " | " + \
+                          str(admin.phone) + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "Supervisor:\n"
 
         supers = models.ModelPerson.objects.filter(type="supervisor")
         for supervi in supers:
-            string_list.append("Supervisor: " + supervi.name + " | " + supervi.email + " | " + str(supervi.phone))
-            string_list.append("")
+            string_list = string_list + supervi.name + " | " + supervi.email + " | " + \
+                          str(supervi.phone) + "\n"
+            string_list = string_list + "\n"
+
+        string_list = string_list + "Instructors:\n"
 
         instructs = models.ModelPerson.objects.filter(type="instructor")
         for instruct in instructs:
-            string_list.append("Instructor: " + instruct.name + " | " + instruct.email + " | " + str(instruct.phone))
+            string_list = string_list + instruct.name + " | " + instruct.email + " | " + \
+                          str(instruct.phone) + "\n"
 
             for courses in models.ModelCourse.objects.all():
                 if courses.instructor == instruct.email:
-                    string_list.append("Course: " + courses.course_id)
+                    string_list = string_list + "Course: " + courses.course_id + "\n"
 
-            string_list.append("")
+        string_list = string_list + "\n"
+
+        string_list = string_list + "TAs:\n"
 
         tee_ayys = models.ModelPerson.objects.filter(type="ta")
         for tee_ayy in tee_ayys:
-            string_list.append("TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone))
+            string_list = string_list + tee_ayy.name + " | " + tee_ayy.email + " | " + str(tee_ayy.phone) + \
+                          "\n"
 
             for ta_courses in models.ModelTACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list.append("Course: " + ta_courses.course.course_id)
+                    string_list = string_list + "Course: " + ta_courses.course.course_id + "\n"
 
-            string_list.append("")
+        string_list = string_list + "\n"
 
+        string_list = string_list + "Courses:\n"
         courses = models.ModelCourse.objects.all()
         for course in courses:
-            string_list.append("Course: " + course.course_id)
+            string_list = string_list + course.course_id + "\n"
         return string_list

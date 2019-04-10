@@ -5,7 +5,7 @@ from django.db import models
 class ModelPerson(models.Model):
     email = models.CharField(max_length=50)
     password = models.CharField(max_length=20)
-    phone = models.IntegerField(default=-1)
+    phone = models.CharField(max_length=12, default="000.000.0000")
     name = models.CharField(max_length=50, default="DEFAULT")
     type = models.CharField(max_length=20, default="person")
     isLoggedOn = models.BooleanField(default=False)

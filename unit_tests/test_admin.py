@@ -25,16 +25,6 @@ class TestAdministrator(TestCase):
         self.assertEqual(da_course.num_labs, 3)
         self.assertEqual(da_course.instructor, "not_set@uwm.edu")
 
-    def test_create_course_as_supervisor(self):
-        # create a new course as supervisor
-        self.assertTrue(self.sup1.create_course("CS251-401", 3))
-        # get the added course from the db
-        da_course = models.ModelCourse.objects.get(course_id="CS251-401")
-        # make sure found course is the same
-        self.assertEqual(da_course.course_id, "CS251-401")
-        self.assertEqual(da_course.num_labs, 3)
-        self.assertEqual(da_course.instructor, "not_set@uwm.edu")
-
     def test_create_course_again(self):
         self.assertTrue(self.ad1.create_course("CS361-401", 3))
         # create the same course again with no changes
@@ -58,35 +48,27 @@ class TestAdministrator(TestCase):
 
     def test_create_course_long_course_id(self):
         # course_id too long and not right format
-        with self.assertRaises(Exception):
-            self.ad1.create_course("totally_a_good_course_id", 2)
+        self.assertFalse(self.ad1.create_course("totally_a_good_course_id", 2))
 
     def test_create_course_course_id_incorrect(self):
         # course_id missing CS at beginning
-        with self.assertRaises(Exception):
-            self.ad1.create_course("123456789", 2)
+        self.assertFalse(self.ad1.create_course("123456789", 2))
         # course_id does not start with uppercase CS
-        with self.assertRaises(Exception):
-            self.ad1.create_course("cs361-401", 2)
+        self.assertFalse(self.ad1.create_course("cs361-401", 2))
         # course_id doesn't have only numbers for course number
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS3F4-321", 2)
+        self.assertFalse(self.ad1.create_course("CS3F4-321", 2))
         # course_id doesn't have a hyphen to separate course number and section number
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS3611234", 2)
+        self.assertFalse(self.ad1.create_course("CS3611234", 2))
         # course_id doesn't have only numbers for section number
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS361-1F3", 2)
+        self.assertFalse(self.ad1.create_course("CS361-1F3", 2))
 
     def test_create_course_bad_num_sections(self):
         # number of sections too big
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS361-401", 99)
+        self.assertFalse(self.ad1.create_course("CS361-401", 99))
         # number of sections is less than 0
-        with self.assertRaises(Exception):
-            self.ad1.create_course("CS361-401", -1)
+        self.assertFalse(self.ad1.create_course("CS361-401", -1))
 
-    # Create Account Tests
+    # Create Account Tests Start
     # created by Jeff
     def test_create_account_instructor(self):
         # Create Instructor Tests
@@ -101,7 +83,7 @@ class TestAdministrator(TestCase):
         # default name test
         self.assertEqual(test_model_ins.name, "DEFAULT")
         # default phone test
-        self.assertEqual(test_model_ins.phone, -1)
+        self.assertEqual(test_model_ins.phone, "000.000.0000")
         # login false test
         self.assertFalse(test_model_ins.isLoggedOn)
 
@@ -118,7 +100,7 @@ class TestAdministrator(TestCase):
         # default name test
         self.assertEqual(test_model_ta.name, "DEFAULT")
         # default phone test
-        self.assertEqual(test_model_ta.phone, -1)
+        self.assertEqual(test_model_ta.phone, "000.000.0000")
         # login false test
         self.assertFalse(test_model_ta.isLoggedOn)
 
@@ -192,6 +174,8 @@ class TestAdministrator(TestCase):
         self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta")
         self.assertFalse(self.ad1.create_account("FredClaus@uwm.edu", "santa_bro", "ta"))
 
+    # Create Account Tests End
+
     def test_edit_account_password(self):
         # create a test user in the system
         tester = models.ModelPerson()
@@ -228,15 +212,19 @@ class TestAdministrator(TestCase):
         tester.password = "random_password"
         tester.save()
         # test edit phone
-        self.ad1.edit_account("rando@uwm.edu", "phone", 1234567890)
+        self.assertTrue(self.ad1.edit_account("rando@uwm.edu", "phone_number", "123.456.7890"))
 
         tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
-        self.assertEqual(tester.phone, 1234567890)
-        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", "not a number"))
-        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 12341))
-        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone", 111111111111111111))
+        self.assertEqual(tester.phone, "123.456.7890")
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone_number", "not a number"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone_number", "1234"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone_number", "1234567890987654"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone_number", "414-414-4141"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone_number", "(414)414-4141"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone_number", "abc.abc.abcd"))
+        self.assertFalse(self.ad1.edit_account("rando@uwm.edu", "phone_number", "1234.1234.1234"))
 
-    def test_edit_account_phone(self):
+    def test_edit_account_name(self):
         # create a test user in the system
         tester = models.ModelPerson()
         tester.email = "rando@uwm.edu"
@@ -259,35 +247,76 @@ class TestAdministrator(TestCase):
     def test_send_notification(self):
         self.assertTrue(self.ad1.send_notification("I Like To Eat French Fries In The Rain"))
 
-    # Access Info Tests
+    # Access Info Tests Start
     # Jeff's tests
-    def test_access_info_admin(self):
+    def test_access_info_admin_title(self):
         access_info = self.ad1.access_info()
-        # admin info
-        self.assertEqual(access_info[0], "Administrator: DEFAULT | ad1@uwm.edu | -1")
-        self.assertEqual(access_info[1], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[0], "Administrator:")
+
+    def test_access_info_admin_(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[1], "DEFAULT | ad1@uwm.edu | 000.000.0000")
+
+    def test_access_info_blank_one(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[2], "")
+
+    def test_access_info_sup_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[3], "Supervisor:")
 
     def test_access_info_sup(self):
         access_info = self.ad1.access_info()
-        # sup info
-        self.assertEqual(access_info[2], "Supervisor: DEFAULT | sup1@uwm.edu | -1")
-        self.assertEqual(access_info[3], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[4], "DEFAULT | sup1@uwm.edu | 000.000.0000")
+
+    def test_access_info_blank_two(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[5], "")
+
+    def test_access_info_inst_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[6], "Instructors:")
+
+    def test_access_info_blank_three(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[7], "")
+
+    def test_access_info_ta_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[8], "TAs:")
+
+    def test_access_info_blank_four(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[9], "")
+
+    def test_access_info_course_title(self):
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[10], "Courses:")
 
     def test_access_info_inst_no_course(self):
         # Add instructor, no course assignments
         self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
-        # access as admin
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[4], "Instructor: DEFAULT | inst1@uwm.edu | -1")
-        self.assertEqual(access_info[5], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[7], "DEFAULT | inst1@uwm.edu | 000.000.0000")
 
     def test_access_info_ta_no_course(self):
         # Add TA, no course assignments
         self.ta1 = TA("ta1@uwm.edu", "password", "ta")
-        # access as admin
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[4], "TA: DEFAULT | ta1@uwm.edu | -1")
-        self.assertEqual(access_info[5], "")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[9], "DEFAULT | ta1@uwm.edu | 000.000.0000")
 
     def test_access_info_inst_one_course(self):
         # Instructor with a course
@@ -297,9 +326,9 @@ class TestAdministrator(TestCase):
         mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
         mod_course1.instructor = "inst1@uwm.edu"
         mod_course1.save()
-        # access as admin
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[5], "Course: CS101")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[8], "Course: CS101")
 
     def test_access_info_ta_one_course(self):
         # TA with a course
@@ -312,5 +341,119 @@ class TestAdministrator(TestCase):
         mod_ta_course1.TA = mod_ta1
         mod_ta_course1.save()
         access_info = self.ad1.access_info()
-        self.assertEqual(access_info[5], "Course: CS101")
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[10], "Course: CS101")
 
+    def test_access_info_course(self):
+        # just a course
+        self.course1 = Course("CS101", 0)
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[11], "CS101")
+
+    def test_access_info_all_the_things(self):
+        # ALL THE THINGS
+        self.inst1 = Instructor("inst1@uwm.edu", "password", "instructor")
+        self.inst2 = Instructor("inst2@uwm.edu", "password", "instructor")
+        self.ta1 = TA("ta1@uwm.edu", "password", "ta")
+        self.ta2 = TA("ta2@uwm.edu", "password", "ta")
+        self.course1 = Course("CS101", 0)
+        self.course2 = Course("CS102", 0)
+        self.course1.instructor = "inst1@uwm.edu"
+        mod_course1 = models.ModelCourse.objects.get(course_id="CS101")
+        mod_course1.instructor = "inst1@uwm.edu"
+        mod_course1.save()
+        self.course2.instructor = "inst2@uwm.edu"
+        mod_course2 = models.ModelCourse.objects.get(course_id="CS102")
+        mod_course2.instructor = "inst2@uwm.edu"
+        mod_course2.save()
+        mod_ta_course1 = models.ModelTACourse()
+        mod_ta_course1.course = mod_course1
+        mod_ta1 = models.ModelPerson.objects.get(email="ta1@uwm.edu")
+        mod_ta_course1.TA = mod_ta1
+        mod_ta_course1.save()
+        mod_ta_course2 = models.ModelTACourse()
+        mod_ta_course2.course = mod_course2
+        mod_ta2 = models.ModelPerson.objects.get(email="ta2@uwm.edu")
+        mod_ta_course2.TA = mod_ta2
+        mod_ta_course2.save()
+        access_info = self.ad1.access_info()
+        parse_info = access_info.split("\n")
+        self.assertEqual(parse_info[0], "Administrator:")
+        self.assertEqual(parse_info[1], "DEFAULT | ad1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[2], "")
+        self.assertEqual(parse_info[3], "Supervisor:")
+        self.assertEqual(parse_info[4], "DEFAULT | sup1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[5], "")
+        self.assertEqual(parse_info[6], "Instructors:")
+        self.assertEqual(parse_info[7], "DEFAULT | inst1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[8], "Course: CS101")
+        self.assertEqual(parse_info[9], "DEFAULT | inst2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[10], "Course: CS102")
+        self.assertEqual(parse_info[11], "")
+        self.assertEqual(parse_info[12], "TAs:")
+        self.assertEqual(parse_info[13], "DEFAULT | ta1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[14], "Course: CS101")
+        self.assertEqual(parse_info[15], "DEFAULT | ta2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[16], "Course: CS102")
+        self.assertEqual(parse_info[17], "")
+        self.assertEqual(parse_info[18], "Courses:")
+        self.assertEqual(parse_info[19], "CS101")
+        self.assertEqual(parse_info[20], "CS102")
+
+    # Access Info Tests End
+
+    # Person tests
+    def test_init_(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(self.Administrator1.email, "Administrator1@uwm.edu")
+        self.assertEquals(self.Administrator1.password, "DEFAULT_PASSWORD")
+
+    def test_change_password(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertTrue(self.Administrator1.change_password("password"))
+        self.assertEquals(self.Administrator1.password, "password")
+        self.assertNotEquals(self.Administrator1.password, "DEFAULT_PASSWORD")
+
+    def test_change_email(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.Administrator1.change_email("snoop@uwm.edu")
+        self.assertEquals(self.Administrator1.email, "snoop@uwm.edu")
+        self.assertNotEquals(self.Administrator1.email, "Administrator1@uwm.edu")
+        self.assertFalse(self.Administrator1.change_email("snoop@gmail.com"))
+        self.assertFalse(self.Administrator1.change_email("no_at_symbol_or_dot_something"))
+
+    def test_change_phone(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.Administrator1.change_phone("414.414.4141")
+        self.assertEquals(self.Administrator1.phone_number, "414.414.4141")
+        self.assertNotEquals(self.Administrator1.phone_number, "000.000.0000")
+        self.assertFalse(self.Administrator1.change_phone("1234567890"))
+        self.assertFalse(self.Administrator1.change_phone("414-414-4141"))
+        self.assertFalse(self.Administrator1.change_phone("(414)414-4141"))
+        self.assertFalse(self.Administrator1.change_phone("abc.abc.abcd"))
+        self.assertFalse(self.Administrator1.change_phone("1234.1234.1234"))
+
+    def test_change_name(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.Administrator1.change_name("Snoop Doggy Dog")
+        self.assertEquals(self.Administrator1.name, "Snoop Doggy Dog")
+        self.assertNotEquals(self.Administrator1.name, "DEFAULT")
+
+    def test_get_contact_info(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(self.Administrator1.get_contact_info(), "Snoop Doggy Dog, snoop@uwm.edu, 4144244343")
+        self.assertNotEquals(self.Administrator1.get_contact_info(), "DEFAULT, Administrator1@uwm.edu, 0000000000")
+
+    def test_login(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(Administrator.login("Administrator1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
+        model_administrator1 = models.ModelPerson.objects.get(email=self.Administrator1.email)
+        self.assertTrue(model_administrator1.isLoggedOn)
+        self.assertEquals(Administrator.login("Administrator1@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
+        self.assertEquals(Administrator.login("snoop@uwm.edu", "password"), "Invalid login info")
+
+    def test_logout(self):
+        self.Administrator1 = Administrator("Administrator1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.assertEquals(Administrator.login("Administrator1@uwm.edu", "DEFAULT_PASSWORD"), "Login successful")
+        self.assertTrue(self.Administrator1.logout())
