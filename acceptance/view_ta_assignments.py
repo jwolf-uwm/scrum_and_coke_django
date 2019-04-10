@@ -31,7 +31,7 @@ class ViewTAAssignmentsTest(TestCase):
         self.ui.parse_command("create_account instructor@uwm.edu password instructor")
         self.ui.parse_command("logout")
         self.ui.parse_command("login instructor@uwm.edu password")
-        self.assertEqual(self.ui.parse_command("view_ta_assign"), "[]")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), [])
 
     def test_command_view_ta_assign_ta_no_class(self):
         self.ui.parse_command("setup")
@@ -39,7 +39,7 @@ class ViewTAAssignmentsTest(TestCase):
         self.ui.parse_command("create_account ta@uwm.edu password ta")
         self.ui.parse_command("logout")
         self.ui.parse_command("login ta@uwm.edu password")
-        self.assertEqual(self.ui.parse_command("view_ta_assign"), "[]")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), [])
 
     def test_command_view_ta_assign_inst_one_course(self):
         self.ui.parse_command("setup")
@@ -51,7 +51,7 @@ class ViewTAAssignmentsTest(TestCase):
         self.ui.parse_command("assign_ta ta@uwm.edu CS101-401")
         self.ui.parse_command("logout")
         self.ui.parse_command("login instructor@uwm.edu password")
-        self.assertEqual(self.ui.parse_command("view_ta_assign"), "['Course: CS101-401 TA: DEFAULT, ta@uwm.edu']")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), ['Course: CS101-401 TA: DEFAULT, ta@uwm.edu'])
 
     def test_command_view_ta_assign_ta_one_course(self):
         self.ui.parse_command("setup")
@@ -63,7 +63,7 @@ class ViewTAAssignmentsTest(TestCase):
         self.ui.parse_command("assign_ta ta@uwm.edu CS101-401")
         self.ui.parse_command("logout")
         self.ui.parse_command("login ta@uwm.edu password")
-        self.assertEqual(self.ui.parse_command("view_ta_assign"), "['Course: CS101-401 TA: DEFAULT, ta@uwm.edu']")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), ['Course: CS101-401 TA: DEFAULT, ta@uwm.edu'])
 
     def test_command_view_ta_assign_all_the_things(self):
         self.ui.parse_command("setup")
@@ -81,5 +81,5 @@ class ViewTAAssignmentsTest(TestCase):
         self.assertEqual(self.ui.parse_command("view_ta_assign"), "You don't have access to that command.")
         self.ui.parse_command("logout")
         self.ui.parse_command("login ta1@uwm.edu password")
-        self.assertEqual(self.ui.parse_command("view_ta_assign"), "['Course: CS101-401 TA: DEFAULT, ta1@uwm.edu', "
-                                                                  "'Course: CS101-401 TA: DEFAULT, ta1@uwm.edu']")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), ['Course: CS101-401 TA: DEFAULT, ta1@uwm.edu',
+                                                                   'Course: CS102-401 TA: DEFAULT, ta2@uwm.edu'])
