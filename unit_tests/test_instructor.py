@@ -12,9 +12,6 @@ from classes.Course import Course
 
 class TestInstructor(TestCase):
 
-    instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD", "instructor")
-    instructor2 = Instructor("instructor2@uwm.edu", "DEFAULT_PASSWORD", "instructor")
-
     def setUp(self):
         # self.instructor1 = Instructor("instructor1@uwm.edu", "DEFAULT_PASSWORD")
         # self.instructor2 = Instructor("instructor2@uwm.edu", "DEFAULT_PASSWORD")
@@ -120,7 +117,6 @@ class TestInstructor(TestCase):
         self.assertEqual(self.inst0.view_ta_assign()[1], "Course: CS201 TA: DEFAULT, ta2@uwm.edu")
         self.assertEqual(self.inst0.view_ta_assign()[2], "Course: CS301 TA: DEFAULT, ta3@uwm.edu")
         self.assertEqual(self.inst0.view_ta_assign(), ['Course: CS101 TA: DEFAULT, ta1@uwm.edu',
-                                                          'Course: CS201 TA: DEFAULT, ta2@uwm.edu',
-                                                          'Course: CS301 TA: DEFAULT, ta3@uwm.edu'])
+                                                       'Course: CS201 TA: DEFAULT, ta2@uwm.edu',
+                                                       'Course: CS301 TA: DEFAULT, ta3@uwm.edu'])
 
-    models.ModelPerson.objects.all().delete()
