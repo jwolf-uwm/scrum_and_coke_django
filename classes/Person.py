@@ -6,7 +6,7 @@ class Person:
     def __init__(self, email, password, account_type):
         self.email = email
         self.password = password
-        self.phone_number = "000.000.0000"
+        self.phone_number = -1
         self.name = "DEFAULT"
         self.type = account_type
         self.isLoggedOn = False
@@ -47,15 +47,14 @@ class Person:
         return True
 
     def change_phone(self, phone):
-        parse_phone = phone.split(".")
-        if len(parse_phone) != 3:
+        if not isinstance(phone, int):
+            print("phone number contains illegal characters")
             return False
-        if not parse_phone[0].isdigit() or not parse_phone[1].isdigit() or not parse_phone[2].isdigit():
+        elif int(phone/1000000000) >= 10 or int(phone/1000000000) <= 0:
+            print("phone number is the wrong length")
             return False
-        if len(parse_phone[0]) != 3 or len(parse_phone[1]) != 3 or len(parse_phone[2]) != 4:
-            return False
-
-        self.phone_number = phone
+        else:
+            self.phone_number = phone
         return True
 
     def get_contact_info(self):

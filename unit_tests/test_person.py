@@ -28,14 +28,9 @@ class TestPerson(TestCase):
 
     def test_change_phone(self):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
-        self.person1.change_phone("414.414.4141")
-        self.assertEquals(self.person1.phone_number, "414.414.4141")
-        self.assertNotEquals(self.person1.phone_number, "000.000.0000")
-        self.assertFalse(self.person1.change_phone("1234567890"))
-        self.assertFalse(self.person1.change_phone("414-414-4141"))
-        self.assertFalse(self.person1.change_phone("(414)414-4141"))
-        self.assertFalse(self.person1.change_phone("abc.abc.abcd"))
-        self.assertFalse(self.person1.change_phone("1234.1234.1234"))
+        self.person1.change_phone(4144244343)
+        self.assertEquals(self.person1.phone_number, 4144244343)
+        self.assertNotEquals(self.person1.phone_number, 0000000000)
 
     def test_change_name(self):
         self.person1 = Person("person1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
