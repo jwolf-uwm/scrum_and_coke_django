@@ -1,86 +1,84 @@
-import unittest
-from classes.TA import TA
-from classes.Instructor import Instructor
-from classes.Supervisor import Supervisor
-from classes.Administrator import Administrator
-from classes.Course import Course
+from django.test import TestCase
+from classes.CmdHandler import CmdHandler
 
 
-class ViewTAAssignmentsTest(unittest.TestCase):
+class ViewTAAssignmentsTest(TestCase):
     def setUp(self):
-        self.SUP = Supervisor("SUP@uwm.edu", "SUP")
-        self.ADMIN = Administrator("ADMN@uwm.edu", "ADMIN")
-        self.INS = Instructor("INS@uwm.edu", "INS")
-        self.TA = TA("TA@uwm.edu", "TA")
-        self.TA = TA("TA1@uwm.edu", "TA1")
-        self.TA = TA("TA2@uwm.edu", "TA2")
-        self.Course1 = Course("CS351", 3)
-        self.Course2 = Course("CS431", 2)
-        self.Course3 = Course("CS361", 3)
+        self.ui = CmdHandler()
 
-    """
-    A TA has the ability to view all TA course assignments
-    view_ta_assignments takes no arguments
-    
-    if a TA calls it
-        - List of each course and the TA(s) assigned to it
-        
-    if a Instructor calls it
-        - List of each course and the TA(s) assigned to it
-        
-    if a admin or sup calls it
-        - "access denied" is displayed
-        
-    if there are no courses
-        -"no courses" is displayed
-        
-    if a course doesnt have a TA
-        -"No TA" is displayed after the course
-    """
+    def test_access_info_no_setup(self):
+        self.assertEqual(self.ui.parse_command("access_info"),
+                         "Please run setup before attempting to execute commands.")
 
-    def test_invalid_admin(self):
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "access denied")
+    def test_command_view_ta_assign_no_login(self):
+        self.ui.parse_command("setup")
+        self.assertEqual(self.ui.parse_command("create_account ta@uwm.edu password ta"),
+                         "Please login first.")
 
-    def test_invalid_sup(self):
-        self.ui.command("login SUP@uwm.edu SUP")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "access denied")
+    def test_command_view_ta_assign_admin(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "You don't have access to that command.")
 
-    def test_valid_ta(self):
-        self.ui.command("login TA@uwm.edu TA")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "no courses")
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.ui.command("create_course INS@uwm.edu CS361 3")
-        self.ui.command("logout")
-        self.ui.command("login TA@uwm.edu TA")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "CS361 3: No TA")
-        self.ui.command("logout")
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.ui.command("create_course INS@uwm.edu CS351 3")
-        self.ui.command("assign_ta_course TA@uwm.edu CS351 3")
-        self.ui.command("create_course INS@uwm.edu CS431 2")
-        self.ui.command("assign_ta_course TA@uwm.edu CS431 2")
-        self.ui.command("assign_ta_course TA1@uwm.edu CS431 2")
-        self.ui.command("logout")
-        self.ui.command("login TA@uwm.edu TA")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "CS361 3: No TA, CS351 3: TA, CS431 2: TA TA1")
+    def test_command_view_ta_assign_super(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "You don't have access to that command.")
 
-    def test_valid_ins(self):
-        self.ui.command("login INS@uwm.edu INS")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "no courses")
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.ui.command("create_course INS@uwm.edu CS361 3")
-        self.ui.command("logout")
-        self.ui.command("login INS@uwm.edu INS")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "CS361 3: No TA")
-        self.ui.command("logout")
-        self.ui.command("login ADMN@uwm.edu ADMIN")
-        self.ui.command("create_course INS@uwm.edu CS351 3")
-        self.ui.command("assign_ta_course TA@uwm.edu CS351 3")
-        self.ui.command("assign_ta_course TA1@uwm.edu CS351 2")
-        self.ui.command("assign_ta_course TA2@uwm.edu CS351 2")
-        self.ui.command("create_course INS@uwm.edu CS431 2")
-        self.ui.command("assign_ta_course TA@uwm.edu CS431 2")
-        self.ui.command("logout")
-        self.ui.command("login INS@uwm.edu INS")
-        self.assertEqual(self.ui.command("view_ta_assignments"), "CS361 3: No TA, CS351 3: TA TA1 TA2, CS431 2: TA")
+    def test_command_view_ta_assign_instructor_no_class(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "[]")
+
+    def test_command_view_ta_assign_ta_no_class(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "[]")
+
+    def test_command_view_ta_assign_inst_one_course(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.ui.parse_command("create_course CS101-401 0")
+        self.ui.parse_command("assign_instructor instructor@uwm.edu CS101-401")
+        self.ui.parse_command("assign_ta ta@uwm.edu CS101-401")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "['Course: CS101-401 TA: DEFAULT, ta@uwm.edu']")
+
+    def test_command_view_ta_assign_ta_one_course(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.ui.parse_command("create_course CS101-401 0")
+        self.ui.parse_command("assign_instructor instructor@uwm.edu CS101-401")
+        self.ui.parse_command("assign_ta ta@uwm.edu CS101-401")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "['Course: CS101-401 TA: DEFAULT, ta@uwm.edu']")
+
+    def test_command_view_ta_assign_all_the_things(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account inst1@uwm.edu password instructor")
+        self.ui.parse_command("create_account inst2@uwm.edu password instructor")
+        self.ui.parse_command("create_account ta1@uwm.edu password ta")
+        self.ui.parse_command("create_account ta2@uwm.edu password ta")
+        self.ui.parse_command("create_course CS101-401 0")
+        self.ui.parse_command("create_course CS102-401 0")
+        self.ui.parse_command("assign_instructor inst1@uwm.edu CS101-401")
+        self.ui.parse_command("assign_instructor inst2@uwm.edu CS102-401")
+        self.ui.parse_command("assign_ta ta1@uwm.edu CS101-401")
+        self.ui.parse_command("assign_ta ta2@uwm.edu CS102-401")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "You don't have access to that command.")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta1@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("view_ta_assign"), "['Course: CS101-401 TA: DEFAULT, ta1@uwm.edu', "
