@@ -9,7 +9,7 @@
 <body>
     <div>
         <h1>Create Account</h1>
-        <form action="/" method="POST" id="create_account_form">
+        <form method="POST" id="create_account_form">
             {% csrf_token %}
             <label for="email">Email address:</label>
             <input type="text" id="email" name="email">
@@ -18,7 +18,7 @@
             <input type="text" id="password" name="password">
             <br>
             <label for="type">Account Type:</label>
-            <select>
+            <select name="type">
                 <option value="instructor">Instructor</option>
                 <option value="ta">TA</option>
             </select>
