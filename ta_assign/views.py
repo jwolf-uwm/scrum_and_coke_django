@@ -26,5 +26,7 @@ class CreateAccount(View):
         return render(request, 'create_account.html')
 
     def post(self, request):
-        # TBD
-        return
+        email = request.POST["email"]
+        password = request.POST["password"]
+        type = request.POST["type"]
+        return render(request, 'create_account.html')

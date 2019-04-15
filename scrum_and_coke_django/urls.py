@@ -20,6 +20,6 @@ from ta_assign.views import Home, CreateAccount
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
-  path("", Home.as_view()),
+  path('', Home.as_view()),
   path('create_account/', CreateAccount.as_view(), name='CreateAccount1'),
 ]
