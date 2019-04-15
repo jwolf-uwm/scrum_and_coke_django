@@ -28,5 +28,5 @@ class CreateAccount(View):
     def post(self, request):
         email = request.POST["email"]
         password = request.POST["password"]
-        #type = request.POST["type"]
-        return render(request, 'create_account.html')
+        type = request.POST["type"]
+        return render(request, 'create_account.html', {"message": "Account not actually created."})
