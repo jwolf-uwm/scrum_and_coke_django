@@ -54,6 +54,7 @@ class Administrator(Person):
         new_course = Course(course_id, num_labs)
         return True
 
+    @staticmethod
     def create_account(self, email, password, account_type):
         # Jeff's method
         # Usage: (string: email, string: password, string: account_type)

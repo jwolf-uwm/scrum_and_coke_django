@@ -16,9 +16,10 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
-from ta_assign import views
+from ta_assign.views import Home, CreateAccount
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
-  path("", views.Home.as_view()),
+  path('', Home.as_view()),
+  path('create_account/', CreateAccount.as_view(), name='CreateAccount1'),
 ]
