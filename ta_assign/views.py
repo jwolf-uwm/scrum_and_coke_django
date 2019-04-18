@@ -34,6 +34,7 @@ class CreateAccount(View):
         response = get_workin.parse_command(command_input)
         return render(request, 'main/create_account.html', {"message": response})
 
+
 class CreateCourse(View):
     def get(self, request):
         return render(request, 'main/create_course.html')
@@ -43,4 +44,3 @@ class CreateCourse(View):
         course_section = request.POST["course_section"]
         num_labs = request.POST["num_labs"]
         return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
-
