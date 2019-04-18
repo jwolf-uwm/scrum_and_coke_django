@@ -34,11 +34,11 @@ class CreateAccount(View):
 
 class CreateCourse(View):
     def get(self, request):
-        return render(request, 'main/../templates/create_course.html')
+        return render(request, 'main/create_course.html')
 
     def post(self, request):
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
         num_labs = request.POST["num_labs"]
-        return render(request, 'main/../templates/create_course.html', {"message": [course_id, course_section, num_labs]})
+        return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
 
