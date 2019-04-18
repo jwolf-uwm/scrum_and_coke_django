@@ -23,13 +23,13 @@ class Home(View):
 
 class CreateAccount(View):
     def get(self, request):
-        return render(request, 'create_account.html')
+        return render(request, 'main/create_account.html')
 
     def post(self, request):
         email = request.POST["email"]
         password = request.POST["password"]
         type = request.POST["type"]
-        return render(request, 'create_account.html', {"message": [email, password, type]})
+        return render(request, 'main/create_account.html', {"message": [email, password, type]})
 
 
 class CreateCourse(View):
