@@ -30,3 +30,15 @@ class CreateAccount(View):
         password = request.POST["password"]
         type = request.POST["type"]
         return render(request, 'main/create_account.html', {"message": [email, password, type]})
+
+
+class CreateCourse(View):
+    def get(self, request):
+        return render(request, 'main/create_course.html')
+
+    def post(self, request):
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        num_labs = request.POST["num_labs"]
+        return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
+
