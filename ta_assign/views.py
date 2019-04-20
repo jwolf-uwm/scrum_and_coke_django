@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from classes.CmdHandler import CmdHandler
+from ta_assign import models
 from classes.Administrator import Administrator
 
 # Create your views here.
@@ -25,6 +26,25 @@ class Command(View):
 
         return render(request, 'main/command.html', {"message": response})
 
+class Login(View):
+    def get(self, request):
+        if request.session.get("username"):
+            return redirect("index1")
+
+        return render(request, "main/login.html")
+
+    def post(self, request):
+        username = request.POST["email"]
+        password = request.POST["password"]
+        user = models.ModelPerson.objects.all().filter(email=username)
+
+        if user.count() == 0 or user[0].password != password:
+            return render(request, "main/login.html", {"error_messages": "username/password incorrect"})
+
+        models.ModelPerson.objects.filter(email=username).update(isLoggedOn=True)
+        request.session["email"] = username
+        request.session["type"] = user[0].type
+        return redirect("index1")
 
 class CreateAccount(View):
     def get(self, request):
