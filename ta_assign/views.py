@@ -26,6 +26,7 @@ class Command(View):
 
         return render(request, 'main/command.html', {"message": response})
 
+
 class Login(View):
     def get(self, request):
         if request.session.get("username"):
@@ -45,6 +46,7 @@ class Login(View):
         request.session["email"] = username
         request.session["type"] = user[0].type
         return redirect("index1")
+
 
 class CreateAccount(View):
     def get(self, request):
