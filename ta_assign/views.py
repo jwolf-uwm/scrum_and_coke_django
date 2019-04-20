@@ -6,9 +6,11 @@ from classes.Administrator import Administrator
 
 # Create your views here.
 
+
 class Index(View):
     def get(self, request):
         return render(request, 'main/index.html')
+
 
 class Command(View):
     def get(self, request):
@@ -23,6 +25,7 @@ class Command(View):
             response = "Please type a command to do stuff."
 
         return render(request, 'main/command.html', {"message": response})
+
 
 class Login(View):
     def get(self, request):
@@ -43,6 +46,7 @@ class Login(View):
         request.session["email"] = username
         request.session["type"] = user[0].type
         return redirect("index1")
+
 
 class CreateAccount(View):
     def get(self, request):

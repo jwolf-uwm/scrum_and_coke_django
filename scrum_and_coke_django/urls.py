@@ -20,7 +20,7 @@ from ta_assign.views import Command, CreateAccount, CreateCourse, Index, Login
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
-  path('', Index.as_view(), name= 'index1'),
+  path('index/', Index.as_view(), name= 'index1'),
   path('create_account/', CreateAccount.as_view(), name='CreateAccount1'),
   path('create_course/', CreateCourse.as_view(), name='CreateCourse1'),
   path('command/', Command.as_view(), name='Command1'),
