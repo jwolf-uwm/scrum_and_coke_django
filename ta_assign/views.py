@@ -26,7 +26,7 @@ class Command(View):
 
 class Login(View):
     def get(self, request):
-        if request.session.get("username"):
+        if request.session.get("email"):
             return redirect("index1")
 
         return render(request, "main/login.html")
@@ -43,6 +43,15 @@ class Login(View):
         request.session["email"] = username
         request.session["type"] = user[0].type
         return redirect("index1")
+
+class Logout(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            return redirect("index1")
+        username = request.session.get("email")
+        models.ModelPerson.objects.filter(email=username).update(isLoggedOn=False)
+        request.session.pop("email", None)
+        return redirect("Login1")
 
 class CreateAccount(View):
     def get(self, request):
