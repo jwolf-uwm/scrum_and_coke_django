@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from classes.CmdHandler import CmdHandler
+from classes.Person import Person
 from classes.Administrator import Administrator
 
 # Create your views here.
@@ -20,6 +21,23 @@ class Home(View):
 
         return render(request, 'main/index.html', {"message": response})
 
+class Login(View):
+    def get(self, request):
+        if request.session.get("username"):
+            return redirect("user")
+
+        return render(request, "login.html")
+
+    def post(self, request):
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = User.objects.all().filter(username=username)
+
+        if user.count() == 0 or user[0].password != password:
+            return render(request, "login.html", {"error_messages": "username/password incorrect"})
+
+        request.session["username"] = username
+        return redirect("user")
 
 class CreateAccount(View):
     def get(self, request):
