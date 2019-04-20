@@ -5,6 +5,9 @@ from classes.Administrator import Administrator
 
 # Create your views here.
 
+class Index(View):
+    def get(self, request):
+        return render(request, 'main/index.html')
 
 class Command(View):
     def get(self, request):

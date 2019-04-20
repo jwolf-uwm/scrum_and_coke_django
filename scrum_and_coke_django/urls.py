@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
-from ta_assign.views import Command, CreateAccount, CreateCourse
+from ta_assign.views import Command, CreateAccount, CreateCourse, Index
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
-  path('', Command.as_view()),
+  path('', Index.as_view()),
   path('create_account/', CreateAccount.as_view(), name='CreateAccount1'),
   path('create_course/', CreateCourse.as_view(), name='CreateCourse1'),
   path('command/', Command.as_view(), name='Command1'),
