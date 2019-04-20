@@ -16,13 +16,15 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
-from ta_assign.views import Command, CreateAccount, CreateCourse, Index, Login
+from ta_assign.views import Command, CreateAccount, CreateCourse, Index, Login, Logout
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
-  path('index/', Index.as_view(), name= 'index1'),
+  path('', Index.as_view(), name= 'index1'),
+  path('index/', Index.as_view(), name='index1'),
   path('create_account/', CreateAccount.as_view(), name='CreateAccount1'),
   path('create_course/', CreateCourse.as_view(), name='CreateCourse1'),
   path('command/', Command.as_view(), name='Command1'),
   path('login/', Login.as_view(), name='Login1'),
+  path('logout/', Logout.as_view(), name='Logout1'),
 ]
