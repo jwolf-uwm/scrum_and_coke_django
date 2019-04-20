@@ -8,7 +8,7 @@ from classes.Administrator import Administrator
 
 class Command(View):
     def get(self, request):
-        return render(request, 'main/index.html')
+        return render(request, 'main/command.html')
 
     def post(self, request):
         get_workin = CmdHandler()
