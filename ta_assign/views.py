@@ -26,10 +26,13 @@ class CreateAccount(View):
         return render(request, 'main/create_account.html')
 
     def post(self, request):
-        email = request.POST["email"]
-        password = request.POST["password"]
-        type = request.POST["type"]
-        return render(request, 'main/create_account.html', {"message": [email, password, type]})
+        account_email = request.POST["email"]
+        account_password = request.POST["password"]
+        account_type = request.POST["type"]
+        command_input = "create_account " + account_email + " " + account_password + " " + account_type
+        get_workin = CmdHandler()
+        response = get_workin.parse_command(command_input)
+        return render(request, 'main/create_account.html', {"message": response})
 
 
 class CreateCourse(View):
@@ -41,4 +44,3 @@ class CreateCourse(View):
         course_section = request.POST["course_section"]
         num_labs = request.POST["num_labs"]
         return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
-

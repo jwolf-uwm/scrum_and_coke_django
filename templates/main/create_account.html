@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Account</title>
-    {% load staticfiles %}
-    <link rel="stylesheet" href="{%  static "css/style.css" %}">
-</head>
-<body>
-    <div>
+{% extends "base.html" %}
+{% block content %}
         <h1>Create Account</h1>
         <form method="POST" id="create_account_form">
             {% csrf_token %}
@@ -26,6 +18,4 @@
             <input type="submit">
         </form>
         <p>{{ message }}</p>
-    </div>
-</body>
-</html>
+{% endblock content %}
