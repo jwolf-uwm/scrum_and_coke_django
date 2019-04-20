@@ -26,15 +26,15 @@ class Login(View):
         if request.session.get("username"):
             return redirect("user")
 
-        return render(request, "login.html")
+        return render(request, "main/login.html")
 
     def post(self, request):
         username = request.POST["username"]
         password = request.POST["password"]
-        user = User.objects.all().filter(username=username)
+        user = Person.objects.all().filter(username=username)
 
         if user.count() == 0 or user[0].password != password:
-            return render(request, "login.html", {"error_messages": "username/password incorrect"})
+            return render(request, "main/login.html", {"error_messages": "username/password incorrect"})
 
         request.session["username"] = username
         return redirect("user")

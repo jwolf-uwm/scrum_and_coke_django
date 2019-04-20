@@ -23,4 +23,5 @@ urlpatterns = [
   path('', Home.as_view()),
   path('create_account/', CreateAccount.as_view(), name='CreateAccount1'),
   path('create_course/', CreateCourse.as_view(), name='CreateCourse1'),
+  path('login/', CreateCourse.as_view(), name='Login'),
 ]
