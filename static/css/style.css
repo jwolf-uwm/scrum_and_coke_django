@@ -22,6 +22,10 @@ body {
     color: white;
 }
 
+.menu a:hover {
+    color: #33fff0;
+}
+
 .menu ul {
   list-style-type: none;
   margin: 0;
