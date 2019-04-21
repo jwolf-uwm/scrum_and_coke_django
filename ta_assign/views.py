@@ -84,7 +84,7 @@ class CreateAccount(View):
         response = get_workin.parse_command(command_input)
 
         if response == "Account Created!":
-            messages.success (request, response)
+            messages.success(request, response)
         else:
             messages.error(request, response)
 
