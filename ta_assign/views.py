@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from classes.CmdHandler import CmdHandler
-from django.contrib.messages import error
+from django.contrib import messages
 from ta_assign import models
 
 # Create your views here.
@@ -63,13 +63,13 @@ class CreateAccount(View):
     def get(self, request):
 
         if not request.session.get("email"):
-            error(request, 'Please login first.')
+            messages.error(request, 'Please login first.')
             return redirect("Login1")
 
         account_type = request.session.get("type")
 
         if not account_type == "administrator" and not account_type == "supervisor":
-            error(request, 'You do not have access to this page.')
+            messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
         return render(request, 'main/create_account.html')
