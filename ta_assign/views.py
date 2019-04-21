@@ -82,7 +82,13 @@ class CreateAccount(View):
         command_input = "create_account " + account_email + " " + account_password + " " + account_type
         get_workin = CmdHandler()
         response = get_workin.parse_command(command_input)
-        return render(request, 'main/create_account.html', {"message": response})
+
+        if response == "Account Created!":
+            messages.success (request, response)
+        else:
+            messages.error(request, response)
+
+        return render(request, 'main/create_account.html')
 
 
 class CreateCourse(View):

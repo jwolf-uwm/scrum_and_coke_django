@@ -17,5 +17,7 @@
         <br><br>
         <input type="submit">
     </form>
-    <p>{{ message }}</p>
+    {% for message in messages %}
+        <p class="error">{{ message }}</p>
+    {% endfor %}
 {% endblock content %}
