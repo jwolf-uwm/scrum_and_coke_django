@@ -1,4 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+
+    {% for message in messages %}
+        <p class="error">{{ message }}</p>
+    {% endfor %}
+
     INDEX
 {% endblock content %}

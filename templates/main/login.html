@@ -5,6 +5,10 @@
         {{ error_messages }}
     {% endif %}
 
+    {% for message in messages %}
+        <p class="error">{{ message }}</p>
+    {% endfor %}
+
     <form action="" method="post">
         <table>
             <tr>
