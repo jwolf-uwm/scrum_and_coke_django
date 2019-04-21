@@ -27,6 +27,7 @@ class Person:
             some_guy.save()
 
     def change_password(self, new):
+        models.ModelPerson.objects.filter(email=self.email).update(password=new)
         self.password = new
         return True
 
@@ -39,10 +40,20 @@ class Person:
         except ValueError:
             return False
 
+        try:
+            find_email = models.ModelPerson.objects.get(email=address)
+        except models.ModelPerson.DoesNotExist:
+            find_email = "none"
+
+        if find_email != "none":
+            return False
+
+        models.ModelPerson.objects.filter(email=self.email).update(email=address)
         self.email = address
         return True
 
     def change_name(self, name):
+        models.ModelPerson.objects.filter(email=self.email).update(name=name)
         self.name = name
         return True
 
@@ -55,6 +66,7 @@ class Person:
         if len(parse_phone[0]) != 3 or len(parse_phone[1]) != 3 or len(parse_phone[2]) != 4:
             return False
 
+        models.ModelPerson.objects.filter(email=self.email).update(phone=phone)
         self.phone_number = phone
         return True
 
