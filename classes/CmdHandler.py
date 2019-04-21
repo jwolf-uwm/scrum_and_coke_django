@@ -149,7 +149,7 @@ class CmdHandler:
         some_guy = self.whos_logged_in()
 
         if len(parse_cmd) != 4:
-            return "Invalid command."
+            return "Parameter error."
 
         if some_guy.type == "administrator":
             admin = Administrator(some_guy.email, some_guy.password, some_guy.type)

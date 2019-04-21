@@ -80,16 +80,152 @@ class CreateAccountTests(TestCase):
         self.assertEqual(response.get('location'), '/index/')
 
     def test_admin_create_ta(self):
+
+        # we still need to have some sort of setup on tests, the command handler still gets this
+        # done easiest right now
         self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'admin@uwm.edu'
-        session['type'] = 'admin'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
-        response = client.post('/create_account/', data={'email': "grant@uwm.edu", 'password': "grant",
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "ta",
                                                          'type': "ta"}, follow="true")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Create Account")
         self.assertContains(response, "Account created!")
+
+    def test_admin_create_instructor(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "instructor@uwm.edu", 'password': "instructor",
+                                                         'type': "instructor"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+
+    def test_super_create_ta(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "ta",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+
+    def test_super_create_instructor(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post('/create_account/', data={'email': "instructor@uwm.edu", 'password': "instructor",
+                                                         'type': "instructor"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+
+    def test_bad_email(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@ta.com", 'password': "ta",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account creation error.")
+
+    def test_no_email(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "", 'password': "ta",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Parameter error.")
+
+    def test_no_password(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Parameter error.")
+
+    def test_email_already_exists(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_super@uwm.edu'
+        session['type'] = 'supervisor'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "ta",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account created!")
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu", 'password': "ta",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account creation error.")
+
+    def test_weird_email(self):
+
+        self.ui = CmdHandler()
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        client = Client()
+        session = client.session
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
+        session.save()
+        response = client.post('/create_account/', data={'email': "ta@uwm.edu.@uwm.edu", 'password': "ta",
+                                                         'type': "ta"}, follow="true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Account creation error.")
