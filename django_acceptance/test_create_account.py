@@ -7,7 +7,7 @@ from classes.CmdHandler import CmdHandler
 class CreateAccountTests(TestCase):
 
     def setUp(self):
-        return
+        self.ui = CmdHandler()
 
     def test_no_login_get(self):
 
@@ -30,7 +30,7 @@ class CreateAccountTests(TestCase):
         session['type'] = 'administrator'
         # save the session
         session.save()
-        response = client.get('/create_account/', follow="true")
+        response = client.get('/create_account/')
         # status code 200, we loaded the correct page
         self.assertEqual(response.status_code, 200)
         # since we returned a render, it has all the content of the page
@@ -83,7 +83,6 @@ class CreateAccountTests(TestCase):
 
         # we still need to have some sort of setup on tests, the command handler still gets this
         # done easiest right now
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
@@ -99,7 +98,6 @@ class CreateAccountTests(TestCase):
 
     def test_admin_create_instructor(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
@@ -115,7 +113,6 @@ class CreateAccountTests(TestCase):
 
     def test_super_create_ta(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
         client = Client()
@@ -131,7 +128,6 @@ class CreateAccountTests(TestCase):
 
     def test_super_create_instructor(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
         client = Client()
@@ -147,7 +143,6 @@ class CreateAccountTests(TestCase):
 
     def test_bad_email(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
@@ -163,7 +158,6 @@ class CreateAccountTests(TestCase):
 
     def test_no_email(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
@@ -179,7 +173,6 @@ class CreateAccountTests(TestCase):
 
     def test_no_password(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
@@ -195,7 +188,6 @@ class CreateAccountTests(TestCase):
 
     def test_email_already_exists(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
         client = Client()
@@ -216,7 +208,6 @@ class CreateAccountTests(TestCase):
 
     def test_weird_email(self):
 
-        self.ui = CmdHandler()
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()

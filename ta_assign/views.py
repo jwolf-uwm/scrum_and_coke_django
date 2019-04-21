@@ -91,18 +91,8 @@ class CreateAccount(View):
         return render(request, 'main/create_account.html')
 
 
-class CreateCourse(View):
-    def get(self, request):
-        return render(request, 'main/create_course.html')
-
-    def post(self, request):
-        course_id = request.POST["course_id"]
-        course_section = request.POST["course_section"]
-        num_labs = request.POST["num_labs"]
-        return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
-
-
 class AccessInfo(View):
+
     def get(self, request):
 
         if not request.session.get("email"):
@@ -120,4 +110,15 @@ class AccessInfo(View):
         response = get_workin.parse_command(command_input)
         messages.success(request, response)
         return render(request, 'main/access_info.html')
+
+
+class CreateCourse(View):
+    def get(self, request):
+        return render(request, 'main/create_course.html')
+
+    def post(self, request):
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        num_labs = request.POST["num_labs"]
+        return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
 

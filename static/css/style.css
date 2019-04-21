@@ -35,3 +35,7 @@ body {
 .menu li {
   display: inline;
 }
+
+.font_help {
+    font-family: "Trebuchet MS";
+}
