@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+
     <h1>Create Course</h1>
     <form method="POST" id="create_course_form">
         {% csrf_token %}
@@ -15,5 +16,9 @@
         <br><br>
         <input type="submit">
     </form>
-    <p>{{ message }}</p>
+
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
 {% endblock content %}
