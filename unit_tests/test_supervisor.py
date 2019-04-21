@@ -522,6 +522,7 @@ class TestSupervisor(TestCase):
         self.assertEqual(parse_info[20], "CS102")
     # Access Info Tests End
     # Person tests
+
     def test_init_(self):
         self.Supervisor1 = Supervisor("Supervisor1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.assertEquals(self.Supervisor1.email, "Supervisor1@uwm.edu")
@@ -532,18 +533,26 @@ class TestSupervisor(TestCase):
         self.assertTrue(self.Supervisor1.change_password("password"))
         self.assertEquals(self.Supervisor1.password, "password")
         self.assertNotEquals(self.Supervisor1.password, "DEFAULT_PASSWORD")
+        model_person1 = models.ModelPerson.objects.get(email=self.Supervisor1.email)
+        self.assertEquals(model_person1.password, "password")
 
     def test_change_email(self):
         self.Supervisor1 = Supervisor("Supervisor1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
+        self.person2 = Person("goober@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.Supervisor1.change_email("snoop@uwm.edu")
+        model_person1 = models.ModelPerson.objects.get(email=self.Supervisor1.email)
+        self.assertEquals(model_person1.email, "snoop@uwm.edu")
         self.assertEquals(self.Supervisor1.email, "snoop@uwm.edu")
         self.assertNotEquals(self.Supervisor1.email, "Supervisor1@uwm.edu")
         self.assertFalse(self.Supervisor1.change_email("snoop@gmail.com"))
         self.assertFalse(self.Supervisor1.change_email("no_at_symbol_or_dot_something"))
+        self.assertFalse(self.Supervisor1.change_email("goober@uwm.edu"))
 
     def test_change_phone(self):
         self.Supervisor1 = Supervisor("Supervisor1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.Supervisor1.change_phone("414.414.4141")
+        model_person1 = models.ModelPerson.objects.get(email=self.Supervisor1.email)
+        self.assertEquals(model_person1.phone, "414.414.4141")
         self.assertEquals(self.Supervisor1.phone_number, "414.414.4141")
         self.assertNotEquals(self.Supervisor1.phone_number, "000.000.0000")
         self.assertFalse(self.Supervisor1.change_phone("1234567890"))
@@ -555,6 +564,8 @@ class TestSupervisor(TestCase):
     def test_change_name(self):
         self.Supervisor1 = Supervisor("Supervisor1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
         self.Supervisor1.change_name("Snoop Doggy Dog")
+        model_person1 = models.ModelPerson.objects.get(email=self.Supervisor1.email)
+        self.assertEquals(model_person1.name, "Snoop Doggy Dog")
         self.assertEquals(self.Supervisor1.name, "Snoop Doggy Dog")
         self.assertNotEquals(self.Supervisor1.name, "DEFAULT")
 
