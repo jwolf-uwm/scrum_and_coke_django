@@ -5,10 +5,6 @@
         {{ error_messages }}
     {% endif %}
 
-    {% for message in messages %}
-        <p class="error">{{ message }}</p>
-    {% endfor %}
-
     <form action="" method="post">
         <table>
             <tr>
@@ -23,4 +19,9 @@
         {% csrf_token %}
         <input type="submit" value="Login" />
     </form>
+
+    {% for message in messages %}
+        <p class="alert">{{ message }}</p>
+    {% endfor %}
+
 {% endblock %}

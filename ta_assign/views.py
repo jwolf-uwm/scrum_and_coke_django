@@ -104,7 +104,20 @@ class CreateCourse(View):
 
 class AccessInfo(View):
     def get(self, request):
-        return
 
-    def post(self, request):
-        return
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        get_workin = CmdHandler()
+        command_input = "access_info"
+        response = get_workin.parse_command(command_input)
+        messages.success(request, response)
+        return render(request, 'main/access_info.html')
+
