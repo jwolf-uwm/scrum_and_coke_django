@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
+    <p>Click a link to do stuff. But you should only click links on stuff you are allowed to do. Good luck.</p>
+
+    <p>If you did stuff wrong, you'll see it under this:</p>
     {% for message in messages %}
-        <p class="error">{{ message }}</p>
+        <p>{{ message }}</p>
     {% endfor %}
 
-    INDEX
 {% endblock content %}

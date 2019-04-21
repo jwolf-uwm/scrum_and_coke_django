@@ -1,17 +1,29 @@
 body {
     background: lightgray;
+    font-family: "Trebuchet MS";
 }
 
-ul {
+.menu {
+    background: black;
+    color: white;
+    padding: 5px 5px;
+    font-weight: bold;
+}
+
+.menu a:link {
+    color: white;
+}
+
+.menu a:visited {
+    color: white;
+}
+
+.menu ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-li {
+.menu li {
   display: inline;
-}
-
-p.error {
-    color: red;
 }
