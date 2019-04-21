@@ -11,3 +11,7 @@ ul {
 li {
   display: inline;
 }
+
+p.error {
+    color: red;
+}

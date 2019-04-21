@@ -62,9 +62,15 @@ class CreateAccount(View):
 
     def get(self, request):
 
-        if not request.session.get("username"):
+        if not request.session.get("email"):
             error(request, 'Please login first.')
             return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            error(request, 'You do not have access to this page.')
+            return redirect("index1")
 
         return render(request, 'main/create_account.html')
 
