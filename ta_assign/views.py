@@ -100,3 +100,11 @@ class CreateCourse(View):
         course_section = request.POST["course_section"]
         num_labs = request.POST["num_labs"]
         return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
+
+
+class AccessInfo(View):
+    def get(self, request):
+        return
+
+    def post(self, request):
+        return
