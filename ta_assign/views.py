@@ -171,3 +171,13 @@ class EditAccount(View):
             messages.error(request, response)
 
         return render(request, 'main/edit_account.html')
+
+
+class EditInfo(View):
+
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        return render(request, 'main/edit_info.html')
