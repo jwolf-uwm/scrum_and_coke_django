@@ -181,3 +181,52 @@ class EditInfo(View):
             return redirect("Login1")
 
         return render(request, 'main/edit_info.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        password = request.POST["password"]
+        name = request.POST["name"]
+        phone = request.POST["phone"]
+        get_workin = CmdHandler()
+        pick_anything = False
+
+        if email != "":
+            pick_anything = True
+            response = get_workin.parse_command("change_email " + email)
+
+            if response == "Email address changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if password != "":
+            pick_anything = True
+            response = get_workin.parse_command("change_password " + password)
+
+            if response == "Password changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if name != "":
+            pick_anything = True
+            response = get_workin.parse_command("change_name " + name)
+
+            if response == "Name changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if phone != "":
+            pick_anything = True
+            response = get_workin.parse_command("change_phone " + phone)
+
+            if response == "Phone number changed.":
+                messages.success(request, response)
+            else:
+                messages.error(request, response)
+
+        if not pick_anything:
+            messages.error(request, "You should pick something to change.")
+
+        return render(request, 'main/edit_info.html')
