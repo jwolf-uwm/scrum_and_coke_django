@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+    <h1>Login</h1>
+
     {% if error_messages %}
         {{ error_messages }}
     {% endif %}
@@ -12,11 +15,16 @@
                 <td><input type="text" name="email" required ></td>
             </tr>
             <tr>
-                <td>password: </td>
+                <td>Password: </td>
                 <td><input type="password" name="password" required /></td>
             </tr>
         </table>
         {% csrf_token %}
         <input type="submit" value="Login" />
     </form>
+
+    {% for message in messages %}
+        <p class="alert">{{ message }}</p>
+    {% endfor %}
+
 {% endblock %}

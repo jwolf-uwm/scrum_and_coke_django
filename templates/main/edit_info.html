@@ -1,20 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h1>Create Account</h1>
-    <form method="POST" id="create_account_form">
+    <h1>Edit Info</h1>
+
+    <form method="POST" id="edit_info_form">
         {% csrf_token %}
-        <label for="email">Email address:</label>
+        <label for="email">Email:</label>
         <input type="text" id="email" name="email">
         <br><br>
         <label for="password">Password:</label>
         <input type="text" id="password" name="password">
         <br><br>
-        <label for="type">Account Type:</label>
-        <select name="type" form="create_account_form">
-            <option value="instructor">Instructor</option>
-            <option value="ta">TA</option>
-        </select>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <br><br>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone">
         <br><br>
         <input type="submit">
     </form>
