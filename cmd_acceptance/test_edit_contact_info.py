@@ -1,65 +1,166 @@
-import unittest
-from classes.Administrator import Administrator
-from classes.Supervisor import Supervisor
-from classes.Instructor import Instructor
-from classes.TA import TA
+from django.test import TestCase
+from classes.CmdHandler import CmdHandler
 
 
-class EditContactInfoTests(unittest.TestCase):
+class EditContactInfoTests(TestCase):
     def setUp(self):
-        self.SUP = Supervisor("SUP@uwm.edu", "SUP")
-        self.ADMIN = Administrator("ADMN@uwm.edu", "ADMIN")
-        self.INS = Instructor("INS@uwm.edu", "INS")
-        self.TA = TA("TA@uwm.edu", "TA")
+        self.ui = CmdHandler()
 
-    """
-    both instructors and Ta's can edit their own contact information
-    edit_contact_info takes 2 arguments 
-        -type of info to update
-        -new info
-    if edit_contact_info successful
-        -"contact info edited" displayed
-    if edit_contact_info done by admin or supervisor
-        -"contact info not edited"
-    if number of args incorrect
-        -"invalid number of arguments" displayed
-    if type of info invalid
-        -"invalid type of data to edit" displayed 
-    """
+    def test_command_create_account_no_setup(self):
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.edu"),
+                         "Please run setup before attempting to execute commands.")
 
-    def test_eci_ins(self):
-        self.ui.command("login INS@uwm.edu INS")
-        self.assertEqual(self.ui.command("edit_contact_info phone 111-111-1111"), "contact info edited")
-        self.assertEqual(self.INS.phone_number, "111-111-1111")
-        self.assertEqual(self.ui.command("edit_contact_info name John Tang Boyland"), "contact info edited")
-        self.assertEqual(self.INS.name, "John Tang Boyland")
+    def test_command_create_account_no_login(self):
+        self.ui.parse_command("setup")
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.edu"),
+                         "Please login first.")
 
-    def test_eci_ta(self):
-        self.ui.command("login TA@uwm.edu TA")
-        self.assertEqual(self.ui.command("edit_contact_info phone 111-111-1111"), "contact info edited")
-        self.assertEqual(self.TA.phone_number, "111-111-1111")
-        self.assertEqual(self.ui.command("edit_contact_info name Fanglu Ju"), "contact info edited")
-        self.assertEqual(self.TA.name, "Fanglu Ju")
+    def test_command_admin_change_email(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.edu"), "Email address changed.")
 
-    def test_eci_admin(self):
-        self.ui.command("login ADMN@uwm.edu ADMIN ")
-        self.assertEqual(self.ui.command("edit_contact_info phone 111-111-1111"), "contact info not edited")
-        self.assertEqual(self.ui.command("edit_contact_info name Fanglu Ju"), "contact info not edited")
+    def test_command_super_change_email(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.edu"), "Email address changed.")
 
-    def test_eci_sup(self):
-        self.ui.command("login SUP@uwm.edu SUP ")
-        self.assertEqual(self.ui.command("edit_contact_info phone 111-111-1111"), "contact info not edited")
-        self.assertEqual(self.ui.command("edit_contact_info name Fanglu Ju"), "contact info not edited")
+    def test_command_instructor_change_email(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.edu"), "Email address changed.")
 
-    def test_eci_invalid_number_args(self):
-        self.ui.command("login TA@uwm.edu TA ")
-        self.assertEqual(self.ui.command("edit_contact_info 111-111-1111"), "invalid number of arguments")
-        self.assertEqual(self.ui.command("edit_contact_info name "), "invalid number of arguments")
+    def test_command_ta_change_email(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.edu"), "Email address changed.")
 
-    def test_eci_invalid_args(self):
-        self.ui.command("login TA@uwm.edu TA ")
-        self.assertEqual(self.ui.command("edit_contact_info stuff things"), "invalid info type to edit")
-        self.assertEqual(self.ui.command("edit_contact_info username boom "), "invalid info type to edit")
+    def test_command_bad_email(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.com"), "Invalid/taken email address.")
 
+    def test_command_no_email(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_email"), "Parameter error.")
 
+    def test_command_weird_email(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_email change_me@uwm.com@uwm.com"),
+                         "Invalid/taken email address.")
 
+    def test_command_admin_change_password(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_password 12345"), "Password changed.")
+
+    def test_command_super_change_password(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_password 12345"), "Password changed.")
+
+    def test_command_instructor_change_password(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_password 12345"), "Password changed.")
+
+    def test_command_ta_change_password(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_password 12345"), "Password changed.")
+
+    def test_command_no_password(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_password"), "Parameter error.")
+
+    def test_command_admin_change_name(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_name changeguy"), "Name changed.")
+
+    def test_command_super_change_name(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_name changeguy"), "Name changed.")
+
+    def test_command_instructor_change_name(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_name changeguy"), "Name changed.")
+
+    def test_command_ta_change_name(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_name changeguy"), "Name changed.")
+
+    def test_command_change_multiple_name(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_name Joe Bob Henry Bob Bob"), "Name changed.")
+
+    def test_command_change_no_name(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_name"), "Parameter error.")
+
+    def test_command_admin_change_phone(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_phone 414.867.5309"), "Phone number changed.")
+
+    def test_command_super_change_phone(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_phone 414.867.5309"), "Phone number changed.")
+
+    def test_command_instructor_change_phone(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_phone 414.867.5309"), "Phone number changed.")
+
+    def test_command_ta_change_phone(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_phone 414.867.5309"), "Phone number changed.")
+
+    def test_command_bad_phone(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_phone 414-867-5309"), "Invalid phone format.")
+
+    def test_command_bad_phone_two(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_phone 4148675309"), "Invalid phone format.")
+
+    def test_command_no_phone(self):
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.assertEqual(self.ui.parse_command("change_phone"), "Parameter error.")
