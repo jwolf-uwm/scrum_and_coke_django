@@ -73,6 +73,12 @@ class Person:
     def get_contact_info(self):
         return
 
+    def view_info(self):
+
+        info_list = [self.email, self.password, self.name, self.phone_number]
+
+        return info_list
+
     @staticmethod
     def login(email, password):
 
