@@ -95,6 +95,14 @@ class Administrator(Person):
             return False
 
         if field == "email":
+            try:
+                find_email = models.ModelPerson.objects.get(email=email)
+            except models.ModelPerson.DoesNotExist:
+                find_email = "none"
+
+            if find_email != "none":
+                return False
+
             parse_at = content.split("@")
             try:
                 if len(parse_at) != 2 or parse_at[1] != "uwm.edu":
@@ -108,7 +116,7 @@ class Administrator(Person):
             models.ModelPerson.objects.filter(email=email).update(password=content)
             return True
 
-        elif field == "phone_number":
+        elif field == "phone":
             parse_phone = content.split(".")
             if len(parse_phone) != 3:
                 print("Bad length")
