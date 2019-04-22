@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
-from ta_assign.views import Command, CreateAccount, CreateCourse, Index, Login, Logout, AccessInfo
+from ta_assign.views import Command, CreateAccount, CreateCourse, Index, Login, Logout, AccessInfo, EditAccount
 
 urlpatterns = [
   url(r'^admin/', admin.site.urls),
@@ -27,5 +27,6 @@ urlpatterns = [
   path('command/', Command.as_view(), name='Command1'),
   path('login/', Login.as_view(), name='Login1'),
   path('logout/', Logout.as_view(), name='Logout1'),
-  path('access_info/', AccessInfo.as_view(), name='AccessInfo1')
+  path('access_info/', AccessInfo.as_view(), name='AccessInfo1'),
+  path('edit_account/', EditAccount.as_view(), name='EditAccount1'),
 ]

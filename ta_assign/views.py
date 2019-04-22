@@ -142,3 +142,32 @@ class CreateCourse(View):
 
         return render(request, 'main/create_course.html', {"message": [course_id, course_section, num_labs]})
 
+
+class EditAccount(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "administrator" and not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        return render(request, 'main/edit_account.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        field = request.POST["field"]
+        data = request.POST["data"]
+        command_input = "edit_account " + email + " " + field + " " + data
+        get_workin = CmdHandler()
+        response = get_workin.parse_command(command_input)
+
+        if response == "Command successful.":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+
+        return render(request, 'main/edit_account.html')
