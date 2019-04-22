@@ -106,6 +106,18 @@ class CmdHandler:
             elif first_parse == "view_ta_assign":
                 return_string = self.view_ta_assign(parse_cmd)
 
+            elif first_parse == "change_email":
+                return_string = self.change_email(parse_cmd)
+
+            elif first_parse == "change_password":
+                return_string = self.change_password(parse_cmd)
+
+            elif first_parse == "change_name":
+                return_string = self.change_name(parse_cmd)
+
+            elif first_parse == "change_phone":
+                return_string = self.change_phone(parse_cmd)
+
             return return_string
 
     def login(self, parse_cmd):
@@ -285,3 +297,72 @@ class CmdHandler:
             return instructor.view_ta_assign()
         else:
             return "You don't have access to that command."
+
+    def change_email(self, parse_cmd):
+
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 2:
+            return "Parameter error."
+
+        person = Person(some_guy.email, some_guy.password, some_guy.type)
+        did_work = person.change_email(parse_cmd[1])
+
+        if did_work:
+            return "Email address changed."
+        else:
+            return "Invalid/taken email address."
+
+    def change_password(self, parse_cmd):
+
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 2:
+            return "Parameter error."
+
+        person = Person(some_guy.email, some_guy.password, some_guy.type)
+        did_work = person.change_password(parse_cmd[1])
+
+        if did_work:
+            return "Password changed."
+        else:
+            return "Bad password."
+
+    def change_name(self, parse_cmd):
+
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) < 2:
+            return "Parameter error."
+
+        person = Person(some_guy.email, some_guy.password, some_guy.type)
+
+        name_length = len(parse_cmd)
+        i = 2
+        some_name = parse_cmd[1]
+
+        while i < name_length:
+            some_name = some_name + " " + parse_cmd[i]
+            i = i + 1
+
+        did_work = person.change_name(some_name)
+
+        if did_work:
+            return "Name changed."
+        else:
+            return "Bad name."
+
+    def change_phone(self, parse_cmd):
+
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 2:
+            return "Parameter error."
+
+        person = Person(some_guy.email, some_guy.password, some_guy.type)
+        did_work = person.change_phone(parse_cmd[1])
+
+        if did_work:
+            return "Phone number changed."
+        else:
+            return "Invalid phone format."
