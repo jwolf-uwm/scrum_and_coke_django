@@ -4,6 +4,7 @@ from classes.CmdHandler import CmdHandler
 from django.contrib import messages
 from ta_assign import models
 
+
 # Create your views here.
 
 
@@ -229,4 +230,52 @@ class EditInfo(View):
         if not pick_anything:
             messages.error(request, "You should pick something to change.")
 
-        return render(request, 'main/edit_info.html')
+class AssignInstructorToCourse(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_instructor.html')
+
+    def post(self, request):
+        email1 = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        command_input = "assign_instructor " + email1 + " CS" + course_id + "-" + course_section
+        get_workin = CmdHandler()
+        response = get_workin.parse_command(command_input)
+        if response == "command successful":
+            messages.success(request, response)
+            return redirect("index1")
+        else:
+            messages.error(request, response)
+        return redirect("index1")
+
+
+class AssignTAToCourse(View):
+    def get(self, request):
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+        account_type = request.session.get("type")
+        if not account_type == "supervisor":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+        return render(request, 'main/assign_ta.html')
+
+    def post(self, request):
+        email = request.POST["email"]
+        course_id = request.POST["course_id"]
+        course_section = request.POST["course_section"]
+        command_input = "assign_ta " + email + " CS" + course_id + "-" + course_section
+        get_workin = CmdHandler()
+        response = get_workin.parse_command(command_input)
+        if response == "command successful":
+            messages.success(request, response)
+        else:
+            messages.error(request, response)
+        return redirect("index1")
