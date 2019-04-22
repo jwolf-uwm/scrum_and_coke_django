@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-  <form method="post" action="/"> 
-  {% csrf_token %}
-    Command: <input type="text" name="command" size="50"><br/>
-    <input type="submit">
-  </form>
-    <pre><p>{{message}}</p></pre>
+
+    <h1>Home</h1>
+    <p>Click a link to do stuff. But you should only click links on stuff you are allowed to do. Good luck.</p>
+    <p>Sometimes you'll see stuff under this, because you did something right or wrong:</p>
+    {% for message in messages %}
+        <p class="alert">{{ message }}</p>
+    {% endfor %}
+
 {% endblock content %}
