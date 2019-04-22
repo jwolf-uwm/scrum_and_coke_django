@@ -127,6 +127,8 @@ class CmdHandler:
         current_user = self.whos_logged_in()
         if len(parse_cmd) != 3:
             return "Command not of the right format: [create_course CS###-### #]"
+        if not parse_cmd[2].isdigit():
+            return "An error occurred"
         if current_user.type == "administrator":
             adm = Administrator(current_user.email, current_user.password, current_user.type)
             if adm.create_course(parse_cmd[1], int(parse_cmd[2])):
