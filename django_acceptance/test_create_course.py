@@ -82,7 +82,7 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'admin@uwm.edu'
+        session['email'] = 'ta_assign_admin@uwm.edu'
         session['type'] = 'administrator'
         session.save()
         response = client.post('/create_course/', data={'course_id': "361", 'course_section': "401", 'num_labs': "3"})
@@ -95,7 +95,7 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
+        session['email'] = 'ta_assign_super@uwm.edu'
         session['type'] = 'supervisor'
         session.save()
         response = client.post('/create_course/', data={'course_id': "361", 'course_section': "401", 'num_labs': "3"})
@@ -108,8 +108,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "361", 'course_section': "401", 'num_labs': "3"})
@@ -127,8 +127,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "ABC", 'course_section': "401", 'num_labs': "3"})
@@ -141,8 +141,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "1234", 'course_section': "401", 'num_labs': "3"})
@@ -155,8 +155,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "12", 'course_section': "401", 'num_labs': "3"})
@@ -169,8 +169,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "123", 'course_section': "ABC", 'num_labs': "3"})
@@ -183,8 +183,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "123", 'course_section': "1234", 'num_labs': "3"})
@@ -197,8 +197,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "123", 'course_section': "99", 'num_labs': "3"})
@@ -211,8 +211,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "123", 'course_section': "401", 'num_labs': "A"})
@@ -225,8 +225,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "123", 'course_section': "401", 'num_labs': "6"})
@@ -239,8 +239,8 @@ class CreateCourseTests(TestCase):
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
-        session['type'] = 'supervisor'
+        session['email'] = 'ta_assign_admin@uwm.edu'
+        session['type'] = 'administrator'
         session.save()
 
         response = client.post('/create_course/', data={'course_id': "123", 'course_section': "401", 'num_labs': "-1"})
