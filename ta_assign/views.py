@@ -230,6 +230,7 @@ class EditInfo(View):
         if not pick_anything:
             messages.error(request, "You should pick something to change.")
 
+
 class AssignInstructorToCourse(View):
     def get(self, request):
         if not request.session.get("email"):
@@ -279,3 +280,24 @@ class AssignTAToCourse(View):
         else:
             messages.error(request, response)
         return redirect("index1")
+
+
+class ViewTAAssign(View):
+
+    def get(self, request):
+
+        if not request.session.get("email"):
+            messages.error(request, 'Please login first.')
+            return redirect("Login1")
+
+        account_type = request.session.get("type")
+
+        if not account_type == "instructor" and not account_type == "ta":
+            messages.error(request, 'You do not have access to this page.')
+            return redirect("index1")
+
+        get_workin = CmdHandler()
+        command_input = "view_ta_assign"
+        response = get_workin.parse_command(command_input)
+        messages.success(request, response)
+        return render(request, 'main/view_ta_assign.html')
