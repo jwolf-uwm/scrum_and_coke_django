@@ -230,6 +230,8 @@ class EditInfo(View):
         if not pick_anything:
             messages.error(request, "You should pick something to change.")
 
+        return render(request, 'main/edit_info.html')
+
 
 class AssignInstructorToCourse(View):
     def get(self, request):
