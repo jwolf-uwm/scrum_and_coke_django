@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from classes.CmdHandler import CmdHandler
+from classes.WebCmdHandler import WebCmdHandler
 from django.contrib import messages
 from ta_assign import models
 
@@ -81,8 +82,8 @@ class CreateAccount(View):
         account_password = request.POST["password"]
         account_type = request.POST["type"]
         command_input = "create_account " + account_email + " " + account_password + " " + account_type
-        get_workin = CmdHandler()
-        response = get_workin.parse_command(command_input)
+        get_workin = WebCmdHandler()
+        response = get_workin.parse_command(request.session["email"], command_input)
 
         if response == "Account Created!":
             messages.success(request, response)
@@ -106,9 +107,9 @@ class AccessInfo(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        get_workin = CmdHandler()
+        get_workin = WebCmdHandler()
         command_input = "access_info"
-        response = get_workin.parse_command(command_input)
+        response = get_workin.parse_command(request.session["email"], command_input)
         messages.success(request, response)
         return render(request, 'main/access_info.html')
 
@@ -133,8 +134,8 @@ class CreateCourse(View):
         num_labs = request.POST["num_labs"]
 
         command_input = "create_course CS" + course_id + "-" + course_section + " " + num_labs
-        get_workin = CmdHandler()
-        response = get_workin.parse_command(command_input)
+        get_workin = WebCmdHandler()
+        response = get_workin.parse_command(request.session["email"], command_input)
 
         if response == "Course has been created successfully.":
             messages.success(request, response)
@@ -163,8 +164,8 @@ class EditAccount(View):
         field = request.POST["field"]
         data = request.POST["data"]
         command_input = "edit_account " + email + " " + field + " " + data
-        get_workin = CmdHandler()
-        response = get_workin.parse_command(command_input)
+        get_workin = WebCmdHandler()
+        response = get_workin.parse_command(request.session["email"], command_input)
 
         if response == "Command successful.":
             messages.success(request, response)
@@ -191,22 +192,21 @@ class EditInfo(View):
         password = request.POST["password"]
         name = request.POST["name"]
         phone = request.POST["phone"]
-        get_workin = CmdHandler()
+        get_workin = WebCmdHandler()
         pick_anything = False
 
         if email != "":
             pick_anything = True
-            response = get_workin.parse_command("change_email " + email)
-
+            response = get_workin.parse_command(request.session["email"], "change_email " + email)
             if response == "Email address changed.":
                 messages.success(request, response)
-                request.session["email"]=email
+                request.session["email"] = email
             else:
                 messages.error(request, response)
 
         if password != "":
             pick_anything = True
-            response = get_workin.parse_command("change_password " + password)
+            response = get_workin.parse_command(request.session["email"], "change_password " + password)
 
             if response == "Password changed.":
                 messages.success(request, response)
@@ -215,7 +215,7 @@ class EditInfo(View):
 
         if name != "":
             pick_anything = True
-            response = get_workin.parse_command("change_name " + name)
+            response = get_workin.parse_command(request.session["email"], "change_name " + name)
 
             if response == "Name changed.":
                 messages.success(request, response)
@@ -224,7 +224,7 @@ class EditInfo(View):
 
         if phone != "":
             pick_anything = True
-            response = get_workin.parse_command("change_phone " + phone)
+            response = get_workin.parse_command(request.session["email"], "change_phone " + phone)
 
             if response == "Phone number changed.":
                 messages.success(request, response)
@@ -253,8 +253,8 @@ class AssignInstructorToCourse(View):
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
         command_input = "assign_instructor " + email1 + " CS" + course_id + "-" + course_section
-        get_workin = CmdHandler()
-        response = get_workin.parse_command(command_input)
+        get_workin = WebCmdHandler()
+        response = get_workin.parse_command(request.session["email"], command_input)
         if response == "command successful":
             messages.success(request, response)
             return redirect("index1")
@@ -279,8 +279,8 @@ class AssignTAToCourse(View):
         course_id = request.POST["course_id"]
         course_section = request.POST["course_section"]
         command_input = "assign_ta " + email + " CS" + course_id + "-" + course_section
-        get_workin = CmdHandler()
-        response = get_workin.parse_command(command_input)
+        get_workin = WebCmdHandler()
+        response = get_workin.parse_command(request.session["email"], command_input)
         if response == "command successful":
             messages.success(request, response)
         else:
@@ -302,8 +302,8 @@ class ViewTAAssign(View):
             messages.error(request, 'You do not have access to this page.')
             return redirect("index1")
 
-        get_workin = CmdHandler()
+        get_workin = WebCmdHandler()
         command_input = "view_ta_assign"
-        response = get_workin.parse_command(command_input)
+        response = get_workin.parse_command(request.session["email"], command_input)
         messages.success(request, response)
         return render(request, 'main/view_ta_assign.html')
