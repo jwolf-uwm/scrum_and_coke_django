@@ -118,6 +118,9 @@ class CmdHandler:
             elif first_parse == "change_phone":
                 return_string = self.change_phone(parse_cmd)
 
+            elif first_parse == "view_info":
+                return_string = self.view_info(parse_cmd)
+
             return return_string
 
     def login(self, parse_cmd):
@@ -366,3 +369,13 @@ class CmdHandler:
             return "Phone number changed."
         else:
             return "Invalid phone format."
+
+    def view_info(self, parse_cmd):
+
+        some_guy = self.whos_logged_in()
+
+        if len(parse_cmd) != 1:
+            return "Parameter error."
+
+        person = Person(some_guy.email, some_guy.password, some_guy.type)
+        return person.view_info()
