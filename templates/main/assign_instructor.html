@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Assign Instructor</title>
-    {% load staticfiles %}
-    <link rel="stylesheet" href="{%  static "css/style.css" %}">
-</head>
-<body>
-    <div>
+{% extends "base.html" %}
+{% block content %}
+
         <h1>Assign Instructor</h1>
         <form method="POST" id="assign_instructor_form">
             {% csrf_token %}
@@ -25,6 +18,8 @@
             <input type="submit">
         </form>
         <p>{{ message }}</p>
-    </div>
-</body>
-</html>
+  {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+{% endblock content %}
