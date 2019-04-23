@@ -212,7 +212,7 @@ class TestAdministrator(TestCase):
         tester.password = "random_password"
         tester.save()
         # test edit phone
-        self.assertTrue(self.ad1.edit_account("rando@uwm.edu", "phone_number", "123.456.7890"))
+        self.assertTrue(self.ad1.edit_account("rando@uwm.edu", "phone", "123.456.7890"))
 
         tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
         self.assertEqual(tester.phone, "123.456.7890")

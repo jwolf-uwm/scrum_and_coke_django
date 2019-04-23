@@ -200,7 +200,7 @@ class EditInfo(View):
             response = get_workin.parse_command(request.session["email"], "change_email " + email)
             if response == "Email address changed.":
                 messages.success(request, response)
-                request.session["email"]=email
+                request.session["email"] = email
             else:
                 messages.error(request, response)
 

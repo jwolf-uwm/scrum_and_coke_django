@@ -100,7 +100,7 @@ class Administrator(Person):
             except models.ModelPerson.DoesNotExist:
                 find_email = "none"
 
-            if find_email != "none":
+            if find_email == "none":
                 return False
 
             parse_at = content.split("@")
