@@ -20,9 +20,10 @@ class EditInfoTests(TestCase):
 
     def test_admin_get(self):
 
+        self.ui.parse_command("setup")
         client = Client()
         session = client.session
-        session['email'] = 'admin@uwm.edu'
+        session['email'] = 'ta_assign_admin@uwm.edu'
         session['type'] = 'administrator'
         session.save()
         response = client.get('/edit_info/')
@@ -33,9 +34,10 @@ class EditInfoTests(TestCase):
 
     def test_super_get(self):
 
+        self.ui.parse_command("setup")
         client = Client()
         session = client.session
-        session['email'] = 'super@uwm.edu'
+        session['email'] = 'ta_assign_super@uwm.edu'
         session['type'] = 'supervisor'
         session.save()
         response = client.get('/edit_info/')
@@ -46,9 +48,14 @@ class EditInfoTests(TestCase):
 
     def test_instructor_get(self):
 
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login instructor@uwm.edu password")
         client = Client()
         session = client.session
-        session['email'] = 'inst@uwm.edu'
+        session['email'] = 'instructor@uwm.edu'
         session['type'] = 'instructor'
         session.save()
         response = client.get('/edit_info/')
@@ -59,6 +66,11 @@ class EditInfoTests(TestCase):
 
     def test_ta_get(self):
 
+        self.ui.parse_command("setup")
+        self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
         client = Client()
         session = client.session
         session['email'] = 'ta@uwm.edu'

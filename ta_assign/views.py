@@ -181,7 +181,10 @@ class EditInfo(View):
             messages.error(request, 'Please login first.')
             return redirect("Login1")
 
-        return render(request, 'main/edit_info.html')
+        some_guy = models.ModelPerson.objects.get(email=request.session.get("email"))
+
+        return render(request, 'main/edit_info.html', {"some_email": some_guy.email, "some_password": some_guy.password,
+                                                       "some_name": some_guy.name, "some_phone": some_guy.phone})
 
     def post(self, request):
         email = request.POST["email"]
@@ -197,6 +200,7 @@ class EditInfo(View):
 
             if response == "Email address changed.":
                 messages.success(request, response)
+                request.session["email"]=email
             else:
                 messages.error(request, response)
 
@@ -230,7 +234,7 @@ class EditInfo(View):
         if not pick_anything:
             messages.error(request, "You should pick something to change.")
 
-        return render(request, 'main/edit_info.html')
+        return redirect("EditInfo1")
 
 
 class AssignInstructorToCourse(View):
