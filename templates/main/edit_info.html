@@ -3,6 +3,13 @@
 
     <h1>Edit Info</h1>
 
+    <p>
+        Current Email: {{ some_email }} <br>
+        Current Password: {{ some_password }} <br>
+        Current Name: {{ some_name }} <br>
+        Current Phone: {{ some_phone }} <br>
+    </p>
+
     <form method="POST" id="edit_info_form">
         {% csrf_token %}
         <label for="email">Email:</label>

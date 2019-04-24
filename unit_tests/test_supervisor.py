@@ -332,7 +332,7 @@ class TestSupervisor(TestCase):
         tester.password = "random_password"
         tester.save()
         # test edit phone
-        self.assertTrue(self.sup1.edit_account("rando@uwm.edu", "phone_number", "123.456.7890"))
+        self.assertTrue(self.sup1.edit_account("rando@uwm.edu", "phone", "123.456.7890"))
 
         tester = models.ModelPerson.objects.get(email="rando@uwm.edu")
         self.assertEqual(tester.phone, "123.456.7890")
@@ -580,7 +580,7 @@ class TestSupervisor(TestCase):
         model_supervisor1 = models.ModelPerson.objects.get(email=self.Supervisor1.email)
         self.assertTrue(model_supervisor1.isLoggedOn)
         self.assertEquals(Supervisor.login("Supervisor1@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
-        self.assertEquals(Supervisor.login("snoop@uwm.edu", "password"), "Invalid login info")
+        self.assertEquals(Supervisor.login("snoop@uwm.edu", "password"), "User already logged in")
 
     def test_logout(self):
         self.Supervisor1 = Supervisor("Supervisor1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")

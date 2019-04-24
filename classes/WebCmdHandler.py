@@ -10,7 +10,7 @@ from ta_assign import models
 # importing all the things, because who knows
 
 
-class CmdHandler:
+class WebCmdHandler:
 
     def check_setup(self):
         # check if an administrator exists
@@ -33,33 +33,15 @@ class CmdHandler:
         new_super = Supervisor("ta_assign_super@uwm.edu", "password", "supervisor")
         return "Admin/Supervisor accounts setup!"
 
-    # might not be all that useful
-    def query_by_email(self, email_addy):
-        # give an email address, get the info you need to instantiate in a tuple
-        person_stuff = []
-
+    def new_method_whos_dis(self, email):
         try:
-            some_person = models.ModelPerson.objects.get(email=email_addy)
-
-        except models.ModelPerson.DoesNotExist:
-            return person_stuff
-
-        else:
-            person_stuff.append(some_person.email)
-            person_stuff.append(some_person.password)
-            person_stuff.append(some_person.type)
-
-            return person_stuff
-
-    def whos_logged_in(self):
-        try:
-            some_person = models.ModelPerson.objects.get(isLoggedOn=True)
+            some_person = models.ModelPerson.objects.get(email=email)
         except models.ModelPerson.DoesNotExist:
             return None
 
         return some_person
 
-    def parse_command(self, some_cmd):
+    def parse_command(self, email, some_cmd):
         # if we don't have an admin yet
         if not self.check_setup():
             # if we didn't type setup, tell them to setup
@@ -74,7 +56,7 @@ class CmdHandler:
             first_parse = parse_cmd[0]
             return_string = "Invalid command."
 
-            some_person = self.whos_logged_in()
+            some_person = self.new_method_whos_dis(email)
 
             if first_parse != "login" and some_person is None:
                 return "Please login first."
@@ -83,43 +65,43 @@ class CmdHandler:
                 return_string = self.login(parse_cmd)
 
             elif first_parse == "logout":
-                return_string = self.logout(parse_cmd)
+                return_string = self.logout(some_person, parse_cmd)
 
             elif first_parse == "create_course":
-                return_string = self.create_course(parse_cmd)
+                return_string = self.create_course(some_person, parse_cmd)
 
             elif first_parse == "create_account":
-                return_string = self.create_account(parse_cmd)
+                return_string = self.create_account(some_person, parse_cmd)
 
             elif first_parse == "edit_account":
-                return_string = self.edit_account(parse_cmd)
+                return_string = self.edit_account(some_person, parse_cmd)
 
             elif first_parse == "access_info":
-                return_string = self.access_info(parse_cmd)
+                return_string = self.access_info(some_person, parse_cmd)
 
             elif first_parse == "assign_instructor":
-                return_string = self.assign_instructor(parse_cmd)
+                return_string = self.assign_instructor(some_person, parse_cmd)
 
             elif first_parse == "assign_ta":
-                return_string = self.assign_ta(parse_cmd)
+                return_string = self.assign_ta(some_person, parse_cmd)
 
             elif first_parse == "view_ta_assign":
-                return_string = self.view_ta_assign(parse_cmd)
+                return_string = self.view_ta_assign(some_person, parse_cmd)
 
             elif first_parse == "change_email":
-                return_string = self.change_email(parse_cmd)
+                return_string = self.change_email(some_person, parse_cmd)
 
             elif first_parse == "change_password":
-                return_string = self.change_password(parse_cmd)
+                return_string = self.change_password(some_person, parse_cmd)
 
             elif first_parse == "change_name":
-                return_string = self.change_name(parse_cmd)
+                return_string = self.change_name(some_person, parse_cmd)
 
             elif first_parse == "change_phone":
-                return_string = self.change_phone(parse_cmd)
+                return_string = self.change_phone(some_person, parse_cmd)
 
             elif first_parse == "view_info":
-                return_string = self.view_info(parse_cmd)
+                return_string = self.view_info(some_person, parse_cmd)
 
             return return_string
 
@@ -128,18 +110,18 @@ class CmdHandler:
             return "Incorrect Command"
         return Person.login(parse_cmd[1], parse_cmd[2])
 
-    def logout(self, parse_cmd):
+    def logout(self, some_person, parse_cmd):
         if len(parse_cmd) != 1:
             return "Incorrect Command"
-        temp = self.whos_logged_in()
+        temp = some_person
         if temp is None:
             return "Incorrect Command"
 
         person = Person(temp.email, temp.password, temp.type)
         return person.logout()
 
-    def create_course(self, parse_cmd):
-        current_user = self.whos_logged_in()
+    def create_course(self, some_person, parse_cmd):
+        current_user = some_person
         if len(parse_cmd) != 3:
             return "Command not of the right format: [create_course CS###-### #]"
         if not parse_cmd[2].isdigit():
@@ -159,11 +141,11 @@ class CmdHandler:
         else:
             return "Yeah, you don't have access to that command. Nice try buddy."
 
-    def create_account(self, parse_cmd):
+    def create_account(self, some_person, parse_cmd):
         # Jeff's method
         # calls create_account for admin and supervisor
 
-        some_guy = self.whos_logged_in()
+        some_guy = some_person
 
         if len(parse_cmd) != 4:
             return "Parameter error."
@@ -182,11 +164,11 @@ class CmdHandler:
         else:
             return "Account creation error."
 
-    def edit_account(self, parse_cmd):
+    def edit_account(self, some_person, parse_cmd):
         # Jeff's method
         # calls edit_account for admin and supervisor
 
-        current_user = self.whos_logged_in()
+        current_user = some_person
         fail_string = "Invalid command"
 
         if current_user.type != "administrator" and current_user.type != "supervisor":
@@ -216,12 +198,12 @@ class CmdHandler:
         else:
             return "Command error."
 
-    def access_info(self, parse_cmd):
+    def access_info(self, some_person, parse_cmd):
         # Jeff's method
         # calls access_info for admin and supervisor
 
         info = "Invalid command."
-        some_guy = self.whos_logged_in()
+        some_guy = some_person
 
         if len(parse_cmd) != 1 or some_guy is None:
             return info
@@ -235,10 +217,10 @@ class CmdHandler:
 
         return info
 
-    def assign_instructor(self, parse_cmd):
+    def assign_instructor(self, some_person, parse_cmd):
         if len(parse_cmd) != 3:
             return "Incorrect Command"
-        temp = self.whos_logged_in()
+        temp = some_person
         if temp.type == "administrator" or temp.type == "instructor" or temp.type == "ta":
             return "Access Denied"
         some_guy = Supervisor(temp.email, temp.password, temp.type)
@@ -260,10 +242,10 @@ class CmdHandler:
         else:
             return "command unsuccessful"
 
-    def assign_ta(self, parse_cmd):
+    def assign_ta(self, some_person, parse_cmd):
         if len(parse_cmd) != 3:
             return "Incorrect Command"
-        temp = self.whos_logged_in()
+        temp = some_person
         if temp is None:
             return "Incorrect Command"
         if temp.type != "supervisor":
@@ -287,8 +269,8 @@ class CmdHandler:
         else:
             return "command unsuccessful"
 
-    def view_ta_assign(self, parse_cmd):
-        current_user = self.whos_logged_in()
+    def view_ta_assign(self, some_person, parse_cmd):
+        current_user = some_person
 
         if len(parse_cmd) != 1:
             return "View TA assignments not of the right format: [view_ta_assign]"
@@ -301,9 +283,9 @@ class CmdHandler:
         else:
             return "You don't have access to that command."
 
-    def change_email(self, parse_cmd):
+    def change_email(self, some_person, parse_cmd):
 
-        some_guy = self.whos_logged_in()
+        some_guy = some_person
 
         if len(parse_cmd) != 2:
             return "Parameter error."
@@ -316,9 +298,9 @@ class CmdHandler:
         else:
             return "Invalid/taken email address."
 
-    def change_password(self, parse_cmd):
+    def change_password(self, some_person, parse_cmd):
 
-        some_guy = self.whos_logged_in()
+        some_guy = some_person
 
         if len(parse_cmd) != 2:
             return "Parameter error."
@@ -331,9 +313,9 @@ class CmdHandler:
         else:
             return "Bad password."
 
-    def change_name(self, parse_cmd):
+    def change_name(self, some_person, parse_cmd):
 
-        some_guy = self.whos_logged_in()
+        some_guy = some_person
 
         if len(parse_cmd) < 2:
             return "Parameter error."
@@ -355,9 +337,9 @@ class CmdHandler:
         else:
             return "Bad name."
 
-    def change_phone(self, parse_cmd):
+    def change_phone(self, some_person, parse_cmd):
 
-        some_guy = self.whos_logged_in()
+        some_guy = some_person
 
         if len(parse_cmd) != 2:
             return "Parameter error."
@@ -370,9 +352,9 @@ class CmdHandler:
         else:
             return "Invalid phone format."
 
-    def view_info(self, parse_cmd):
+    def view_info(self, some_person, parse_cmd):
 
-        some_guy = self.whos_logged_in()
+        some_guy = some_person
 
         if len(parse_cmd) != 1:
             return "Parameter error."
