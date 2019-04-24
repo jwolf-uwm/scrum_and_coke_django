@@ -13,7 +13,7 @@ class TA(Person):
         string_list = "TA: "
         tee_ayys = models.ModelPerson.objects.filter(type="ta")
         for tee_ayy in tee_ayys:
-            string_list = string_list + tee_ayy.name + " | " + tee_ayy.email + "\n"
+            string_list = string_list + tee_ayy.name + " | " + tee_ayy.email + " | " + tee_ayy.phone + "\n"
 
             for ta_courses in models.ModelTACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
