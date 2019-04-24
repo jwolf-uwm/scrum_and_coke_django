@@ -33,7 +33,7 @@ class CreateCourseTests(TestCase):
         self.assertEqual(response.status_code, 200)
         # since we returned a render, it has all the content of the page
         # we'll just look for the header
-        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Create Course")
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         # no error messages
         self.assertEqual(len(all_messages), 0)
@@ -47,7 +47,7 @@ class CreateCourseTests(TestCase):
         session.save()
         response = client.get('/create_course/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Create Account")
+        self.assertContains(response, "Create Course")
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         self.assertEqual(len(all_messages), 0)
 
