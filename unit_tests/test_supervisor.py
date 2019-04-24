@@ -584,7 +584,7 @@ class TestSupervisor(TestCase):
         model_supervisor1 = models.ModelPerson.objects.get(email=self.Supervisor1.email)
         self.assertTrue(model_supervisor1.isLoggedOn)
         self.assertEquals(Supervisor.login("Supervisor1@uwm.edu", "DEFAULT_PASSWORD"), "User already logged in")
-        self.assertEquals(Supervisor.login("snoop@uwm.edu", "password"), "Invalid login info")
+        self.assertEquals(Supervisor.login("snoop@uwm.edu", "password"), "User already logged in")
 
     def test_logout(self):
         self.Supervisor1 = Supervisor("Supervisor1@uwm.edu", "DEFAULT_PASSWORD", "DEFAULT")
