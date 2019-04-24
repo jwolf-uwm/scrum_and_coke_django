@@ -257,10 +257,9 @@ class AssignInstructorToCourse(View):
         response = get_workin.parse_command(request.session["email"], command_input)
         if response == "command successful":
             messages.success(request, response)
-            return redirect("index1")
         else:
             messages.error(request, response)
-        return redirect("index1")
+        return render(request, 'main/assign_instructor.html')
 
 
 class AssignTAToCourse(View):
@@ -285,7 +284,7 @@ class AssignTAToCourse(View):
             messages.success(request, response)
         else:
             messages.error(request, response)
-        return redirect("index1")
+        return render(request, 'main/assign_instructor.html')
 
 
 class ViewTAAssign(View):
