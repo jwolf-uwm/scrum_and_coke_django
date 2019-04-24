@@ -328,7 +328,7 @@ class TestAdministrator(TestCase):
         mod_course1.save()
         access_info = self.ad1.access_info()
         parse_info = access_info.split("\n")
-        self.assertEqual(parse_info[8], "Course: CS101")
+        self.assertEqual(parse_info[8], "\tCourse: CS101")
 
     def test_access_info_ta_one_course(self):
         # TA with a course
@@ -342,7 +342,7 @@ class TestAdministrator(TestCase):
         mod_ta_course1.save()
         access_info = self.ad1.access_info()
         parse_info = access_info.split("\n")
-        self.assertEqual(parse_info[10], "Course: CS101")
+        self.assertEqual(parse_info[10], "\tCourse: CS101")
 
     def test_access_info_course(self):
         # just a course
@@ -387,19 +387,23 @@ class TestAdministrator(TestCase):
         self.assertEqual(parse_info[5], "")
         self.assertEqual(parse_info[6], "Instructors:")
         self.assertEqual(parse_info[7], "DEFAULT | inst1@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[8], "Course: CS101")
-        self.assertEqual(parse_info[9], "DEFAULT | inst2@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[10], "Course: CS102")
-        self.assertEqual(parse_info[11], "")
-        self.assertEqual(parse_info[12], "TAs:")
-        self.assertEqual(parse_info[13], "DEFAULT | ta1@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[14], "Course: CS101")
-        self.assertEqual(parse_info[15], "DEFAULT | ta2@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[16], "Course: CS102")
+        self.assertEqual(parse_info[8], "\tCourse: CS101")
+        self.assertEqual(parse_info[9], "")
+        self.assertEqual(parse_info[10], "DEFAULT | inst2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[11], "\tCourse: CS102")
+        self.assertEqual(parse_info[12], "")
+        self.assertEqual(parse_info[13], "")
+        self.assertEqual(parse_info[14], "TAs:")
+        self.assertEqual(parse_info[15], "DEFAULT | ta1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[16], "\tCourse: CS101")
         self.assertEqual(parse_info[17], "")
-        self.assertEqual(parse_info[18], "Courses:")
-        self.assertEqual(parse_info[19], "CS101")
-        self.assertEqual(parse_info[20], "CS102")
+        self.assertEqual(parse_info[18], "DEFAULT | ta2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[19], "\tCourse: CS102")
+        self.assertEqual(parse_info[20], "")
+        self.assertEqual(parse_info[21], "")
+        self.assertEqual(parse_info[22], "Courses:")
+        self.assertEqual(parse_info[23], "CS101")
+        self.assertEqual(parse_info[24], "CS102")
 
     # Access Info Tests End
 

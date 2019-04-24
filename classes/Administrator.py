@@ -174,7 +174,8 @@ class Administrator(Person):
 
             for courses in models.ModelCourse.objects.all():
                 if courses.instructor == instruct.email:
-                    string_list = string_list + "Course: " + courses.course_id + "\n"
+                    string_list = string_list + "\tCourse: " + courses.course_id + "\n"
+            string_list = string_list + "\n"
 
         string_list = string_list + "\n"
 
@@ -187,7 +188,8 @@ class Administrator(Person):
 
             for ta_courses in models.ModelTACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list = string_list + "Course: " + ta_courses.course.course_id + "\n"
+                    string_list = string_list + "\tCourse: " + ta_courses.course.course_id + "\n"
+            string_list = string_list + "\n"
 
         string_list = string_list + "\n"
 

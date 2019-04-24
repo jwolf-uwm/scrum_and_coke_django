@@ -140,7 +140,7 @@ class CreateAccessInfo(TestCase):
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         big_string = str(all_messages[0])
         parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[8], "Course: CS101-401")
+        self.assertEqual(parse_string[8], "\tCourse: CS101-401")
 
     def test_access_info_ta_one_course(self):
         self.ui.parse_command("setup")
@@ -160,7 +160,7 @@ class CreateAccessInfo(TestCase):
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         big_string = str(all_messages[0])
         parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[10], "Course: CS101-401")
+        self.assertEqual(parse_string[10], "\tCourse: CS101-401")
 
     def test_access_info_just_course(self):
         self.ui.parse_command("setup")
@@ -179,8 +179,8 @@ class CreateAccessInfo(TestCase):
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         big_string = str(all_messages[0])
         parse_string = big_string.split("\n")
-        self.assertEqual(parse_string[11], "Courses:")
-        self.assertEqual(parse_string[12], "CS101-401")
+        self.assertEqual(parse_string[12], "Courses:")
+        self.assertEqual(parse_string[13], "CS101-401")
 
     def test_access_info_all_the_things(self):
         self.ui.parse_command("setup")
@@ -215,16 +215,20 @@ class CreateAccessInfo(TestCase):
         self.assertEqual(parse_info[5], "")
         self.assertEqual(parse_info[6], "Instructors:")
         self.assertEqual(parse_info[7], "DEFAULT | inst1@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[8], "Course: CS101-401")
-        self.assertEqual(parse_info[9], "DEFAULT | inst2@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[10], "Course: CS102-401")
-        self.assertEqual(parse_info[11], "")
-        self.assertEqual(parse_info[12], "TAs:")
-        self.assertEqual(parse_info[13], "DEFAULT | ta1@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[14], "Course: CS101-401")
-        self.assertEqual(parse_info[15], "DEFAULT | ta2@uwm.edu | 000.000.0000")
-        self.assertEqual(parse_info[16], "Course: CS102-401")
+        self.assertEqual(parse_info[8], "\tCourse: CS101-401")
+        self.assertEqual(parse_info[9], "")
+        self.assertEqual(parse_info[10], "DEFAULT | inst2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[11], "\tCourse: CS102-401")
+        self.assertEqual(parse_info[12], "")
+        self.assertEqual(parse_info[13], "")
+        self.assertEqual(parse_info[14], "TAs:")
+        self.assertEqual(parse_info[15], "DEFAULT | ta1@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[16], "\tCourse: CS101-401")
         self.assertEqual(parse_info[17], "")
-        self.assertEqual(parse_info[18], "Courses:")
-        self.assertEqual(parse_info[19], "CS101-401")
-        self.assertEqual(parse_info[20], "CS102-401")
+        self.assertEqual(parse_info[18], "DEFAULT | ta2@uwm.edu | 000.000.0000")
+        self.assertEqual(parse_info[19], "\tCourse: CS102-401")
+        self.assertEqual(parse_info[20], "")
+        self.assertEqual(parse_info[21], "")
+        self.assertEqual(parse_info[22], "Courses:")
+        self.assertEqual(parse_info[23], "CS101-401")
+        self.assertEqual(parse_info[24], "CS102-401")
