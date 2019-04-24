@@ -10,15 +10,14 @@ class TA(Person):
         super().__init__(email, password, account_type)
 
     def view_ta_assignments(self):
-        string_list = []
+        string_list = "No TAs are assigned to classes."
         tee_ayys = models.ModelPerson.objects.filter(type="ta")
         for tee_ayy in tee_ayys:
-            # string_list.append("TA: " + tee_ayy.email)
+            string_list = "TA: " + tee_ayy.name + " | " + tee_ayy.email + " | " + tee_ayy.phone + "\n"
 
             for ta_courses in models.ModelTACourse.objects.all():
                 if ta_courses.TA.email == tee_ayy.email:
-                    string_list.append("Course: " + ta_courses.course.course_id + " TA: " + ta_courses.TA.name + ", "
-                                       + ta_courses.TA.email)
+                    string_list = string_list + "Course: " + ta_courses.course.course_id + "\n"
 
         return string_list
 
