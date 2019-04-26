@@ -48,6 +48,9 @@ class CreateAccessInfo(TestCase):
 
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_admin@uwm.edu password")
+        self.ui.parse_command("create_account inst@uwm.edu password instructor")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login inst@uwm.edu password")
         client = Client()
         session = client.session
         session['email'] = 'inst@uwm.edu'
@@ -56,13 +59,16 @@ class CreateAccessInfo(TestCase):
         response = client.get('/view_ta_assign/')
         self.assertEqual(response.status_code, 200)
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        info_string = str(all_messages[0])
-        self.assertEqual(info_string, "")
+        info_string = str(all_messages)
+        self.assertEqual(info_string, "[]")
 
     def test_view_ta_assign_ta(self):
 
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
+        self.ui.parse_command("logout")
+        self.ui.parse_command("login ta@uwm.edu password")
         client = Client()
         session = client.session
         session['email'] = 'ta@uwm.edu'
@@ -88,8 +94,8 @@ class CreateAccessInfo(TestCase):
         response = client.get('/view_ta_assign/')
         self.assertEqual(response.status_code, 200)
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
-        info_string = str(all_messages[0])
-        self.assertEqual(info_string, "")
+        info_string = str(all_messages)
+        self.assertEqual(info_string, "[]")
 
     def test_view_ta_assign_ta_no_class(self):
         self.ui.parse_command("setup")
@@ -106,14 +112,15 @@ class CreateAccessInfo(TestCase):
         self.assertEqual(response.status_code, 200)
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         info_string = str(all_messages[0])
-        self.assertEqual(info_string, "TAs: DEFAULT | ta@uwm.edu | 000.000.0000\n\n")
+        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\n")
 
     def test_view_ta_assign_inst_one_course(self):
         self.ui.parse_command("setup")
         self.ui.parse_command("login ta_assign_super@uwm.edu password")
         self.ui.parse_command("create_account instructor@uwm.edu password instructor")
+        self.ui.parse_command("create_account ta@uwm.edu password ta")
         self.ui.parse_command("create_course CS101-401 0")
-        self.ui.parse_command("assign_instructor instructor@uwm.edu CS101-401")
+        self.ui.parse_command("assign_ta ta@uwm.edu CS101-401")
         self.ui.parse_command("setup")
         self.ui.parse_command("login instructor@uwm.edu password")
         client = Client()
@@ -125,7 +132,7 @@ class CreateAccessInfo(TestCase):
         self.assertEqual(response.status_code, 200)
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         info_string = str(all_messages[0])
-        self.assertEqual(info_string, "")
+        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\tCourse: CS101-401\n\n")
 
     def test_view_ta_assign_ta_one_course(self):
         self.ui.parse_command("setup")
@@ -144,7 +151,7 @@ class CreateAccessInfo(TestCase):
         self.assertEqual(response.status_code, 200)
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         info_string = str(all_messages[0])
-        self.assertEqual(info_string, "")
+        self.assertEqual(info_string, "TA: DEFAULT | ta@uwm.edu | 000.000.0000\n\tCourse: CS101-401\n\n")
 
     def test_view_ta_assign_all_the_things(self):
         self.ui.parse_command("setup")
